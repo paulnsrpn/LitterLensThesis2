@@ -1,22 +1,18 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-
-    <link rel="stylesheet" href="admin.css">
-
+    <link rel="stylesheet" href="css/admin.css">
     <title>admin</title>
 </head>
 
 <body>
     <div class="a-nav">
-
         <div class="a-header">
-            <img src="a-logo.png" alt="litterlens logo">
+            <img src="imgs/a-logo.png" alt="litterlens logo">
             <p> Admin </p>
         </div>
 
@@ -38,7 +34,6 @@
 
 
     <div class="dash-content">
-
         <div id="dashboard" class="tab-content active">
             <div class="admin-card">
                 <div class="admin-avatar"></div>
@@ -127,7 +122,6 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
 
         <!--                                            IMAGE AND DETECTION SECTION                                     -->
@@ -188,7 +182,6 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
 
         <!--                                            ANALYTICS SECTION                                     -->
@@ -351,81 +344,75 @@
         <!--                                            USER SECTION                                   -->
         <!-- SETTINGS TAB -->
 <div id="settings" class="tab-content">
-  <div class="settings-container">
+    <div class="settings-container">
 
     <!-- Account Settings -->
     <div class="settings-card">
-      <h2>Account Settings</h2>
-      <label>Email</label>
-      <input type="email" placeholder="Enter new email">
-      <label>Password</label>
-      <input type="password" placeholder="Enter new password">
-      <button>Update Account</button>
+        <h2>Account Settings</h2>
+        <label>Email</label>
+        <input type="email" placeholder="Enter new email">
+        <label>Password</label>
+        <input type="password" placeholder="Enter new password">
+        <button>Update Account</button>
     </div>
 
     <!-- Preferences -->
     <div class="settings-card">
-      <h2>System Preferences</h2>
-      <label>Theme</label>
-      <select>
-        <option>Light</option>
-        <option>Dark</option>
-      </select>
-      <label>Language</label>
-      <select>
-        <option>English</option>
-        <option>Filipino</option>
-      </select>
-      <label>Timezone</label>
-      <select>
-        <option>GMT+8 (Philippines)</option>
-        <option>GMT+9 (Japan)</option>
-        <option>GMT-5 (New York)</option>
-      </select>
+        <h2>System Preferences</h2>
+        <label>Theme</label>
+            <select>
+                <option>Light</option>
+                <option>Dark</option>
+            </select>
+        <label>Language</label>
+            <select>
+                <option>English</option>
+                <option>Filipino</option>
+            </select>
+        <label>Timezone</label>
+            <select>
+                <option>GMT+8 (Philippines)</option>
+                <option>GMT+9 (Japan)</option>
+                <option>GMT-5 (New York)</option>
+            </select>
     </div>
 
     <!-- Notifications -->
     <div class="settings-card">
-      <h2>Notifications</h2>
-      <label><input type="checkbox" checked> Email Notifications</label>
-      <label><input type="checkbox"> System Alerts</label>
-      <label><input type="checkbox"> Weekly Summary Report</label>
+        <h2>Notifications</h2>
+        <label><input type="checkbox" checked> Email Notifications</label>
+        <label><input type="checkbox"> System Alerts</label>
+        <label><input type="checkbox"> Weekly Summary Report</label>
     </div>
 
     <!-- Security -->
     <div class="settings-card">
-      <h2>Privacy & Security</h2>
-      <label><input type="checkbox"> Enable Two-Factor Authentication</label>
-      <button>Manage Sessions</button>
-      <button>Permissions</button>
+        <h2>Privacy & Security</h2>
+        <label><input type="checkbox"> Enable Two-Factor Authentication</label>
+        <button>Manage Sessions</button>
+        <button>Permissions</button>
     </div>
 
     <!-- Data Management -->
     <div class="settings-card">
-      <h2>Data Management</h2>
-      <button>Export Data</button>
-      <button>Clear Cache</button>
-      <button>Backup & Restore</button>
+        <h2>Data Management</h2>
+        <button>Export Data</button>
+        <button>Clear Cache</button>
+        <button>Backup & Restore</button>
     </div>
 
     <!-- Support -->
     <div class="settings-card">
-      <h2>Support</h2>
-      <button>Help & FAQs</button>
-      <button>Contact Support</button>
+        <h2>Support</h2>
+        <button>Help & FAQs</button>
+        <button>Contact Support</button>
     </div>
-
-  </div>
+</div>
 </div>
 
 
 
         <!--                                            SETTING SECTION                                   -->
-
-
-
-
-
     <script>
         const links = document.querySelectorAll(".tab-link");
         const contents = document.querySelectorAll(".tab-content");
@@ -474,11 +461,6 @@
             }
         });
     </script>
-
-
-
-
-
 </body>
 
 </html>
