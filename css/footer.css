@@ -1,0 +1,170 @@
+.footer {
+    background-color: #141E46;
+    color: white;
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+
+.logo2 img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    position: absolute;
+    left: 0px;
+    bottom: 100px;
+}
+
+.wave-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    height: 100px;
+    
+}
+
+.wave {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    display: block;
+}
+
+.wave1 {
+    z-index: 3;
+}
+
+.wave2 {
+    z-index: 2;
+}
+
+.wave3 {
+    z-index: 1;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: auto;
+    padding: 140px 20px 40px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 5;
+}
+
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.footer-left p{
+    padding-top: 80px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    gap: 5px;
+    left: 10px;
+}
+
+.logo-text-underlined {
+    border-bottom: 4px solid white;
+    padding-bottom: 2px;
+}
+
+.logo-text-boxed {
+    border: 3px solid white;
+    padding: 0 6px;
+}
+
+.copyright {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.footer-icons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.icon-circle {
+    background-color: #fdfbf4;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    text-decoration: none;
+}
+
+.icon-circle:hover {
+    transform: scale(1.1);
+    background-color: #e0dfd7; /* slight hover darkening */
+}
+
+.footer-icons i {
+    font-size: 20px;
+    color: #0c1a2a; /* your navy color for contrast */
+}
+
+
+
+.footer-right {
+  display: flex;
+  flex-direction: column;  /* stack icons over links */
+  align-items: flex-end;   /* push to the right side */
+  gap: 30px;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-bottom 0.3s;
+}
+
+.footer-links a:hover {
+    border-bottom: 1px solid white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .footer-left {
+        align-items: center;
+    }
+}

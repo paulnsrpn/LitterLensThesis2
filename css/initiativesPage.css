@@ -1,0 +1,39 @@
+.initiatives-page{
+  height: 100vh;
+}
+
+.section-title {
+  margin: 40px auto 20px;  /* auto centers horizontally */
+  font-size: 28px;
+  font-weight: bold;
+  color: #141E46;
+  text-align: center;      /* ensures text itself is centered */
+  display: block;          /* makes sure auto margin works */
+  width: 100%;             /* full width so it stays centered */
+  padding: 2rem;
+  font-family: 'Montserrat Alternates';
+  font-size: 45px;
+}
+
+
+.initiatives {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding-bottom: 6rem;
+}
+
+.i-card {
+  width: 250px;
+  height: 450px;
+  background: #ddd;
+  transform: skew(-10deg); /* slant effect */
+  overflow: hidden;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: skew(10deg); /* un-slant image inside */
+}

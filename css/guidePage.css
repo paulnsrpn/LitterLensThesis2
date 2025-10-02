@@ -1,0 +1,254 @@
+html {
+  scroll-behavior: smooth;
+}
+
+#guidePage {
+  width: 100%;
+  min-height: 100vh; 
+  background-color: #FFFDF6;
+  color:#FFFDF6;
+  position: relative;
+}
+
+.guideNav{
+    padding-left: 3rem;
+}
+
+.guideTitle {
+  padding-top: 3rem;
+  padding-left: 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  font-family: 'Montserrat Alternates', sans-serif; 
+  text-align: left;
+}
+
+.guideTitle h1 {
+  font-size: 2.3rem;
+  font-weight: 600;
+  color: #141E46;
+  padding-bottom: 0;
+}
+
+.guideTitle p {
+  font-size: 1.3rem;
+  font-family: 'Afacad';
+  color: #333;
+}
+
+.navParts{
+    padding-top: 0;
+    padding-left: 8rem;
+}
+
+.navParts p{
+    padding: 1rem;
+    font-size: 1.3rem;
+    font-family: 'Afacad';
+    color: #333;
+}
+
+.navParts a {
+  padding: 1rem;
+  font-size: 1.2rem;
+  color: #141E46;            /* default: dark blue */
+  text-decoration: none;
+  transition: color 0.4s ease, transform 0.3s ease;  /* smooth animation */
+}
+
+.navParts a.active {
+  font-weight: bold;
+  color: #25de6f;            /* highlight: green */
+  transform: scale(1.1);     /* subtle grow effect */
+}
+
+.guide-box{
+    display: flex;
+    flex-direction: row;
+    gap: 50;
+}
+
+.stepsCard {
+  width: 750px;
+  height: 500px;
+  background: linear-gradient(145deg, #3e7a53, #2c5038);
+  border-radius: 25px;
+  margin-top: 8rem;
+  margin-left: 5rem;
+  padding-right: 1rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #bbb transparent;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.stepsCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/*                                                                          Inside Card                                 */
+
+.step {
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.step.in-view {
+  transform: translateY(0);
+}
+
+.circleNum {
+  width: 60px; /* half of a full circle’s diameter */
+  height: 60px;
+  background-color: #FFFDF6;
+  color: #141E46;
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 40px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Arbutus', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+
+
+.stepTitle{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    gap: 30px; 
+    padding-top: 1.5rem;
+}
+
+.stepTitle h2{
+    font-size: 2rem;
+    font-weight: 500;
+    padding-left: 3rem;
+}
+
+.stepContent{
+    display: flex;
+    flex-direction: row;
+    padding: 1rem;
+    align-items: center;
+    align-content: center;
+    padding: 1rem;
+    margin-left: 3rem;
+}
+
+.stepContent img{
+    padding: 1rem;
+    width: 400px;
+    height: auto;
+}
+
+.stepContent p{
+    font-size: 20px;
+}
+
+.textContent{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+
+.navParts a.active {
+  font-weight: bold;
+  color: #346347;
+  transform: scale(1.2);
+}
+
+#step2 .stepContent{
+    display: flex;
+    flex-direction: column;
+    margin-left: 3rem;
+}
+
+#step2 .stepContent p{
+    margin-top: 1.5rem;
+    margin-left: 3rem;
+}
+
+#step2 .stepContent img{
+    width: 600px;
+    height: auto;
+}
+
+#step3 .stepContent p{
+    margin-left: 3rem;
+}
+
+#step4 .stepContent{
+    display: flex;
+    flex-direction: column;
+    margin-left: 3rem;
+}
+
+#step4 .stepContent p{
+    margin-top: 1.5rem;
+    margin-left: 3rem;
+}
+
+#step4 .stepContent img{
+    width: 600px;
+    height: auto;
+}
+
+#step5 .addText{
+    margin-top: 1.5rem;
+    margin-left: 6rem;
+    margin-right: 6rem;
+    font-size: 20px;
+}
+
+#step5 .stepContent img{
+    width: 300px;
+    height: auto;
+}
+
+#step5 .stepContent p{
+    margin-left: 3rem;
+    width: 150px;
+}
+
+#step5 .stepContent{
+    gap: 2rem;
+    justify-items: center;
+    justify-content: center;
+}
+
+/* --- Scrollbar for all browsers --- */
+.stepsCard::-webkit-scrollbar {
+  width: 5px;
+}
+
+.stepsCard::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.stepsCard::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+}
+
+.stepsCard::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.bot-text{
+  font-size: 20px;
+  font-weight: 500;
+  color:#141E46;
+  position: absolute;
+  bottom: 20px;
+  left: 720px;
+}

@@ -1,0 +1,114 @@
+.about-bg-box {
+  margin: 0;
+  width: 100%;
+  height: 100svh; /* fixed to viewport height */
+  background-color: #141E46;
+  padding: 0.1rem 2rem; /* slightly reduced padding */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.first-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  align-content: bottom;
+  gap: 1rem; /* reduced gap */
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 2rem; /* reduced spacing below */
+}
+
+.about-header {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding-top: 7rem;
+  gap: 0;
+}
+
+.about-header h2 {
+  font-size: 4rem; /* slightly smaller */
+  font-weight: 500;
+  color: #ffffffcc;
+  margin: 0 0 4 0;
+  font-family: 'Montserrat Alternates';
+  font-weight: 600;
+}
+
+.about-header h1 {
+  font-size: 6rem; /* slightly smaller */
+  font-weight: 700;
+  color: #ffffffcc;
+  margin: 0 0 3 0;
+  font-family: 'Montserrat Alternates';
+}
+
+.white-line {
+  height: 1px;
+  width: 450px;
+  background-color: white;
+  border: none;
+  margin-top: 5rem;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  justify-items: center;
+  margin: 5 0 0 0;
+}
+
+.description {
+  flex: 1;
+  min-width: 260px;
+  max-width: 550px;
+  font-size: 1.1rem; /* reduced text size */
+  line-height: 1.5;
+  color: #f0f0f0;
+  padding: 0.5rem;
+  margin: 0; /* removed extra vertical margin */
+}
+
+.what-we-do {
+  margin-top: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #f0f0f0;
+  font-family: 'Montserrat Alternates';
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 1.5rem; /* reduced gap */
+  font-family: 'Afacad';
+  color: #f0f0f0;
+  width: 100%;
+  max-width: 1100px; /* slightly narrower */
+}
+
+.card {
+  font-size: 22px;
+  background-color: #141E46;
+  padding: 1.5rem; /* reduced padding */
+  border-radius: 12px;
+  width: 310px; /* slightly narrower */
+  min-height: 220px; /* slightly shorter */
+  box-shadow: 0 4px 6px rgba(255, 255, 255, 0.15);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.card p {
+  font-size: 16px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  background-color: rgba(20, 30, 70, 0.4);
+  backdrop-filter: blur(6px);
+}
