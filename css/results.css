@@ -1,0 +1,423 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Arbutus&family=Homemade+Apple&family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jockey+One&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Macondo&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Tilt+Neon&display=swap');
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  color: #141E46;
+  padding: 12px 24px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  width: 900px;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  font-family: 'Afacad';
+  font-weight: bolder;
+  font-size: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbar:hover {
+  background: #f9f9f9;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar img {
+  width: 80px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.navbar img:hover {
+  transform: scale(1.05);
+}
+
+.r-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navbar a {
+  color: #141E46;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 18px;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #346347;
+}
+
+.navbar button {
+  background: #141E46;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.navbar button:hover {
+  background: #346347;
+  transform: translateY(-2px);
+}
+
+.navbar i {
+  font-size: 18px;
+  color: #141E46;
+  transition: color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.navbar i:hover {
+  color: #346347;
+  transform: scale(1.2);
+}
+
+.background {
+  position: relative;
+  width: 99%;
+  max-width: 1515px;
+  height: 355px;
+  border-radius: 25px;
+  overflow: hidden;
+  margin: 10px auto;
+  z-index: 1;
+  transition: transform 0.4s ease;
+}
+
+.r-content {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  padding-top: 70px;
+}
+
+.r-content h1 {
+  font-family: 'Afacad';
+}
+
+.r-content .r-cards {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.r-cards .img-container {
+  width: 700px;
+  height: 300px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.r-cards .receipt {
+  width: 250px;
+  height: 360px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.r-content .r-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.content-container {
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+}
+
+.r-cards {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.img-container {
+  position: relative;
+}
+
+.r-buttons {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  left: 20%;
+  gap: 420px;
+  bottom: 200px;
+  font-family: 'Afacad', sans-serif;
+  font-size: 18px;
+  align-items: center;
+  align-content: center;
+}
+
+.r-buttons button {
+  border-radius: 20px;
+  background-color: #346347;
+  color: white;
+  font-family: 'Afacad', sans-serif;
+  font-size: 18px;
+  padding: 2px 5px;
+  margin: 0;
+  width: 200px;
+  height: 35px;
+}
+
+
+
+/*                                            TOGGLE SWITCH                                               */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 25px;
+}
+
+/* Hide default checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Slider background */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  /* Default white background */
+  border: 2px solid #0b4429;
+  /* Dark green border */
+  border-radius: 25px;
+  transition: 0.4s;
+}
+
+/* The white circle */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 2.5px;
+  background-color: #0b4429;
+  /* Dark green knob */
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+/* Checked (ON) state */
+input:checked+.slider {
+  background-color: #0b4429;
+  /* Green background */
+}
+
+input:checked+.slider:before {
+  transform: translateX(24px);
+  background-color: white;
+  /* White knob */
+}
+
+.switch::after {
+  content: "show bounding box";
+  /* the text you want */
+  position: absolute;
+  top: -30px;
+  /* position above the switch */
+  right: 0;
+  background-color: transparent;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 15px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  font-family: 'Afacad';
+}
+
+/* Show on hover */
+.switch:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/*                                                    RECEIPT SECTION                                           */
+.receipt-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 320px;
+  text-align: left;
+  color: #0a3d0a;
+  font-family: 'Afacad', sans-serif;
+}
+
+.receipt-card h2 {
+  font-size: 22px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #1d4d1d;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-family: 'Afacad', sans-serif;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 5px 0;
+  font-size: 15px;
+}
+
+th {
+  font-weight: bold;
+}
+
+.accuracy {
+  font-weight: bold;
+  color: #1d4d1d;
+  margin: 15px 0;
+}
+
+.divider {
+  border-top: 2px dashed #333;
+  margin: 10px 0 15px;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.location-icon {
+  width: 14px;
+  height: 14px;
+  background: #1d4d1d;
+  border-radius: 50%;
+}
+
+.download {
+  text-align: center;
+  font-weight: bold;
+  color: #1d4d1d;
+  text-decoration: none;
+  font-size: 15px;
+  display: block;
+}
+
+.download:hover {
+  text-decoration: underline;
+}
+
+/*                                          DATA VISUALIZATION CHARTS                                   */
+
+
+.analytics-charts {
+  display: flex;
+  gap: 70px;
+  padding-top: 0;
+  margin-top: 0;
+  margin-bottom: 30px;
+  font-family: 'Alfacad', sans-serif;
+}
+
+.charts-title h1{
+  font-family: 'Alfacad', sans-serif;
+  margin-top: 90px;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  text-align: center;
+  width: 400px;   
+  height: 400px;
+}
+
+.chart-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.chart-card canvas {
+  width: 100% !important;
+  height: 100% !important;  
+}
+
+
+/*                                            GEOTAGGING                                                  */
+
+.map-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  width: 1200px;
+  margin: 50px;
+  font-family: 'Alfacad', sans-serif;
+}
+
+.map-box h2{
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.location-info {
+  background: #b5b5b529;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-family: "Alfacad", sans-serif;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.location-info p {
+  margin: 5px 0;
+}
+
+#map {
+  height: 350px;
+  width: 100%;
+  border-radius: 10px;
+}
+

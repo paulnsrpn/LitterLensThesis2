@@ -151,7 +151,7 @@ body.fade-out {
   color: white;
   font-family: 'Montserrat Alternates', sans-serif;
   font-weight: 500;
-  margin: 20;
+  margin: 5px;
   line-height: 1.2;
   transition: color 0.3s ease;
 }

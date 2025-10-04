@@ -1,0 +1,138 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <link rel="stylesheet" href="css/results.css">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+</head>
+
+<body>
+
+  <div class="nav">
+    <div class="navbar">
+      <img src="imgs/logo.png" alt="litterlens logo">
+      <div class="r-nav">
+        <a href="main.html"> Home </a>
+        <a href="#about-page"> About </a>
+        <a href="#contact-page"> Contacts </a>
+        <button> Upload </button>
+        <a href="login_reg.html">
+          <i class="fa-solid fa-user" id="user-icon"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-container">
+    <div class="r-content">
+      <h1> Detection Results </h1>
+      <div class="r-cards">
+        <div class="left-col">
+          <div class="img-container">
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="r-buttons">
+            <p>Go Back</p>
+            <button> Analyze Photo</button>
+          </div>
+        </div>
+        <div class="receipt">
+          <div class="receipt-card">
+            <h2>24 Items detected</h2>
+
+            <table>
+              <tr>
+                <th>Classification</th>
+                <th>Count</th>
+              </tr>
+              <tr>
+                <td>Plastic Bottle</td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td>Plastic Bag</td>
+                <td>7</td>
+              </tr>
+              <tr>
+                <td>Styrofoam</td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td>Other</td>
+                <td>2</td>
+              </tr>
+            </table>
+
+            <p class="accuracy">Detection Accuracy: 97%</p>
+            <div class="divider"></div>
+
+            <div class="location">
+              <div class="location-icon"></div>
+              <div>
+                <strong>Pasig River</strong><br>
+                <small>Kalawaan Bridge</small>
+              </div>
+            </div>
+
+            <a href="#" class="download">Download Report (PDF)</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!--                                        DATA VISUALIZATION SECTION                                    -->
+    <div class="charts-title">
+      <h1> Data Visualization Summary </h1>
+    </div>
+
+    <div class="analytics-charts">
+      <div class="chart-card">
+        <h3>Litter Composition</h3>
+        <canvas id="pieChart"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <h3>Detected Items</h3>
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="charts.js"></script>
+
+    <!--                                      GEO TAGGING                                               -->
+    <div class="map-box">
+      <h2>Geotagging</h2>
+      <div class="location-info">
+        <p><strong>Latitude:</strong> 14.5995</p>
+        <p><strong>Longitude:</strong> 120.9842</p>
+        <p><strong>Address:</strong> Manila, Philippines</p>
+      </div>
+
+      <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      var map = L.map('map').setView([14.5995, 120.9842], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      
+      L.marker([14.5995, 120.9842]).addTo(map)
+        .bindPopup("Litter detected here.").openPopup();
+    </script>
+
+</body>
+
+</html>
