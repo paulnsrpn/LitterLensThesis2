@@ -30,10 +30,20 @@
 
   <div class="content-container">
     <div class="r-content">
-      <h1> Detection Results </h1>
+      <div class="r-header">
+        <h1> Detection Results </h1>
+        <select class="threshold-dropdown">
+          <option value="0.25">Threshold: 0.25</option>
+          <option value="0.50">Threshold: 0.50</option>
+          <option value="0.75">Threshold: 0.75</option>
+          <option value="1.00">Threshold: 1.00</option>
+        </select>
+      </div>
       <div class="r-cards">
         <div class="left-col">
           <div class="img-container">
+            <button class="nav-btn prev-btn">&#10094;</button> <!-- left arrow -->
+            <button class="nav-btn next-btn">&#10095;</button> <!-- right arrow -->
             <label class="switch">
               <input type="checkbox">
               <span class="slider"></span>
@@ -74,13 +84,14 @@
             <p class="accuracy">Detection Accuracy: 97%</p>
             <div class="divider"></div>
 
-            <div class="location">
+            <a href="https://www.google.com/maps?q=14.5869,121.0921" target="_blank" class="location">
               <div class="location-icon"></div>
               <div>
-                <strong>Pasig River</strong><br>
-                <small>Kalawaan Bridge</small>
+                <strong>Latitude:</strong> 14.5869<br>
+                <strong>Longitude:</strong> 121.0921
               </div>
-            </div>
+            </a>
+
 
             <a href="#" class="download">Download Report (PDF)</a>
           </div>
@@ -89,50 +100,7 @@
 
     </div>
 
-    <!--                                        DATA VISUALIZATION SECTION                                    -->
-    <div class="charts-title">
-      <h1> Data Visualization Summary </h1>
-    </div>
-
-    <div class="analytics-charts">
-      <div class="chart-card">
-        <h3>Litter Composition</h3>
-        <canvas id="pieChart"></canvas>
-      </div>
-
-      <div class="chart-card">
-        <h3>Detected Items</h3>
-        <canvas id="barChart"></canvas>
-      </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="charts.js"></script>
-
-    <!--                                      GEO TAGGING                                               -->
-    <div class="map-box">
-      <h2>Geotagging</h2>
-      <div class="location-info">
-        <p><strong>Latitude:</strong> 14.5995</p>
-        <p><strong>Longitude:</strong> 120.9842</p>
-        <p><strong>Address:</strong> Manila, Philippines</p>
-      </div>
-
-      <div id="map"></div>
-    </div>
-
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-      var map = L.map('map').setView([14.5995, 120.9842], 13);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-      
-      L.marker([14.5995, 120.9842]).addTo(map)
-        .bindPopup("Litter detected here.").openPopup();
-    </script>
-
+    
 </body>
 
 </html>
