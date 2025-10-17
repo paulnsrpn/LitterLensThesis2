@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<?php
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // If not logged in, go back to login
+    header("Location: login_reg.php");
+    exit();
+}
+
+// Optional: Fetch user info if needed
+$fullname = $_SESSION['fullname'] ?? 'Admin';
+$username = $_SESSION['username'] ?? 'Unknown';
+$email = $_SESSION['email'] ?? 'Not set';
+?>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <title>admin</title>
+</head>
+
+<body>
+    <div class="a-nav">
+        <div class="a-header">
+          <img src="imgs/a-logo.png" alt="LitterLens logo">
+          <p><?php echo htmlspecialchars($username); ?></p>
+        </div>
+      
+        <div class="a-menu">
+          <a class="tab-link active" data-tab="dashboard">Dashboard</a>
+          <a class="tab-link" data-tab="image">Image and Detection</a>
+          <a class="tab-link" data-tab="analytics">Analytics</a>
+          <a class="tab-link" data-tab="users">Users</a>
+          <a class="tab-link" data-tab="logs">Activity Logs</a>
+      
+          <div class="menu-bottom">
+            <a href="#">Settings</a>
+            <div class="log-out">
+              <a href="php/logout.php">Log out</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+    <div class="dash-content">
+        <div id="dashboard" class="tab-content active">
+            <div class="admin-card">
+                <div class="admin-avatar"></div>
+                <div class="divider"></div>
+                <span class="admin-text"><?php echo htmlspecialchars($fullname); ?></span>
+            </div>
+
+            <div class="dash-cards">
+                <div class="dcard">
+                    <p> Image Analyzed </p>
+                    <h1> 1,069 </h1>
+                </div>
+                <div class="dcard">
+                    <p> Litter Detected </p>
+                    <h1> 19,069 </h1>
+                </div>
+                <div class="dcard">
+                    <p> Accuracy </p>
+                    <h1> 88% </h1>
+                </div>
+            </div>
+
+            <div class="chart-cards">
+                <div class="litter-trends">
+                    <p> Litter Trends</p>
+                </div>
+                <div class="litter-hotspots">
+                    <p> Litter Hotspots </p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <p> Recent Activity </p>
+                <table class="activity-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Image</th>
+                            <th>Action</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>September 1</td>
+                            <td>Thumbnail</td>
+                            <td>New Upload</td>
+                            <td><a href="#">View Analytics</a></td>
+                        </tr>
+                        <tr>
+                            <td>September 5</td>
+                            <td>Thumbnail</td>
+                            <td>New Upload</td>
+                            <td><a href="#">View Analytics</a></td>
+                        </tr>
+                        <tr>
+                            <td>September 17</td>
+                            <td>Thumbnail</td>
+                            <td>New Upload</td>
+                            <td><a href="#">View Analytics</a></td>
+                        </tr>
+                        <tr>
+                            <td>September 29</td>
+                            <td>Thumbnail</td>
+                            <td>New Upload</td>
+                            <td><a href="#">View Analytics</a></td>
+                        </tr>
+                        <tr>
+                            <td>October 5</td>
+                            <td>Thumbnail</td>
+                            <td>New Upload</td>
+                            <td><a href="#">View Analytics</a></td>
+                        </tr>
+                        <tr>
+                            <td>October 19</td>
+                            <td>Thumbnail</td>
+                            <td>New Upload</td>
+                            <td><a href="#">View Analytics</a></td>
+                        </tr>
+                        <tr>
+                            <td>October 30</td>
+                            <td>Thumbnail</td>
+                            <td>New Upload</td>
+                            <td><a href="#">View Analytics</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!--                                            IMAGE AND DETECTION SECTION                                     -->
+        <div id="image" class="tab-content image-detection">
+
+            <!-- Upload Section -->
+            <div class="upload-card">
+                <p>Upload Image</p>
+                <form>
+                    <input type="file" id="upload-file" accept="image/*">
+                    <button type="submit">Upload</button>
+                </form>
+            </div>
+
+            <!-- Detection Results -->
+            <div class="result-card">
+                <p>Detection Results</p>
+                <div class="result-content">
+                    <div class="image-preview">
+                        <img src="sample.jpg" alt="Uploaded image">
+                    </div>
+                    <div class="result-info">
+                        <p><strong>Detected Objects:</strong> Plastic Bottle, Styrofoam</p>
+                        <p><strong>Confidence:</strong> 92%</p>
+                        <p><strong>Date:</strong> September 30, 2025</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detection History -->
+            <div class="history-card">
+                <p>Detection History</p>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Image</th>
+                            <th>Objects</th>
+                            <th>Accuracy</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sept 29</td>
+                            <td><img src="thumb1.jpg" alt="thumbnail"></td>
+                            <td>Plastic Bag</td>
+                            <td>88%</td>
+                            <td><a href="#">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>Sept 28</td>
+                            <td><img src="thumb2.jpg" alt="thumbnail"></td>
+                            <td>Can, Bottle</td>
+                            <td>91%</td>
+                            <td><a href="#">View</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!--                                            ANALYTICS SECTION                                     -->
+
+        <div id="analytics" class="tab-content">
+            <div class="analytics-container">
+
+                <!-- Header -->
+                <h2 class="analytics-title">Analytics Overview</h2>
+
+                <!-- KPI Cards -->
+                <div class="analytics-cards">
+                    <div class="analytics-card">
+                        <h3>Total Detections</h3>
+                        <p>12,453</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Active Users</h3>
+                        <p>1,238</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Reports Today</h3>
+                        <p>87</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Accuracy Rate</h3>
+                        <p>94.2%</p>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="analytics-charts">
+                    <div class="chart-box">
+                        <h3>Detections by Category</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h3>Monthly Trends</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Activity Logs Preview -->
+                <div class="analytics-logs">
+                    <h3>Recent Activity</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sept 28, 2025</td>
+                                <td>Admin</td>
+                                <td>Reviewed detection</td>
+                                <td>✅ Completed</td>
+                            </tr>
+                            <tr>
+                                <td>Sept 27, 2025</td>
+                                <td>User123</td>
+                                <td>Uploaded image</td>
+                                <td>📤 Pending</td>
+                            </tr>
+                            <tr>
+                                <td>Sept 27, 2025</td>
+                                <td>Moderator</td>
+                                <td>Flagged anomaly</td>
+                                <td>⚠ Under Review</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!--                                            USER SECTION                                   -->
+        <!-- Header -->
+        <div id="users" class="tab-content">
+            <div class="user-header">
+                <h2>User Management</h2>
+
+                <div class="user-controls">
+                    <input type="text" placeholder="Search users..." class="user-search">
+                    <select class="role-sort">
+                    <option value="">All</option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                    <option value="Moderator">Moderator</option>
+                    </select>
+                </div>
+            </div>
+
+
+        <!-- User Grid -->
+            <div class="user-grid">
+
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <img src="imgs/avatar2.jpg" alt="User Avatar" class="user-avatar">
+                    <h3>Jervie Alentajan</h3>
+                    <p>jervie@gmail.com</p>
+                    <span class="role">User</span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn">Email</button>
+                        <button class="contact-btn call-btn">Call</button>
+                    </div>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <img src="imgs/avatar1.jpg" alt="User Avatar" class="user-avatar">
+                    <h3>Vico Sotto</h3>
+                    <p>sotto_vico@plpasig.edu.ph</p>
+                    <span class="role">Admin</span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn">Email</button>
+                        <button class="contact-btn call-btn">Call</button>
+                    </div>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <img src="imgs/avatar3.jpg" alt="User Avatar" class="user-avatar">
+                    <h3>Mark Sison</h3>
+                    <p>mars@gmail.com</p>
+                    <span class="role">Admin</span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn">Email</button>
+                        <button class="contact-btn call-btn">Call</button>
+                    </div>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <img src="imgs/avatar4.jpg" alt="User Avatar" class="user-avatar">
+                    <h3>Emanuel Florida</h3>
+                    <p>eman@gmail.com</p>
+                    <span class="role">Admin</span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn">Email</button>
+                        <button class="contact-btn call-btn">Call</button>
+                    </div>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <img src="imgs/avatar5.jpg" alt="User Avatar" class="user-avatar">
+                    <h3>Pauline Serapion</h3>
+                    <p>pauln@gmail.com</p>
+                    <span class="role">Admin</span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn">Email</button>
+                        <button class="contact-btn call-btn">Call</button>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <!--                                            USER SECTION                                   -->
+
+
+        <!-- SETTINGS TAB -->
+<div id="settings" class="tab-content">
+    <div class="settings-container">
+
+    <!-- Account Settings -->
+    <div class="settings-card">
+        <h2>Account Settings</h2>
+        <label>Email</label>
+        <input type="email" placeholder="Enter new email">
+        <label>Password</label>
+        <input type="password" placeholder="Enter new password">
+        <button>Update Account</button>
+    </div>
+
+    <!-- Preferences -->
+    <div class="settings-card">
+        <h2>System Preferences</h2>
+        <label>Theme</label>
+            <select>
+                <option>Light</option>
+                <option>Dark</option>
+            </select>
+        <label>Language</label>
+            <select>
+                <option>English</option>
+                <option>Filipino</option>
+            </select>
+        <label>Timezone</label>
+            <select>
+                <option>GMT+8 (Philippines)</option>
+                <option>GMT+9 (Japan)</option>
+                <option>GMT-5 (New York)</option>
+            </select>
+    </div>
+
+    <!-- Notifications -->
+    <div class="settings-card">
+        <h2>Notifications</h2>
+        <label><input type="checkbox" checked> Email Notifications</label>
+        <label><input type="checkbox"> System Alerts</label>
+        <label><input type="checkbox"> Weekly Summary Report</label>
+    </div>
+
+    <!-- Security -->
+    <div class="settings-card">
+        <h2>Privacy & Security</h2>
+        <label><input type="checkbox"> Enable Two-Factor Authentication</label>
+        <button>Manage Sessions</button>
+        <button>Permissions</button>
+    </div>
+
+    <!-- Data Management -->
+    <div class="settings-card">
+        <h2>Data Management</h2>
+        <button>Export Data</button>
+        <button>Clear Cache</button>
+        <button>Backup & Restore</button>
+    </div>
+
+    <!-- Support -->
+    <div class="settings-card">
+        <h2>Support</h2>
+        <button>Help & FAQs</button>
+        <button>Contact Support</button>
+    </div>
+</div>
+</div>
+
+
+
+        <!--                                            SETTING SECTION                                   -->
+    <script>
+        const links = document.querySelectorAll(".tab-link");
+        const contents = document.querySelectorAll(".tab-content");
+
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                links.forEach(l => l.classList.remove("active"));
+                contents.forEach(c => c.classList.remove("active"));
+
+                link.classList.add("active");
+                document.getElementById(link.dataset.tab).classList.add("active");
+            });
+        });
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Category Chart
+        const ctx1 = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['Plastic', 'Metal', 'Paper', 'Glass', 'Others'],
+                datasets: [{
+                    data: [40, 20, 15, 10, 15],
+                    backgroundColor: ['#40916c', '#74c69d', '#95d5b2', '#d8f3dc', '#1b4332']
+                }]
+            }
+        });
+
+        // Trend Chart
+        const ctx2 = document.getElementById('trendChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Detections',
+                    data: [500, 700, 800, 650, 900, 1200],
+                    borderColor: '#2d6a4f',
+                    backgroundColor: 'rgba(45,106,79,0.2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener("click", function(e) {
+            const isMenuButton = e.target.matches(".menu-btn");
+
+            document.querySelectorAll(".menu-options.show").forEach(menu => {
+            if (!menu.previousElementSibling.contains(e.target)) {
+                menu.classList.remove("show");
+            }
+            });
+
+            if (isMenuButton) {
+            const menuOptions = e.target.nextElementSibling;
+            menuOptions.classList.toggle("show");
+            }
+        });
+    </script>
+
+
+
+</body>
+
+</html>

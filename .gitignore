@@ -1,0 +1,5 @@
+# Copy this file to .env and fill with your local DB info
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=
+DB_NAME=litterlens
