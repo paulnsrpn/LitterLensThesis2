@@ -264,84 +264,139 @@
 
 
         <!--                                            USER SECTION                                   -->
-        <!-- USER TAB -->
+        <!-- Header -->
         <div id="users" class="tab-content">
-
-            <!-- Header -->
             <div class="user-header">
                 <h2>User Management</h2>
-                <input type="text" placeholder="Search users..." class="user-search">
-            </div>
 
-            <!-- User Stats Overview -->
-            <div class="user-stats">
-                <div class="ustat-card">
-                    <h3>Total Users</h3>
-                    <p>11</p>
-                </div>
-                <div class="ustat-card">
-                    <h3>Active Users</h3>
-                    <p>5</p>
-                </div>
-                <div class="ustat-card">
-                    <h3>Suspended</h3>
-                    <p>1</p>
-                </div>
-                <div class="ustat-card">
-                    <h3>Admins</h3>
-                    <p>3</p>
+                <div class="user-controls">
+                    <input type="text" placeholder="Search users..." class="user-search">
+                    <select class="role-sort">
+                    <option value="">All</option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                    <option value="Moderator">Moderator</option>
+                    </select>
                 </div>
             </div>
 
-            <!-- User Table -->
-            <div class="user-table-card">
-                <h3>User Directory</h3>
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>Avatar</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Last Login</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><img src="avatar1.jpg" alt="user" class="user-avatar"></td>
-                            <td>Jane Doe</td>
-                            <td>jane@example.com</td>
-                            <td>User</td>
-                            <td><span class="status active">Active</span></td>
-                            <td>Sept 28, 2025</td>
-                            <td>
-                                <a href="#">View</a> |
-                                <a href="#">Edit</a> |
-                                <a href="#" class="danger">Suspend</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><img src="avatar2.jpg" alt="user" class="user-avatar"></td>
-                            <td>John Smith</td>
-                            <td>john@example.com</td>
-                            <td>Admin</td>
-                            <td><span class="status suspended">Suspended</span></td>
-                            <td>Sept 20, 2025</td>
-                            <td>
-                                <a href="#">View</a> |
-                                <a href="#">Edit</a> |
-                                <a href="#" class="danger">Activate</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+        <!-- User Grid -->
+            <div class="user-grid">
+
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <img src="imgs/avatar2.jpg" alt="User Avatar" class="user-avatar">
+                    <h3>Jervie Alentajan</h3>
+                    <p>jervie@gmail.com</p>
+                    <span class="role">User</span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn">Email</button>
+                        <button class="contact-btn call-btn">Call</button>
+                    </div>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <img src="imgs/avatar1.jpg" alt="User Avatar" class="user-avatar">
+                    <h3>Vico Sotto</h3>
+                    <p>sotto_vico@plpasig.edu.ph</p>
+                    <span class="role">Admin</span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn">Email</button>
+                        <button class="contact-btn call-btn">Call</button>
+                    </div>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <img src="imgs/avatar3.jpg" alt="User Avatar" class="user-avatar">
+                    <h3>Mark Sison</h3>
+                    <p>mars@gmail.com</p>
+                    <span class="role">Admin</span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn">Email</button>
+                        <button class="contact-btn call-btn">Call</button>
+                    </div>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <img src="imgs/avatar4.jpg" alt="User Avatar" class="user-avatar">
+                    <h3>Emanuel Florida</h3>
+                    <p>eman@gmail.com</p>
+                    <span class="role">Admin</span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn">Email</button>
+                        <button class="contact-btn call-btn">Call</button>
+                    </div>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <img src="imgs/avatar5.jpg" alt="User Avatar" class="user-avatar">
+                    <h3>Pauline Serapion</h3>
+                    <p>pauln@gmail.com</p>
+                    <span class="role">Admin</span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn">Email</button>
+                        <button class="contact-btn call-btn">Call</button>
+                    </div>
+                </div>
+
+
             </div>
 
         </div>
 
         <!--                                            USER SECTION                                   -->
+
+
         <!-- SETTINGS TAB -->
 <div id="settings" class="tab-content">
     <div class="settings-container">
@@ -461,6 +516,26 @@
             }
         });
     </script>
+
+    <script>
+        document.addEventListener("click", function(e) {
+            const isMenuButton = e.target.matches(".menu-btn");
+
+            document.querySelectorAll(".menu-options.show").forEach(menu => {
+            if (!menu.previousElementSibling.contains(e.target)) {
+                menu.classList.remove("show");
+            }
+            });
+
+            if (isMenuButton) {
+            const menuOptions = e.target.nextElementSibling;
+            menuOptions.classList.toggle("show");
+            }
+        });
+    </script>
+
+
+
 </body>
 
 </html>

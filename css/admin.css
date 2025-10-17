@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Arbutus&family=Homemade+Apple&family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jockey+One&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Macondo&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Tilt+Neon&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Arbutus&family=Homemade+Apple&family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jockey+One&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Macondo&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Tilt+Neon&display=swap");
 
 body {
   margin: 0;
@@ -11,11 +11,11 @@ body {
 .a-nav {
   width: 270px;
   height: 100vh;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 
   position: fixed;
   left: 0;
@@ -61,7 +61,7 @@ body {
   color: #000;
   font-size: 17px;
   font-weight: 500;
-  margin: 3px 15px;  
+  margin: 3px 15px;
   padding: 8px 36px;
   border-radius: 25px;
   transition: all 0.25s ease;
@@ -69,7 +69,7 @@ body {
 
 .a-menu a:hover {
   background-color: rgba(52, 99, 71, 0.15);
-  color: #2E5339;
+  color: #2e5339;
 }
 
 .a-menu a.active {
@@ -109,7 +109,6 @@ body {
   margin-top: 2px;
 }
 
-
 .content {
   flex: 1;
   padding: 30px;
@@ -131,7 +130,7 @@ body {
 
 .log-out a:hover,
 .log-out:hover i {
-  color: red !important; 
+  color: red !important;
   background: none !important;
 }
 
@@ -176,7 +175,7 @@ body {
 .admin-text {
   font-size: 18px;
   font-weight: bold;
-  font-family: 'Afacad', serif;
+  font-family: "Afacad", serif;
   /* matches elegant serif */
 }
 
@@ -194,7 +193,7 @@ body {
   margin-top: 75px;
   margin-left: 30px;
   align-items: flex-start;
-  font-family: 'Afacad', sans-serif;
+  font-family: "Afacad", sans-serif;
 }
 
 .dcard p {
@@ -226,7 +225,7 @@ body {
   margin-left: 30px;
   align-items: flex-start;
   justify-content: flex-start;
-  font-family: 'Afacad', sans-serif;
+  font-family: "Afacad", sans-serif;
 }
 
 .litter-trends p {
@@ -247,7 +246,7 @@ body {
   margin-left: 30px;
   align-items: flex-start;
   justify-content: flex-start;
-  font-family: 'Afacad', sans-serif;
+  font-family: "Afacad", sans-serif;
 }
 
 .chart-cards p {
@@ -265,14 +264,14 @@ body {
   margin-left: 30px;
   align-items: flex-start;
   justify-content: flex-start;
-  font-family: 'Afacad', sans-serif;
+  font-family: "Afacad", sans-serif;
 }
 
 .activity-card p {
   margin: 0 0 15px;
   font-size: 20px;
   font-weight: 600;
-  color: #2E5339;
+  color: #2e5339;
   /* green title */
 }
 
@@ -296,7 +295,7 @@ body {
 }
 
 .activity-table a {
-  color: #2E5339;
+  color: #2e5339;
   text-decoration: none;
   font-weight: 500;
 }
@@ -305,14 +304,13 @@ body {
   text-decoration: underline;
 }
 
-
 /*                                        IMAGE AND DETECION SECTION                                          */
 
 .image-detection {
   width: 80%;
   margin-left: 20%;
   padding: 20px;
-  font-family: 'Afacad', sans-serif;
+  font-family: "Afacad", sans-serif;
   margin-left: 30px;
 }
 
@@ -328,7 +326,7 @@ body {
 .upload-card p {
   font-size: 20px;
   font-weight: 600;
-  color: #2E5339;
+  color: #2e5339;
   margin-bottom: 15px;
 }
 
@@ -370,7 +368,7 @@ body {
 .result-card p {
   font-size: 20px;
   font-weight: 600;
-  color: #2E5339;
+  color: #2e5339;
   margin-bottom: 15px;
 }
 
@@ -404,7 +402,7 @@ body {
 .history-card p {
   font-size: 20px;
   font-weight: 600;
-  color: #2E5339;
+  color: #2e5339;
   margin-bottom: 15px;
 }
 
@@ -421,7 +419,7 @@ body {
 }
 
 .history-table th {
-  color: #2E5339;
+  color: #2e5339;
   font-weight: 600;
 }
 
@@ -431,7 +429,7 @@ body {
 }
 
 .history-table a {
-  color: #2E5339;
+  color: #2e5339;
   text-decoration: none;
   font-weight: 500;
 }
@@ -444,7 +442,7 @@ body {
 /* Analytics Container */
 .analytics-container {
   padding: 20px;
-  font-family: 'Afacad', sans-serif;
+  font-family: "Afacad", sans-serif;
 }
 
 /* Title */
@@ -528,135 +526,208 @@ body {
 
 /*                                                  USER SECTION                                                  */
 
-#users{
-  margin: 30px;
-}
-
-.user-tab {
-  width: 80%;
-  margin-left: 20%;
-  padding: 20px;
-  font-family: 'Afacad', sans-serif;
-}
-
-/* Header */
-.user-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+#users {
+  padding: 30px;
+  font-family: "Afacad", serif;
 }
 
 .user-header h2 {
-  color: #2E5339;
-  font-size: 24px;
+  color: #2f5131;
   font-weight: 600;
-}
-
-.user-search {
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-}
-
-/* Stats Cards */
-.user-stats {
-  display: flex;
-  gap: 20px;
   margin-bottom: 20px;
+  font-family: "Afacad", serif;
 }
 
-.ustat-card {
-  flex: 1;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-  padding: 20px;
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.user-header {
+  display: flex;
+  justify-content: space-between; /* header left, search/sorter right */
+  align-items: center;            /* vertical alignment */
+  margin-bottom: 25px;
+}
+
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Search input */
+.user-search {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  padding: 8px 14px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.user-search:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+}
+
+/* Role dropdown */
+.role-sort {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.role-sort:hover,
+.user-search:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+
+
+.user-card {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  padding: 25px 20px;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
 }
 
-.ustat-card h3 {
-  margin: 0;
-  font-size: 18px;
-  color: #2E5339;
+.user-card:hover {
+  transform: translateY(-4px);
 }
 
-.ustat-card p {
-  font-size: 28px;
-  font-weight: bold;
-  margin: 10px 0 0;
-}
-
-/* User Table */
-.user-table-card {
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-  padding: 20px;
-}
-
-.user-table-card h3 {
-  margin-bottom: 15px;
-  color: #2E5339;
-}
-
-.user-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.user-table th, .user-table td {
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-  font-size: 15px;
-}
-
-.user-table th {
-  color: #2E5339;
-  font-weight: 600;
-}
-
+/* User avatar */
 .user-avatar {
-  width: 35px;
-  height: 35px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   object-fit: cover;
+  margin-bottom: 15px;
 }
 
-/* Status styling */
-.status {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 13px;
+/* Name, email, role */
+.user-card h3 {
+  font-size: 18px;
   font-weight: 600;
+  color: #1b4332;
 }
 
-.status.active {
-  background: #d4f5e3;
-  color: #2E5339;
+.user-card p {
+  color: #555;
+  font-size: 14px;
+  margin: 4px 0;
 }
 
-.status.suspended {
-  background: #f8d7da;
-  color: #842029;
+.role {
+  display: inline-block;
+  margin-top: 6px;
+  background: #d8f3dc;
+  color: #1b4332;
+  font-size: 13px;
+  padding: 5px 12px;
+  border-radius: 20px;
 }
 
-/* Action links */
-.user-table a {
-  color: #2E5339;
-  text-decoration: none;
-  font-weight: 500;
+/* Three-dot menu */
+.user-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
-.user-table a:hover {
-  text-decoration: underline;
+.menu-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
 }
 
-.user-table a.danger {
-  color: #b02a37;
+.menu-options {
+  display: none;
+  position: absolute;
+  top: 25px;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 10;
+  flex-direction: column;
+  overflow: hidden;
 }
+
+.menu-options.show {
+  display: flex;
+}
+
+.menu-options button {
+  padding: 8px 12px;
+  border: none;
+  background: white;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background 0.2s ease;
+}
+
+.menu-options button:hover {
+  background: #f0f0f0;
+}
+
+.menu-options .danger {
+  color: #e74c3c;
+}
+
+/* Contact buttons */
+.user-contact {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.contact-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.email-btn {
+  background: #eaf4ea;
+  color: #1b4332;
+}
+
+.email-btn:hover {
+  background: transparent;
+  border: 1px solid #1b4332;
+  transform: scale(1.07);
+}
+
+.call-btn {
+  background: #1b4332;
+  color: white;
+}
+
+.call-btn:hover {
+  background: #14532d;
+  transform: scale(1.07);
+}
+
 
 
 /*                                        ANALYTICS SECTION                                          */
@@ -666,19 +737,19 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 20px;
   padding: 20px;
-  font-family: 'Afacad', sans-serif;
+  font-family: "Afacad", sans-serif;
 }
 
 .settings-card {
   background: #fff;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .settings-card h2 {
   font-size: 18px;
-  color: #2E5339;
+  color: #2e5339;
   margin-bottom: 15px;
 }
 
