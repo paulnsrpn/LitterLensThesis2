@@ -1,13 +1,25 @@
 @import url("https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Arbutus&family=Homemade+Apple&family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jockey+One&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Macondo&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Tilt+Neon&display=swap");
 
-body {
+/* ============================= */
+/* ======== GLOBAL RESET ======= */
+/* ============================= */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  height: 100%;
-  display: flex;
 }
 
-/* Sidebar */
+body {
+  font-family: "Afacad", sans-serif;
+  background-color: #f8f8f8;
+  color: #1a1a1a;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================= */
+/* ======== SIDEBAR NAV ======== */
+/* ============================= */
 .a-nav {
   width: 270px;
   height: 100vh;
@@ -16,37 +28,37 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   font-family: "Inter", sans-serif;
-
   position: fixed;
   left: 0;
   top: 0;
-  padding: 12px 0; /* tighter vertical padding */
+  padding: 12px 0;
   box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  z-index: 10;
 }
 
-/* Logo + Admin text */
+/* Logo + Header */
 .a-header {
   display: flex;
   align-items: center;
-  gap: 6px; /* slightly reduced gap */
-  padding: 0 20px 6px 20px; /* tighter left/right + bottom */
+  gap: 6px;
+  padding: 0 20px 6px 20px;
   border-bottom: 1px solid #c7c7c7;
 }
 
 .a-header img {
-  width: 140px; /* slightly smaller logo for better balance */
+  width: 140px;
   height: auto;
 }
 
 .a-header p {
-  font-size: 20px; /* subtle downscale for proportion */
+  font-size: 20px;
   font-weight: 700;
   color: #1a1a1a;
   letter-spacing: 0.3px;
-  margin: 0; /* ensure no default spacing */
+  margin: 0;
 }
 
-/* Menu links */
+/* Sidebar Menu */
 .a-menu {
   display: flex;
   flex-direction: column;
@@ -78,7 +90,7 @@ body {
   font-weight: 600;
 }
 
-/* Bottom section */
+/* Sidebar Bottom Links */
 .menu-bottom {
   display: flex;
   flex-direction: column;
@@ -88,7 +100,6 @@ body {
   border-top: 1px solid #c7c7c7;
 }
 
-/* Settings + Logout */
 .menu-bottom a,
 .log-out a {
   text-decoration: none;
@@ -101,25 +112,11 @@ body {
 .menu-bottom a:hover,
 .log-out a:hover {
   color: #346347;
-  background: none;
   text-decoration: underline;
 }
 
 .log-out {
   margin-top: 2px;
-}
-
-.content {
-  flex: 1;
-  padding: 30px;
-}
-
-.tab-content {
-  display: none;
-}
-
-.tab-content.active {
-  display: block;
 }
 
 .log-out a {
@@ -134,192 +131,55 @@ body {
   background: none !important;
 }
 
-/*                                      DASHBOARD SECTION                                     */
-
-.dash-content {
-  width: 80%;
-  align-items: center;
-  margin-left: 20%;
+/* ============================= */
+/* ======= CONTENT AREA ======== */
+/* ============================= */
+.content {
+  flex: 1;
+  padding: 30px;
 }
 
-.admin-card {
-  position: absolute;
-  right: 20px;
-  top: 10px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  border: 1px solid black;
-  border-radius: 999px;
-  /* makes pill shape */
-  padding: 5px 25px;
-  gap: 12px;
-  width: fit-content;
+.tab-content {
+  display: none;
 }
 
-.admin-avatar {
-  width: 30px;
-  height: 30px;
-  background-color: #142850;
-  /* navy blue */
-  border-radius: 50%;
-  /* circle */
+.tab-content.active {
+  display: block;
 }
 
-.divider {
-  height: 20px;
-  width: 1px;
-  background-color: black;
-}
-
-.admin-text {
-  font-size: 18px;
-  font-weight: bold;
-  font-family: "Afacad", serif;
-  /* matches elegant serif */
-}
-
-.dash-cards {
-  display: flex;
-  flex-direction: row;
-  gap: 0;
-}
-
-.dcard {
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.251);
-  padding: 10px 40px;
-  width: 290px;
-  margin-top: 75px;
-  margin-left: 30px;
-  align-items: flex-start;
-  font-family: "Afacad", sans-serif;
-}
-
-.dcard p {
-  color: #346347;
-  font-weight: bold;
-  font-size: 20px;
-  margin: 0;
-}
-
-.dcard h1 {
-  color: black;
-  font-weight: bold;
-  font-size: 45px;
-  margin: 0;
-}
-
-.chart-cards {
-  display: flex;
-  flex-direction: row;
-  gap: 0;
-}
-
-.litter-trends {
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.251);
-  padding: 10px 40px;
-  width: 570px;
-  margin-top: 10px;
-  margin-left: 30px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  font-family: "Afacad", sans-serif;
-}
-
-.litter-trends p {
-  margin: 5px;
-}
-
-.litter-hotspots p {
-  margin: 5px;
-}
-
-.litter-hotspots {
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.251);
-  padding: 10px 40px;
-  width: 410px;
-  height: 250px;
-  margin-top: 10px;
-  margin-left: 30px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  font-family: "Afacad", sans-serif;
-}
-
-.chart-cards p {
-  font-size: 25px;
-  color: #346347;
-  font-weight: bold;
-}
-
-.activity-card {
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.251);
-  padding: 10px 40px;
-  width: 1090px;
-  margin-top: 10px;
-  margin-left: 30px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  font-family: "Afacad", sans-serif;
-}
-
-.activity-card p {
-  margin: 0 0 15px;
-  font-size: 20px;
-  font-weight: 600;
-  color: #2e5339;
-  /* green title */
-}
-
-.activity-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.activity-table th {
-  text-align: left;
-  font-weight: 600;
-  padding: 10px 15px 10px 0;
-  font-size: 16px;
-  color: #333;
-}
-
-.activity-table td {
-  padding: 8px 15px 8px 0;
-  font-size: 15px;
-  color: #000;
-}
-
-.activity-table a {
-  color: #2e5339;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.activity-table a:hover {
-  text-decoration: underline;
-}
-
-/*                                        IMAGE AND DETECION SECTION                                          */
-
+/* ============================= */
+/* ===== IMAGE DETECTION ======= */
+/* ============================= */
 .image-detection {
-  width: 80%;
-  margin-left: 20%;
-  padding: 20px;
-  font-family: "Afacad", sans-serif;
-  margin-left: 30px;
+  margin-left: 270px; /* perfectly matches sidebar width */
+  padding: 40px 50px;
+  background-color: #f8f8f8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* keeps both cards centered */
+  gap: 25px;
 }
 
-/* Upload card */
+/* --- Card Base Styles --- */
+.upload-card,
+.history-card {
+  width: 100%;
+  max-width: 1000px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 36px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+/* ============================= */
+/* ======== UPLOAD CARD ======== */
+/* ============================= */
 .upload-card {
   border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  padding: 20px 30px;
-  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px 40px;
+  margin-bottom: 25px;
   background: #fff;
 }
 
@@ -327,75 +187,56 @@ body {
   font-size: 20px;
   font-weight: 600;
   color: #2e5339;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+}
+
+.upload-desc {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 18px;
 }
 
 .upload-card form {
   display: flex;
-  gap: 15px;
   align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .upload-card input[type="file"] {
   border: 1px solid #ccc;
-  padding: 6px;
+  padding: 8px 12px;
   border-radius: 8px;
+  background: #f9f9f9;
+  font-size: 15px;
+  cursor: pointer;
+  flex: 1;
+  min-width: 250px;
 }
 
 .upload-card button {
   background: #346347;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 22px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  transition: 0.3s;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.3s;
 }
 
 .upload-card button:hover {
   background: #244a30;
 }
 
-/* Result card */
-.result-card {
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  padding: 20px 30px;
-  margin-bottom: 20px;
-  background: #fff;
-}
-
-.result-card p {
-  font-size: 20px;
-  font-weight: 600;
-  color: #2e5339;
-  margin-bottom: 15px;
-}
-
-.result-content {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-}
-
-.image-preview img {
-  width: 150px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-}
-
-.result-info p {
-  margin: 6px 0;
-  font-size: 16px;
-  color: #000;
-}
-
-/* History card */
+/* ============================= */
+/* ===== DETECTION HISTORY ===== */
+/* ============================= */
 .history-card {
   border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  padding: 20px 30px;
-  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px 35px;
   background: #fff;
 }
 
@@ -403,12 +244,14 @@ body {
   font-size: 20px;
   font-weight: 600;
   color: #2e5339;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
+/* === Table === */
 .history-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 15px;
 }
 
 .history-table th,
@@ -421,22 +264,157 @@ body {
 .history-table th {
   color: #2e5339;
   font-weight: 600;
+  background: #f2f2f2;
+}
+
+.history-table tr:hover {
+  background: rgba(52, 99, 71, 0.05);
 }
 
 .history-table img {
-  width: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #ccc;
 }
 
 .history-table a {
   color: #2e5339;
   text-decoration: none;
   font-weight: 500;
+  transition: 0.2s;
 }
 
 .history-table a:hover {
   text-decoration: underline;
+  color: #244a30;
 }
+
+/* ============================= */
+/* ========= HEADINGS ========== */
+/* ============================= */
+h1, h2, h3 {
+  color: #2e5339;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+/* ============================= */
+/* ===== TABLE SCROLL FIX ====== */
+/* ============================= */
+.history-card .table-wrapper {
+  overflow-x: auto;
+}
+
+/* ============================= */
+/* ========= RESPONSIVE ======== */
+/* ============================= */
+@media (max-width: 1024px) {
+  .image-detection {
+    padding: 30px;
+  }
+
+  .upload-card,
+  .history-card {
+    max-width: 95%;
+  }
+}
+
+@media (max-width: 768px) {
+  .a-nav {
+    position: relative;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .a-menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .main-content,
+  .image-detection {
+    margin-left: 0;
+    padding: 20px;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .upload-card,
+  .history-card {
+    padding: 20px;
+    width: 100%;
+  }
+
+  .upload-card form {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .upload-card input[type="file"] {
+    width: 100%;
+  }
+
+  .upload-card button {
+    width: 100%;
+  }
+
+  .history-table th,
+  .history-table td {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .history-table img {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-card p,
+  .history-card p {
+    font-size: 18px;
+  }
+
+  .upload-card button {
+    font-size: 14px;
+  }
+
+  .history-table th,
+  .history-table td {
+    font-size: 13px;
+  }
+}
+
+/* ============================= */
+/* ===== POLISH / EFFECTS ====== */
+/* ============================= */
+.upload-card:hover,
+.history-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+  transition: all 0.25s ease;
+}
+
+.history-table tr td:first-child {
+  font-weight: 500;
+}
+
+.history-table td:last-child a {
+  color: #346347;
+}
+
+.history-table td:last-child a:hover {
+  color: #244a30;
+}
+
+
 
 /*                                        ANALYTICS SECTION                                          */
 /* Analytics Container */
