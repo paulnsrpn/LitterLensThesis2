@@ -1,59 +1,79 @@
 // ====================
+// HELPER FUNCTIONS
+// ====================
+
+function scrollToAbsoluteTop() {
+    // Scroll the page to the absolute top (0, 0) instantly.
+    window.scrollTo(0, 0);
+}
+
+function clearHashOnLoad() {
+    // Prevents the browser from scrolling to an element ID specified by a URL hash.
+    if (window.location.hash) {
+        // Use replaceState to clear the hash fragment without causing a scroll or reload.
+        history.replaceState(
+            null,
+            document.title,
+            window.location.pathname + window.location.search
+        );
+    }
+}
+
+function markHomeNavActive() {
+    document.querySelectorAll(".nav a").forEach(link => {
+        // Assuming your 'Home' link goes to 'main.php' or '#' which resolves to the current page.
+        // We'll focus on the first link or the one with the correct text/structure if it's the 'Home' link.
+        if (link.textContent.trim() === 'Home') {
+            link.classList.add("active");
+        } else {
+            link.classList.remove("active");
+        }
+    });
+}
+
+
+// ===================
 // LOADER & NAV HANDLING
 // ====================
 
-  window.addEventListener("load", () => {
+window.addEventListener("load", () => {
+    // Run this first to remove any hash that would cause scrolling
+    clearHashOnLoad();
+    scrollToAbsoluteTop();
+    
+    // Explicitly scroll to the absolute top of the page (0, 0)
+    scrollToAbsoluteTop(); 
+    markHomeNavActive();
+
     const loader = document.getElementById("loader");
     const mainContent = document.getElementById("main-content") || document.body;
-
+ 
     // Only show loader if it's the first load (no sessionStorage flag)
     if (!sessionStorage.getItem("visited")) {
-      sessionStorage.setItem("visited", "true");
+        sessionStorage.setItem("visited", "true");
 
-      setTimeout(() => {
-        loader.classList.add("hide");
+        // The loader must exist in the HTML for this to work. (It's not in the provided HTML, but kept here)
+        if (loader) {
+            setTimeout(() => {
+                loader.classList.add("hide");
 
-        setTimeout(() => {
-          loader.style.display = "none";
-          mainContent.style.display = "block";
-
-          scrollToHome();
-          markHomeNavActive();
-          ensureHomeHash();
-        }, 1000); // fade-out time
-      }, 3000); // loader visible time
-    } else {
-      // If already visited, skip loader
-      loader.style.display = "none";
-      mainContent.style.display = "block";
-
-      scrollToHome();
-      markHomeNavActive();
-      ensureHomeHash();
-    }
-
-    function scrollToHome() {
-      const homePage = document.getElementById("home-page");
-      if (homePage) {
-        homePage.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-
-    function markHomeNavActive() {
-      document.querySelectorAll("nav a").forEach(link => {
-        link.classList.remove("active");
-        if (link.getAttribute("href") === "#home-page") {
-          link.classList.add("active");
+                setTimeout(() => {
+                    loader.style.display = "none";
+                    mainContent.style.display = "block";
+                }, 1000); // fade-out time
+            }, 3000); // loader visible time
         }
-      });
+        
+    } else {
+        // If already visited or loader doesn't exist, skip loader setup
+        if (loader) {
+            loader.style.display = "none";
+        }
+        mainContent.style.display = "block";
     }
 
-    function ensureHomeHash() {
-      if (!location.hash || location.hash === "#") {
-        history.replaceState(null, null, "#home-page");
-      }
-    }
-  });
+    // NOTE: The previous scrollToHome() and ensureHomeHash() calls are removed/replaced.
+});
 
 
 

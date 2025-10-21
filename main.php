@@ -68,6 +68,13 @@
     </div>
   </div>
 
+
+
+
+
+
+
+  
   <!--                                                   UPLOAD PAGE                                          -->
 
   <section id="upload-page">
@@ -100,8 +107,16 @@
     </div>
   </section>
 
-  <!--                                                   INITIATIVES PAGE                                          -->
 
+
+
+
+
+
+
+
+
+  <!--                                                   INITIATIVES PAGE                                          -->
     <section id="initiatives-page">
       <h2 class="section-title">Pasig River Initiatives</h2>
 
@@ -122,8 +137,8 @@
 
     </section>
 
-    <!--                                                   INITIATIVES PAGE                                          -->
-    <!--                                                                   About Page                                          -->
+    <!--                                                 INITIATIVES PAGE                                          -->
+    <!--                                                     About Page                                            -->
   <section id="about-page" data-aos="fade-up">
     <div class="about-bg-box" data-aos="fade-in">
       <div class="first-line">
@@ -172,9 +187,7 @@
   </section>
 
 
-  <!--                                                                 Guide Page                                      -->
-
-
+  <!--                                                        Guide Page                                           -->
   <section id="guidePage" data-aos="fade-up">
     <div class="guide-box">
       <div class="guideNav">
@@ -265,7 +278,6 @@
   </section>
 
   <!--                                                                       Contact Page                                    -->
-
   <section id="contact-page">
     <div class="upper-sec">
       <img src="imgs/pasig-river.jpg" alt="">

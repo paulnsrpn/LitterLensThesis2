@@ -2,20 +2,23 @@
 <html lang="en">
 
 <?php
-session_start();
+include 'php/config.php';
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    // If not logged in, go back to login
+
+// require login (uses admin_id because your login sets $_SESSION['admin_id'])
+if (!isset($_SESSION['admin_id'])) {
     header("Location: login_reg.php");
     exit();
 }
 
-// Optional: Fetch user info if needed
-$fullname = $_SESSION['fullname'] ?? 'Admin';
-$username = $_SESSION['username'] ?? 'Unknown';
-$email = $_SESSION['email'] ?? 'Not set';
+// canonical variables (use whichever session key exists)
+$admin_name = $_SESSION['admin_name'] ?? null;   // what registration/login sets
+$username   = $_SESSION['username']   ?? $admin_name ?? 'Unknown'; // fallback for old code
+$fullname   = $_SESSION['fullname']   ?? $admin_name ?? 'Admin';
+$email      = $_SESSION['email']      ?? 'Not set';
+$role       = $_SESSION['role']       ?? 'Unknown';
 ?>
+
 
 
 <head>
@@ -138,7 +141,7 @@ $email = $_SESSION['email'] ?? 'Not set';
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </div> 
         </div>
 
         <!--                                            IMAGE AND DETECTION SECTION                                     -->

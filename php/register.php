@@ -1,25 +1,26 @@
 <?php
-// register.php
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect('../login_reg.php');
 }
 
-$username = trim($_POST['username'] ?? '');
 $fullname = trim($_POST['fullname'] ?? '');
+$admin_name = trim($_POST['username'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirm = $_POST['confirm_password'] ?? '';
+$role = 'user'; // default role
 
 $errors = [];
 
-if (!$username || !$fullname || !$email || !$password || !$confirm) {
+// Basic validation
+if (!$fullname || !$admin_name || !$email || !$password || !$confirm) {
     $errors[] = "Please fill all fields.";
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors[] = "Invalid email.";
+    $errors[] = "Invalid email format.";
 }
 
 if ($password !== $confirm) {
@@ -32,35 +33,40 @@ if (strlen($password) < 8) {
 
 if ($errors) {
     $_SESSION['register_errors'] = $errors;
-    $_SESSION['show_register'] = true; // ✅ show register panel on reload
+    $_SESSION['show_register'] = true;
     redirect('../login_reg.php');
 }
 
-// check if username or email exists
-$stmt = $pdo->prepare("SELECT id FROM users WHERE username = :username OR email = :email LIMIT 1");
-$stmt->execute(['username' => $username, 'email' => $email]);
+// Check if username or email exists
+$stmt = $pdo->prepare("SELECT admin_id FROM admin WHERE admin_name = :admin_name OR email = :email LIMIT 1");
+$stmt->execute(['admin_name' => $admin_name, 'email' => $email]);
+
 if ($stmt->fetch()) {
-    $_SESSION['register_errors'] = ['Username or email already taken.'];
-    $_SESSION['show_register'] = true; // ✅ keep register panel open
+    $_SESSION['register_errors'] = ['Username or email already exists.'];
+    $_SESSION['show_register'] = true;
     redirect('../login_reg.php');
 }
 
-// create user
+// Insert new admin
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
-$stmt = $pdo->prepare("INSERT INTO users (username, fullname, email, password_hash) 
-                       VALUES (:username, :fullname, :email, :password_hash)");
+
+$stmt = $pdo->prepare("INSERT INTO admin (admin_name, fullname, email, password, role)
+                       VALUES (:admin_name, :fullname, :email, :password, :role)");
 $stmt->execute([
-    'username' => $username,
+    'admin_name' => $admin_name,
     'fullname' => $fullname,
     'email' => $email,
-    'password_hash' => $password_hash
+    'password' => $password_hash,
+    'role' => $role
 ]);
 
-// auto-login user
-$userId = $pdo->lastInsertId();
+// Auto-login
+$admin_id = $pdo->lastInsertId();
 session_regenerate_id(true);
-$_SESSION['user_id'] = $userId;
-$_SESSION['username'] = $username;
+$_SESSION['admin_id'] = $admin_id;
+$_SESSION['admin_name'] = $admin_name;
 $_SESSION['fullname'] = $fullname;
+$_SESSION['email'] = $email;
+$_SESSION['role'] = $role;
 
-redirect('../main.php');
+redirect('../dashboard.php');

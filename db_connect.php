@@ -1,4 +1,5 @@
 <?php
+include 'php/config.php';
 $env_path = __DIR__ . '/.env'; // same folder
 
 if (file_exists($env_path)) {

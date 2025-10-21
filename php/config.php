@@ -1,12 +1,12 @@
 <?php
-// config.php
 session_start();
 
-// Database credentials
-define('DB_HOST', '127.0.0.1');     // or localhost
+
+// === DATABASE CONNECTION ===
+define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'litterlens_db');
-define('DB_USER', 'root');          // change for production
-define('DB_PASS', '');              // change for production
+define('DB_USER', 'root');
+define('DB_PASS', '');
 
 $options = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -21,12 +21,13 @@ try {
         $options
     );
 } catch (PDOException $e) {
-    // In development you can echo the message; in production log it instead
     die("Database connection failed: " . $e->getMessage());
 }
 
-// helper: redirect
-function redirect($url) {
+// === REDIRECT HELPER FUNCTION ===
+function redirect($url)
+{
     header("Location: $url");
     exit;
 }
+?>

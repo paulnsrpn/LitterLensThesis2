@@ -14,21 +14,25 @@ if (!$username_or_email || !$password) {
 }
 
 // allow login by username or email
-$stmt = $pdo->prepare("SELECT id, username, fullname, email, password_hash FROM users WHERE username = :ue OR email = :ue LIMIT 1");
+$stmt = $pdo->prepare("SELECT admin_id, admin_name, email, password, role 
+                       FROM admin 
+                       WHERE admin_name = :ue OR email = :ue 
+                       LIMIT 1");
 $stmt->execute(['ue' => $username_or_email]);
-$user = $stmt->fetch();
+$admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$user || !password_verify($password, $user['password_hash'])) {
-    $_SESSION['login_errors'] = ['Invalid credentials.'];
+// verify password
+if (!$admin || !password_verify($password, $admin['password'])) {
+    $_SESSION['login_errors'] = ['Invalid username/email or password.'];
     redirect('../login_reg.php');
 }
 
 // success — create session
 session_regenerate_id(true);
-$_SESSION['user_id'] = $user['id'];
-$_SESSION['fullname'] = $user['fullname'];
-$_SESSION['username'] = $user['username'];
-$_SESSION['email'] = $user['email'];
+$_SESSION['admin_id'] = $admin['admin_id'];
+$_SESSION['admin_name'] = $admin['admin_name'];
+$_SESSION['email'] = $admin['email'];
+$_SESSION['role'] = $admin['role'];
 
-// redirect to protected area
-redirect('../main.php');
+// redirect to main dashboard
+redirect('../dashboard.php');
