@@ -1,22 +1,21 @@
 <?php
-//system_register.php
-
 require_once 'system_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('../login_reg.php');
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
 }
 
-$admin_name = trim($_POST['username'] ?? '');
-$email = trim($_POST['email'] ?? '');
+// === Get form input ===
+$fullname = trim($_POST['fullname'] ?? '');
+$email    = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
-$confirm = $_POST['confirm_password'] ?? '';
-$role = 'user'; // default role
+$confirm  = $_POST['confirm_password'] ?? '';
+$role     = 'user'; // default role
 
 $errors = [];
 
-// Basic validation
-if (!$admin_name || !$email || !$password || !$confirm) {
+// === Validation ===
+if (!$fullname || !$email || !$password || !$confirm) {
     $errors[] = "Please fill all fields.";
 }
 
@@ -32,40 +31,70 @@ if (strlen($password) < 8) {
     $errors[] = "Password must be at least 8 characters.";
 }
 
+// === Debug log ===
+$debug_log = __DIR__ . '/debug_register.txt';
+file_put_contents($debug_log, "==== Registration Attempt ====\n", FILE_APPEND);
+file_put_contents($debug_log, "Time: " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
+file_put_contents($debug_log, "Full Name: $fullname | Email: $email\n", FILE_APPEND);
+
 if ($errors) {
     $_SESSION['register_errors'] = $errors;
     $_SESSION['show_register'] = true;
-    redirect('../login_reg.php');
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
 }
 
-// Check if username or email exists
-$stmt = $pdo->prepare("SELECT admin_id FROM admin WHERE admin_name = :admin_name OR email = :email LIMIT 1");
-$stmt->execute(['admin_name' => $admin_name, 'email' => $email]);
+// === Manual Email Check ===
+// Fetch all admins from Supabase
+$allAdmins = getRecords('admin');
 
-if ($stmt->fetch()) {
-    $_SESSION['register_errors'] = ['Username or email already exists.'];
-    $_SESSION['show_register'] = true;
-    redirect('../login_reg.php');
+$emailExists = false;
+foreach ($allAdmins as $admin) {
+    if (strcasecmp($admin['email'], $email) === 0) { // case-insensitive
+        $emailExists = true;
+        break;
+    }
 }
 
-// Insert new admin
+file_put_contents($debug_log, "Email check result: " . ($emailExists ? "EXISTS" : "NOT EXISTS") . "\n", FILE_APPEND);
+
+if ($emailExists) {
+    $_SESSION['register_errors'] = ["Email already exists."];
+    file_put_contents($debug_log, "Registration blocked due to duplicate email.\n", FILE_APPEND);
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
+}
+
+// === Hash password ===
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-$stmt = $pdo->prepare("INSERT INTO admin (admin_name, email, password, role)
-                       VALUES (:admin_name, :email, :password, :role)");
-$stmt->execute([
-    'admin_name' => $admin_name,
-    'email' => $email,
-    'password' => $password_hash,
-    'role' => $role
-]);
+// === Insert new admin into Supabase ===
+$new_admin = [
+    'admin_name' => $fullname,
+    'email'      => $email,
+    'password'   => $password_hash,
+    'role'       => $role
+];
 
-// Auto-login
-$admin_id = $pdo->lastInsertId();
+$result = insertRecord('admin', $new_admin);
+
+// Debug log
+file_put_contents($debug_log, "Supabase insert result:\n" . print_r($result, true) . "\n", FILE_APPEND);
+
+$admin = $result[0] ?? null;
+
+if (!$admin) {
+    $_SESSION['register_errors'] = ["Failed to create account. Please try again."];
+    file_put_contents($debug_log, "Insertion failed! Registration blocked.\n", FILE_APPEND);
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
+}
+
+// === Auto-login ===
 session_regenerate_id(true);
-$_SESSION['admin_id'] = $admin_id;
-$_SESSION['admin_name'] = $admin_name;
-$_SESSION['email'] = $email;
-$_SESSION['role'] = $role;
+$_SESSION['admin_id']   = $admin['admin_id'] ?? null;
+$_SESSION['admin_name'] = $admin['admin_name'] ?? '';
+$_SESSION['email']      = $admin['email'] ?? '';
+$_SESSION['role']       = $admin['role'] ?? '';
 
-redirect('../dashboard.php');
+file_put_contents($debug_log, "Registration successful. Auto-login done.\n\n", FILE_APPEND);
+
+// === Redirect to admin dashboard ===
+redirect('/LITTERLENSTHESIS2/root/system_frontend/php/admin.php');

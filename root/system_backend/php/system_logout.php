@@ -17,4 +17,4 @@ if (ini_get("session.use_cookies")) {
 session_destroy();
 
 session_regenerate_id(true);
-redirect('../login_reg.php');
+redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');

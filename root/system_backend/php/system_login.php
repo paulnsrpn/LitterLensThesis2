@@ -1,9 +1,8 @@
 <?php
-//system_login.php
 require_once 'system_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('../login_reg.php');
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
 }
 
 $username_or_email = trim($_POST['username'] ?? '');
@@ -11,29 +10,29 @@ $password = $_POST['password'] ?? '';
 
 if (!$username_or_email || !$password) {
     $_SESSION['login_errors'] = ['Please fill both fields.'];
-    redirect('../login_reg.php');
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
 }
 
-// allow login by username or email
-$stmt = $pdo->prepare("SELECT admin_id, admin_name, email, password, role 
-                       FROM admin 
-                       WHERE admin_name = :ue OR email = :ue 
-                       LIMIT 1");
-$stmt->execute(['ue' => $username_or_email]);
-$admin = $stmt->fetch(PDO::FETCH_ASSOC);
+$ue = urlencode($username_or_email);
+$filter = "or(admin_name.eq.$ue,email.eq.$ue)";
 
-// verify password
+// Fetch admin
+$admins = getRecords('admin', $filter);
+$admin = $admins[0] ?? null;
+
+// Verify password
 if (!$admin || !password_verify($password, $admin['password'])) {
     $_SESSION['login_errors'] = ['Invalid username/email or password.'];
-    redirect('../login_reg.php');
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
 }
 
-// success — create session
+// Success — create session
 session_regenerate_id(true);
-$_SESSION['admin_id'] = $admin['admin_id'];
-$_SESSION['admin_name'] = $admin['admin_name'];
-$_SESSION['email'] = $admin['email'];
-$_SESSION['role'] = $admin['role'];
+$_SESSION['admin_id'] = $admin['admin_id'] ?? null; // use the actual column name
+$_SESSION['admin_name'] = $admin['admin_name'] ?? '';
+$_SESSION['email'] = $admin['email'] ?? '';
+$_SESSION['role'] = $admin['role'] ?? '';
 
-// redirect to main dashboard
-redirect('../admin.php');
+// Redirect to dashboard
+redirect('/LITTERLENSTHESIS2/root/system_frontend/php/admin.php');
+?>

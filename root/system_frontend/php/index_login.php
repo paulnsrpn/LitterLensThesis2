@@ -1,7 +1,4 @@
-<?php 
-include 'php/config.php';
-
- ?>
+<?php session_start(); ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -76,26 +73,28 @@ unset($_SESSION['show_register']);
 
     <!-- Login -->
     <div class="form-panel login-panel">
-      <h2>Log In</h2>
-      <p>Access your dashboard to monitor and manage litter data efficiently.</p>
-  
-      <?php
-      if (!empty($_SESSION['login_errors'])) {
-          foreach ($_SESSION['login_errors'] as $e) {
-              echo '<div class="error-message">' . htmlspecialchars($e) . '</div>';
-          }
-          unset($_SESSION['login_errors']);
-      }
-      ?>
+        <h2>Log In</h2>
+        <p>Access your dashboard to monitor and manage litter data efficiently.</p>
 
-      <form action="php/system_login.php" method="post" class="inputs">
-        <input type="text" name="username" placeholder="Username or Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <a href="#">Forgot Password?</a>
-        <button type="submit">Log In</button>
-      </form>
+        <?php
+        if (!empty($_SESSION['login_errors'])) {
+            foreach ($_SESSION['login_errors'] as $e) {
+                echo '<div class="error-message">' . htmlspecialchars($e) . '</div>';
+            }
+            unset($_SESSION['login_errors']);
+        }
+        ?>
+
+        <form action="/LITTERLENSTHESIS2/root/system_backend/php/system_login.php" method="post" class="inputs">
+            <input type="text" name="username" placeholder="Username or Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <a href="#">Forgot Password?</a>
+            <button type="submit">Log In</button>
+        </form>
     </div>
 
+
+    
     <!-- Register -->
     <div class="form-panel register-panel">
       <h2>Register</h2>
@@ -112,9 +111,8 @@ unset($_SESSION['show_register']);
       }
       ?>
 
-      <form action="php/system_register.php" method="post" class="inputs">
+      <form action="/LITTERLENSTHESIS2/root/system_backend/php/system_register.php" method="post" class="inputs">
         <input type="text" name="fullname" placeholder="Full Name" required>
-        <input type="text" name="username" placeholder="Username" required>
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Password" required>
         <input type="password" name="confirm_password" placeholder="Confirm Password" required>

@@ -1,31 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <?php
-include 'php/config.php';
+require_once '../../system_backend/php/system_config.php';
 
 
-// require login (uses admin_id because your login sets $_SESSION['admin_id'])
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: login_reg.php");
-    exit();
+// === Require login ===
+if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
 }
 
-// canonical variables (use whichever session key exists)
-$admin_name = $_SESSION['admin_name'] ?? null;   // what registration/login sets
-$username   = $_SESSION['username']   ?? $admin_name ?? 'Unknown'; // fallback for old code
-$fullname   = $_SESSION['fullname']   ?? $admin_name ?? 'Admin';
-$email      = $_SESSION['email']      ?? 'Not set';
-$role       = $_SESSION['role']       ?? 'Unknown';
+// === Admin session is valid ===
+$admin_name = $_SESSION['admin_name'] ?? '';
 ?>
 
-
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="../css/admin.css">
     <title>admin</title>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -37,8 +29,8 @@ $role       = $_SESSION['role']       ?? 'Unknown';
 <body>
     <div class="a-nav">
         <div class="a-header">
-            <img src="imgs/a-logo.png" alt="LitterLens logo">
-            <p><?php echo htmlspecialchars($username); ?></p>
+            <img src="../imgs/a-logo.png" alt="LitterLens logo">
+            <p><?php echo htmlspecialchars($admin_name); ?></p>
         </div>
 
         <div class="a-menu">
@@ -51,7 +43,7 @@ $role       = $_SESSION['role']       ?? 'Unknown';
             <div class="menu-bottom">
                 <a href="#">Settings</a>
                 <div class="log-out">
-                    <a href="php/logout.php">Log out</a>
+                    <a href="/LITTERLENSTHESIS2/root/system_backend/php/system_logout.php">Log out</a>
                 </div>
             </div>
         </div>
@@ -189,21 +181,21 @@ $role       = $_SESSION['role']       ?? 'Unknown';
                 <tbody>
                     <tr>
                         <td>Sept 29, 2025</td>
-                        <td><img src="thumb1.jpg" alt="thumbnail" /></td>
+                        <td><img src="../thumb1.jpg" alt="thumbnail" /></td>
                         <td>Plastic Bag</td>
                         <td>88%</td>
                         <td><a href="#">View</a></td>
                     </tr>
                     <tr>
                         <td>Sept 28, 2025</td>
-                        <td><img src="thumb2.jpg" alt="thumbnail" /></td>
+                        <td><img src="../thumb2.jpg" alt="thumbnail" /></td>
                         <td>Can, Bottle</td>
                         <td>91%</td>
                         <td><a href="#">View</a></td>
                     </tr>
                     <tr>
                         <td>Sept 27, 2025</td>
-                        <td><img src="thumb3.jpg" alt="thumbnail" /></td>
+                        <td><img src="../thumb3.jpg" alt="thumbnail" /></td>
                         <td>Styrofoam</td>
                         <td>86%</td>
                         <td><a href="#">View</a></td>
@@ -297,7 +289,7 @@ $role       = $_SESSION['role']       ?? 'Unknown';
                     </div>
                 </div>
 
-                <img src="imgs/avatar2.jpg" alt="User Avatar" class="user-avatar">
+                <img src="../imgs/avatar2.jpg" alt="User Avatar" class="user-avatar">
                 <h3>Jervie Alentajan</h3>
                 <p>jervie@gmail.com</p>
                 <span class="role">User</span>
@@ -322,7 +314,7 @@ $role       = $_SESSION['role']       ?? 'Unknown';
                     </div>
                 </div>
 
-                <img src="imgs/avatar1.jpg" alt="User Avatar" class="user-avatar">
+                <img src="../imgs/avatar1.jpg" alt="User Avatar" class="user-avatar">
                 <h3>Vico Sotto</h3>
                 <p>sotto_vico@plpasig.edu.ph</p>
                 <span class="role">Admin</span>
@@ -347,7 +339,7 @@ $role       = $_SESSION['role']       ?? 'Unknown';
                     </div>
                 </div>
 
-                <img src="imgs/avatar3.jpg" alt="User Avatar" class="user-avatar">
+                <img src="../imgs/avatar3.jpg" alt="User Avatar" class="user-avatar">
                 <h3>Mark Sison</h3>
                 <p>mars@gmail.com</p>
                 <span class="role">Admin</span>
@@ -372,7 +364,7 @@ $role       = $_SESSION['role']       ?? 'Unknown';
                     </div>
                 </div>
 
-                <img src="imgs/avatar4.jpg" alt="User Avatar" class="user-avatar">
+                <img src="../imgs/avatar4.jpg" alt="User Avatar" class="user-avatar">
                 <h3>Emanuel Florida</h3>
                 <p>eman@gmail.com</p>
                 <span class="role">Admin</span>
@@ -397,7 +389,7 @@ $role       = $_SESSION['role']       ?? 'Unknown';
                     </div>
                 </div>
 
-                <img src="imgs/avatar5.jpg" alt="User Avatar" class="user-avatar">
+                <img src="../imgs/avatar5.jpg" alt="User Avatar" class="user-avatar">
                 <h3>Pauline Serapion</h3>
                 <p>pauln@gmail.com</p>
                 <span class="role">Admin</span>
