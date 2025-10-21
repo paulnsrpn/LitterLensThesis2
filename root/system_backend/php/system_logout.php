@@ -1,6 +1,6 @@
 <?php
-// logout.php
-require_once 'config.php';
+//system_logout.php
+require_once 'system_config.php';
 
 // Unset session data
 $_SESSION = [];

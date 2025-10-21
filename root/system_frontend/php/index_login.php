@@ -10,7 +10,7 @@ include 'php/config.php';
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Login/Register</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="css/login_reg.css">
+  <link rel="stylesheet" href="../css/login_reg.css">
 
   <style>
     .error-container {
@@ -60,13 +60,13 @@ $showRegister = !empty($_SESSION['show_register']);
 unset($_SESSION['show_register']);
 ?>
 
-  <a href="main.php" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
+  <a href="index.php" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
 
   <div class="container <?php echo $showRegister ? 'active' : ''; ?>" id="container">
 
     <div class="side-panel">
       <div class="line1">
-        <img src="imgs/logo2.png" alt="litterlens logo">
+        <img src="../imgs/logo2.png" alt="litterlens logo">
         <p>Track. Detect. Protect.</p>
       </div>
       <p class="line2" id="side-heading">Good Day, Welcome!</p>
@@ -88,7 +88,7 @@ unset($_SESSION['show_register']);
       }
       ?>
 
-      <form action="php/login.php" method="post" class="inputs">
+      <form action="php/system_login.php" method="post" class="inputs">
         <input type="text" name="username" placeholder="Username or Email" required>
         <input type="password" name="password" placeholder="Password" required>
         <a href="#">Forgot Password?</a>
@@ -112,7 +112,7 @@ unset($_SESSION['show_register']);
       }
       ?>
 
-      <form action="php/register.php" method="post" class="inputs">
+      <form action="php/system_register.php" method="post" class="inputs">
         <input type="text" name="fullname" placeholder="Full Name" required>
         <input type="text" name="username" placeholder="Username" required>
         <input type="email" name="email" placeholder="Email" required>

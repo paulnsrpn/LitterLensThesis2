@@ -1,4 +1,5 @@
 <?php
+//system_config.php
 session_start();
 
 

@@ -1,5 +1,7 @@
 <?php
-require_once 'config.php';
+//system_register.php
+
+require_once 'system_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect('../login_reg.php');

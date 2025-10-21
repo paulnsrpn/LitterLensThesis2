@@ -7,28 +7,28 @@
     <title>LitterLens</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/uploadPage.css">
-    <link rel="stylesheet" href="css/initiativesPage.css">
-    <link rel="stylesheet" href="css/aboutPage.css">
-    <link rel="stylesheet" href="css/guidePage.css">
-    <link rel="stylesheet" href="css/contactPage.css">
-    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/uploadPage.css">
+    <link rel="stylesheet" href="../css/initiativesPage.css">
+    <link rel="stylesheet" href="../css/aboutPage.css">
+    <link rel="stylesheet" href="../css/guidePage.css">
+    <link rel="stylesheet" href="../css/contactPage.css">
+    <link rel="stylesheet" href="../css/footer.css">
 </head>
 
 <body>
   <!--                                        MAIN PAGE                                   -->
   <div class="nav">
     <div class="navbar">
-        <a href="main.php">
-          <img src="imgs/logo.png" alt="LitterLens logo">
+        <a href="../php/index.php">
+          <img src="../imgs/logo.png" alt="LitterLens logo">
         </a>
       <div class="r-nav">
         <a href="#"> Home </a>
         <a href="#about-page"> About </a>
         <a href="#contact-page"> Contacts </a>
         <button> Upload </button>
-        <a href="login_reg.php">
+        <a href="../php/index_login.php">
           <i class="fa-solid fa-user" id="user-icon"></i>
         </a>
       </div>
@@ -36,7 +36,7 @@
   </div>
 
   <div class="background">
-    <img src="imgs/pasigRiver.png" alt="pasig river">
+    <img src="../imgs/pasigRiver.png" alt="pasig river">
     <div class="blue-overlay"></div>
   </div>
 
@@ -51,30 +51,25 @@
 
   <div class="highlights">
     <div class="h-card">
-      <img src="imgs/highlight1.jpg" alt="card 1">
+      <img src="../imgs/highlight1.jpg" alt="card 1">
       <p> Monitors Pasig River</p>
     </div>
     <div class="h-card">
-      <img src="imgs/highlight2.jpg" alt="card 2">
+      <img src="../imgs/highlight2.jpg" alt="card 2">
       <p> AI-Powered Detection </p>
     </div>
     <div class="h-card">
-      <img src="imgs/highlight3.jpg" alt="card 3">
+      <img src="../imgs/highlight3.jpg" alt="card 3">
       <p> Real-time Litter Data </p>
     </div>
     <div class="h-card">
-      <img src="imgs/highlight4.jpg" alt="card 4">
+      <img src="../imgs/highlight4.jpg" alt="card 4">
       <p> For a Greener Future </p>
     </div>
   </div>
 
 
 
-
-
-
-
-  
   <!--                                                   UPLOAD PAGE                                          -->
 
   <section id="upload-page">
@@ -100,7 +95,7 @@
           <img src="css/pasig.jpg" id="preview-image" alt="Preview" />
           <p id="file-name"></p>
         </div>
-        <a href="../results.php">
+        <a href="../php/index_results.php">
           <button class="upload-photo-btn">Analyze Photo</button>
         </a>
       </div>
@@ -122,16 +117,16 @@
 
       <div class="initiatives">
         <div class="i-card">
-          <img src="imgs/init1.jpg" alt="Initiative 1">
+          <img src="../imgs/init1.jpg" alt="Initiative 1">
         </div>
         <div class="i-card">
-          <img src="imgs/init2.jpg" alt="Initiative 2">
+          <img src="../imgs/init2.jpg" alt="Initiative 2">
         </div>
         <div class="i-card">
-          <img src="imgs/init3.jpg" alt="Initiative 3">
+          <img src="../imgs/init3.jpg" alt="Initiative 3">
         </div>
         <div class="i-card">
-          <img src="imgs/init4.jpg" alt="Initiative 4">
+          <img src="../imgs/init4.jpg" alt="Initiative 4">
         </div>
       </div>
 
@@ -211,7 +206,7 @@
             <h2>Step 1: Log In or Register (Optional)</h2>
           </div>
           <div class="stepContent">
-            <img src="imgs/step1.png" alt="">
+            <img src="../imgs/step1.png" alt="">
             <div class="textContent">
               <p>Create an account or sign in to access advanced features like report downloads and image history.</p>
               <p>Use email or Google account.</p>
@@ -226,7 +221,7 @@
           </div>
           <div class="stepContent">
             <p>Click “Upload” and select a clear image of a waterway. Supported formats: JPG or PNG.</p>
-            <img src="imgs/step2.png" alt="">
+            <img src="../imgs/step2.png" alt="">
           </div>
         </div>
 
@@ -240,7 +235,7 @@
               <p>Once uploaded, the system uses AI to scan the image and identify macrolitter. Sit tight—processing
                 takes just a few seconds.</p>
             </div>
-            <img src="imgs/step3.png" alt="">
+            <img src="../imgs/step3.png" alt="">
           </div>
         </div>
 
@@ -251,7 +246,7 @@
           </div>
           <div class="stepContent">
             <p>View the image with detection boxes and a summary of litter types and quantities found.</p>
-            <img src="imgs/step4.png" alt="">
+            <img src="../imgs/step4.png" alt="">
           </div>
         </div>
 
@@ -267,7 +262,7 @@
               <p>If signed in, download the detailed report as a PDF for documentation.</p>
               <p>Use reports for LGU collaboration or tracking progress.</p>
             </div>
-            <img src="imgs/step5.png" alt="">
+            <img src="../imgs/step5.png" alt="">
           </div>
         </div>
       </div>
@@ -280,7 +275,7 @@
   <!--                                                                       Contact Page                                    -->
   <section id="contact-page">
     <div class="upper-sec">
-      <img src="imgs/pasig-river.jpg" alt="">
+      <img src="../imgs/pasig-river.jpg" alt="">
       <div class="green-overlay"></div>
     </div>
 
@@ -365,7 +360,7 @@
 
       <div class="footer-left">
         <div class="logo2">
-          <img src="imgs/logo2.png" alt="LitterLens Logo">
+          <img src="../imgs/logo2.png" alt="LitterLens Logo">
         </div>
         <p class="copyright">&copy; LitterLens 2025. All rights reserved</p>
       </div>
@@ -403,7 +398,7 @@
 
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script src="js/main.js"></script>
+  <script src="../js/main.js"></script>
 
   <script>
       document.getElementById("userIcon").addEventListener("click", (e) => {
@@ -411,7 +406,7 @@
         document.body.classList.add("fade-out");
 
         setTimeout(() => {
-          window.location.href = "login_reg.php";
+          window.location.href = "../php/index_login.php";
         }, 1000);
       });
 

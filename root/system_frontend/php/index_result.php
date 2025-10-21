@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 
-  <link rel="stylesheet" href="css/results.css">
+  <link rel="stylesheet" href="../css/results.css">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
  
@@ -15,7 +15,7 @@
 
   <div class="nav">
     <div class="navbar">
-      <img src="imgs/logo.png" alt="litterlens logo">
+      <img src="../imgs/logo.png" alt="litterlens logo">
       <div class="r-nav">
         <a href="main.html"> Home </a>
         <a href="#about-page"> About </a>

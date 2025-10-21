@@ -1,5 +1,6 @@
 <?php
-require_once 'config.php';
+//system_login.php
+require_once 'system_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect('../login_reg.php');
@@ -35,4 +36,4 @@ $_SESSION['email'] = $admin['email'];
 $_SESSION['role'] = $admin['role'];
 
 // redirect to main dashboard
-redirect('../dashboard.php');
+redirect('../admin.php');
