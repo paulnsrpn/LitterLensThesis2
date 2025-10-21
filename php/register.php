@@ -5,7 +5,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect('../login_reg.php');
 }
 
-$fullname = trim($_POST['fullname'] ?? '');
 $admin_name = trim($_POST['username'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
@@ -15,7 +14,7 @@ $role = 'user'; // default role
 $errors = [];
 
 // Basic validation
-if (!$fullname || !$admin_name || !$email || !$password || !$confirm) {
+if (!$admin_name || !$email || !$password || !$confirm) {
     $errors[] = "Please fill all fields.";
 }
 
@@ -50,11 +49,10 @@ if ($stmt->fetch()) {
 // Insert new admin
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-$stmt = $pdo->prepare("INSERT INTO admin (admin_name, fullname, email, password, role)
-                       VALUES (:admin_name, :fullname, :email, :password, :role)");
+$stmt = $pdo->prepare("INSERT INTO admin (admin_name, email, password, role)
+                       VALUES (:admin_name, :email, :password, :role)");
 $stmt->execute([
     'admin_name' => $admin_name,
-    'fullname' => $fullname,
     'email' => $email,
     'password' => $password_hash,
     'role' => $role
@@ -65,7 +63,6 @@ $admin_id = $pdo->lastInsertId();
 session_regenerate_id(true);
 $_SESSION['admin_id'] = $admin_id;
 $_SESSION['admin_name'] = $admin_name;
-$_SESSION['fullname'] = $fullname;
 $_SESSION['email'] = $email;
 $_SESSION['role'] = $role;
 
