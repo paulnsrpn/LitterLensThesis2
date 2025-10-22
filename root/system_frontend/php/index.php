@@ -71,45 +71,37 @@
 
 
   <!--                                                   UPLOAD PAGE                                          -->
-
   <section id="upload-page">
     <div class="prim-content" id="upload-sec">
       <div class="title-text">
-        <h1> Detect and Measure Litter </h1>
+        <h1>Detect and Measure Litter</h1>
       </div>
 
       <div class="p-text">
         <p>Take or upload a clear image of any river, canal, estero, or creek in Pasig.</p>
       </div>
-      <div class="photo-container">
-        <div class="drop-zone">
-          <div class="drop-content">
-            <p class="main-text">Drop, Upload, or Paste Image</p>
-            <p class="sub-text">Supported formats: JPG, PNG, WEBP</p>
-            <label for="file-upload" class="select-btn">Choose File</label>
-            <input type="file" id="file-upload" hidden accept="image/*" />
-          </div>
-        </div>
 
-        <div class="preview-box" id="preview-box" style="display: none;">
-          <img src="css/pasig.jpg" id="preview-image" alt="Preview" />
-          <p id="file-name"></p>
+      <form id="upload-form" action="../php/index_result.php" method="POST" enctype="multipart/form-data">
+        <div class="photo-container">
+          <div class="drop-zone" id="drop-zone">
+            <div class="drop-content">
+              <p class="main-text">Drop, Upload, or Paste Image</p>
+              <p class="sub-text">Supported formats: JPG, PNG, WEBP</p>
+              <label for="file-upload" class="select-btn">Choose File</label>
+              <input type="file" id="file-upload" name="image" hidden accept="image/*" />
+            </div>
+          </div>
+
+          <div class="preview-box" id="preview-box" style="display: none;">
+            <img id="preview-image" alt="Preview" />
+            <p id="file-name"></p>
+          </div>
+
+          <button type="submit" class="upload-photo-btn">Analyze Photo</button>
         </div>
-        <a href="../php/index_results.php">
-          <button class="upload-photo-btn">Analyze Photo</button>
-        </a>
-      </div>
+      </form>
     </div>
   </section>
-
-
-
-
-
-
-
-
-
 
   <!--                                                   INITIATIVES PAGE                                          -->
     <section id="initiatives-page">
@@ -399,6 +391,8 @@
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script src="../js/main.js"></script>
+  <script src="../js/upload.js"></script>
+  
 
   <script>
       document.getElementById("userIcon").addEventListener("click", (e) => {

@@ -100,7 +100,7 @@
 
     </div>
 
-    
+<script src="../js/result.js"></script>   
 </body>
 
 </html>
