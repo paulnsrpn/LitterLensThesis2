@@ -1,0 +1,178 @@
+#my-dropzone {
+  width: 900px;
+  min-height: 400px;
+  background-color: #FFFDF6;
+  border: 1px solid #141E46;
+  border-radius: 15px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;         /* ✅ allows wrapping */
+  justify-content: center;
+  align-items: flex-start; /* better alignment */
+  position: relative;
+  transition: 0.3s ease;
+}
+
+/* ✨ Highlight animation when dragging */
+#my-dropzone.drag-over {
+  border: 2px dashed #346347;
+  outline: 4px solid rgba(52, 99, 71, 0.4);
+  outline-offset: 5px;
+  background-color: transparent;
+  transform: scale(1.01);
+  box-shadow: 0 0 10px rgba(52, 99, 71, 0.3);
+}
+
+.prim-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 7rem;
+  font-family: 'Montserrat Alternates';
+  font-weight: medium;
+  font-size: 25px;
+}
+
+.p-text p {
+  font-size: 15px;
+  color: #4F8B67;
+  font-weight: 500;
+}
+
+/* Dropzone Message */
+.dz-message {
+  text-align: center;
+  background-color: #f8f8f8;
+  border-radius: 15px;
+  padding: 40px;
+  width: 100%;
+  transition: 0.3s ease;
+  pointer-events: none; 
+}
+
+.dz-message .select-btn {
+  pointer-events: auto;  /* ✅ restore click for Choose File */
+  position: relative;    /* optional, ensures correct stacking */
+  z-index: 2;            /* makes sure it's above the overlay */
+}
+
+
+.dz-message .main-text {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #000000;
+}
+
+.dz-message .sub-text {
+  font-size: 12px;
+  color: #346347;
+}
+
+.select-btn {
+  padding: 5px 1rem;
+  border: none;
+  background-color: #D3D3D5;
+  color: #141E46;
+  border-radius: 15px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-size: 13px;
+  font-family: 'Montserrat Alternates';
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.select-btn:hover {
+  background-color: #141E46;
+  color: #f5f5f5;
+}
+
+/* Image Preview Layout */
+.dz-preview {
+  display: inline-flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 10px;
+  position: relative;
+}
+
+.dz-preview .dz-image img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.dz-filename span {
+  font-size: 12px;
+  color: #333;
+  text-align: center;
+  max-width: 180px;
+  word-break: break-word;
+}
+
+/* 🟥 Red “X” Remove Button (Clean & aligned) */
+.dz-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #e53935;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+  border-radius: 50%;
+  text-decoration: none;
+  padding: 3px 6px;
+  cursor: pointer;
+  z-index: 20;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.dz-remove:hover {
+  background: #b71c1c;
+  transform: scale(1.05);
+  text-decoration: none !important;
+}
+
+.dz-remove:focus,
+.dz-remove:active,
+.dz-remove:visited {
+  text-decoration: none;
+  color: #fff;
+}
+
+/* Container wraps horizontally */
+#my-dropzone .dz-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  padding-top: 10px;
+}
+
+/* Analyze button — repositioned to bottom-right */
+.upload-photo-btn {
+  background-color: #346347;
+  color: white;
+  border: none;
+  padding: 0.6rem 2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  align-self: center;
+  top: 10px;
+
+  position: relative;         /* ✅ Make it float inside dropzone */    
+  transition: 0.3s;
+}
+
+.upload-photo-btn:hover {
+  background-color: #1e3928;
+}
+

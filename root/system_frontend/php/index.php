@@ -1,3 +1,47 @@
+<?php
+$flaskPort = 5000;
+$flaskHost = "http://127.0.0.1:$flaskPort";
+$pythonAppPath = "C:\\xampp\\htdocs\\LitterLensThesis2\\root\\system_backend\\python\\app.py"; // adjust if needed
+$pythonExePath = "C:\\Python313\\python.exe"; // ✅ full Python path is safer
+
+// --- Check if Flask is running ---
+$ch = curl_init($flaskHost);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+$running = $response !== false;
+curl_close($ch);
+
+if (!$running) {
+    $logPath = __DIR__ . "\\flask_error_log.txt";
+    $command = "start /B \"$pythonExePath\" \"$pythonAppPath\" > \"$logPath\" 2>&1";
+    pclose(popen($command, "r"));
+    $debugMessage = "🚀 Flask was not running — started successfully at $flaskHost";
+    $debugStatus = "started";
+} else {
+    $debugMessage = "🟢 Flask is already running on port $flaskPort";
+    $debugStatus = "running";
+}
+
+// Save debug message in a file
+file_put_contents(__DIR__ . "/flask_debug_log.txt", date('Y-m-d H:i:s') . " - " . $debugMessage . "\n", FILE_APPEND);
+?>
+<script>
+  (() => {
+    const status = "<?php echo $debugStatus; ?>";
+    const msg = "<?php echo addslashes($debugMessage); ?>";
+
+    // ✨ Styled console message
+    if (status === "started") {
+      console.log("%c[Flask] " + msg, "color: #1c8c1c; font-weight: bold; background: #e6ffe6; padding: 4px; border-radius: 4px;");
+    } else {
+      console.log("%c[Flask] " + msg, "color: #2e6cff; font-weight: bold; background: #e6ecff; padding: 4px; border-radius: 4px;");
+    }
+  })();
+</script>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,13 +51,17 @@
     <title>LitterLens</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/uploadPage.css">
-    <link rel="stylesheet" href="../css/initiativesPage.css">
-    <link rel="stylesheet" href="../css/aboutPage.css">
-    <link rel="stylesheet" href="../css/guidePage.css">
-    <link rel="stylesheet" href="../css/contactPage.css">
-    <link rel="stylesheet" href="../css/footer.css">
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" />
+    <link rel="stylesheet" href="../css/index_upload.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/index_initiativesPage.css">
+    <link rel="stylesheet" href="../css/index_aboutPage.css">
+    <link rel="stylesheet" href="../css/index_guidePage.css">
+    <link rel="stylesheet" href="../css/index_footer.css">
+    <link rel="stylesheet" href="../css/index_contactPage.css">
+
+
+ 
 </head>
 
 <body>
@@ -23,15 +71,15 @@
         <a href="../php/index.php">
           <img src="../imgs/logo.png" alt="LitterLens logo">
         </a>
-      <div class="r-nav">
-        <a href="#"> Home </a>
-        <a href="#about-page"> About </a>
-        <a href="#contact-page"> Contacts </a>
-        <button> Upload </button>
-        <a href="../php/index_login.php">
-          <i class="fa-solid fa-user" id="user-icon"></i>
-        </a>
-      </div>
+        <div class="r-nav">
+          <a href="#"> Home </a>
+          <a href="#about-page"> About </a>
+          <a href="#contact-page"> Contacts </a>
+          <button> Upload </button>
+          <a href="../php/index_login.php">
+            <i class="fa-solid fa-user" id="user-icon"></i>
+          </a>
+        </div>
     </div>
   </div>
 
@@ -71,6 +119,7 @@
 
 
   <!--                                                   UPLOAD PAGE                                          -->
+
   <section id="upload-page">
     <div class="prim-content" id="upload-sec">
       <div class="title-text">
@@ -81,44 +130,42 @@
         <p>Take or upload a clear image of any river, canal, estero, or creek in Pasig.</p>
       </div>
 
-      <form id="upload-form" action="../php/index_result.php" method="POST" enctype="multipart/form-data">
-        <div class="photo-container">
-          <div class="drop-zone" id="drop-zone">
-            <div class="drop-content">
-              <p class="main-text">Drop, Upload, or Paste Image</p>
-              <p class="sub-text">Supported formats: JPG, PNG, WEBP</p>
-              <label for="file-upload" class="select-btn">Choose File</label>
-              <input type="file" id="file-upload" name="image" hidden accept="image/*" />
-            </div>
-          </div>
+      <form
+        action="../php/index_result.php"
+        class="dropzone"
+        id="my-dropzone"
+        enctype="multipart/form-data">
 
-          <div class="preview-box" id="preview-box" style="display: none;">
-            <img id="preview-image" alt="Preview" />
-            <p id="file-name"></p>
-          </div>
-
-          <button type="submit" class="upload-photo-btn">Analyze Photo</button>
+        <div class="dz-message">
+          <p class="main-text">Drop, Upload, or Paste Image</p>
+          <p class="sub-text">Supported formats: JPG, PNG, WEBP</p>
+          <button type="button" class="select-btn">Choose File</button>
         </div>
       </form>
+              <!-- 📌 Analyze button stays at the bottom -->
+        <button type="button" id="analyze-btn" class="upload-photo-btn">
+          Analyze Photo
+        </button>
     </div>
-  </section>
+  </section> 
 
+  
   <!--                                                   INITIATIVES PAGE                                          -->
     <section id="initiatives-page">
       <h2 class="section-title">Pasig River Initiatives</h2>
 
       <div class="initiatives">
         <div class="i-card">
-          <img src="../imgs/init1.jpg" alt="Initiative 1">
+          <img src="" alt="Initiative 1">
         </div>
         <div class="i-card">
-          <img src="../imgs/init2.jpg" alt="Initiative 2">
+          <img src="" alt="Initiative 2">
         </div>
         <div class="i-card">
-          <img src="../imgs/init3.jpg" alt="Initiative 3">
+          <img src="" alt="Initiative 3">
         </div>
         <div class="i-card">
-          <img src="../imgs/init4.jpg" alt="Initiative 4">
+          <img src="" alt="Initiative 4">
         </div>
       </div>
 
@@ -390,51 +437,9 @@
 
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/upload.js"></script>
   
-
-  <script>
-      document.getElementById("userIcon").addEventListener("click", (e) => {
-        e.preventDefault(); // prevent instant jump
-        document.body.classList.add("fade-out");
-
-        setTimeout(() => {
-          window.location.href = "../php/index_login.php";
-        }, 1000);
-      });
-
-  </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    const ctx1 = document.getElementById('trendChart').getContext('2d');
-    new Chart(ctx1, {
-      type: 'line',
-      data: {
-        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-        datasets: [{ 
-          label: 'Detections',
-          data: [120, 190, 150, 200, 250, 220, 300],
-          borderColor: '#346347',
-          backgroundColor: 'rgba(52, 99, 71, 0.2)',
-          fill: true
-        }]
-      }
-    });
-
-    const ctx2 = document.getElementById('objectChart').getContext('2d');
-    new Chart(ctx2, {
-      type: 'pie',
-      data: {
-        labels: ['Plastic', 'Metal', 'Styrofoam', 'Glass'],
-        datasets: [{
-          data: [40, 25, 20, 15],
-          backgroundColor: ['#346347','#4caf50','#81c784','#c8e6c9']
-        }]
-      }
-    });
-  </script>
-
   </body>
 </html>
