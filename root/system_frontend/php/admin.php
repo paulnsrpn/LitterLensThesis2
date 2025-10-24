@@ -13,6 +13,7 @@ $admin_name = $_SESSION['admin_name'] ?? '';
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,6 +25,10 @@ $admin_name = $_SESSION['admin_name'] ?? '';
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
 </head>
 
 <body>
@@ -267,6 +272,9 @@ $admin_name = $_SESSION['admin_name'] ?? '';
             <h2>The Team</h2>
 
             <div class="user-controls">
+                <button class="add-member-btn">
+                    <i class="fa-solid fa-plus"></i> Add Member
+                </button>
                 <div class="search-wrapper">
                     <input type="text" placeholder="Search users..." class="user-search">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -411,78 +419,120 @@ $admin_name = $_SESSION['admin_name'] ?? '';
 
     <!--                                            USER SECTION                                   -->
 
-
-    <!-- SETTINGS TAB -->
+    <!--                                            SETTINGS SECTION                                   -->
     <div id="settings" class="tab-content">
-        <div class="settings-container">
-
-            <!-- Account Settings -->
-            <div class="settings-card">
-                <h2>Account Settings</h2>
-                <label>Email</label>
-                <input type="email" placeholder="Enter new email">
-                <label>Password</label>
-                <input type="password" placeholder="Enter new password">
-                <button>Update Account</button>
-            </div>
-
-            <!-- Preferences -->
-            <div class="settings-card">
-                <h2>System Preferences</h2>
-                <label>Theme</label>
-                <select>
-                    <option>Light</option>
-                    <option>Dark</option>
-                </select>
-                <label>Language</label>
-                <select>
-                    <option>English</option>
-                    <option>Filipino</option>
-                </select>
-                <label>Timezone</label>
-                <select>
-                    <option>GMT+8 (Philippines)</option>
-                    <option>GMT+9 (Japan)</option>
-                    <option>GMT-5 (New York)</option>
-                </select>
-            </div>
-
-            <!-- Notifications -->
-            <div class="settings-card">
-                <h2>Notifications</h2>
-                <label><input type="checkbox" checked> Email Notifications</label>
-                <label><input type="checkbox"> System Alerts</label>
-                <label><input type="checkbox"> Weekly Summary Report</label>
-            </div>
-
-            <!-- Security -->
-            <div class="settings-card">
-                <h2>Privacy & Security</h2>
-                <label><input type="checkbox"> Enable Two-Factor Authentication</label>
-                <button>Manage Sessions</button>
-                <button>Permissions</button>
-            </div>
-
-            <!-- Data Management -->
-            <div class="settings-card">
-                <h2>Data Management</h2>
-                <button>Export Data</button>
-                <button>Clear Cache</button>
-                <button>Backup & Restore</button>
-            </div>
-
-            <!-- Support -->
-            <div class="settings-card">
-                <h2>Support</h2>
-                <button>Help & FAQs</button>
-                <button>Contact Support</button>
-            </div>
+        <h2 class="s-title">Settings</h2>
+        <div class="settings-search">
+            <input type="text" placeholder="Search settings...">
+            <i class="fa-solid fa-magnifying-glass"></i>
         </div>
+        <div class="settings-card1">
+            <h3>Profile</h3>
+            <div class="profile-pic-container">
+                <img src="../imgs/avatar2.jpg" alt="Profile Picture" class="profile-pic">
+                <div class="overlay">
+                    <i class="fa-solid fa-camera"></i>
+                    <input type="file" id="upload" accept="image/*">
+                </div>
+            </div>
+
+            <!-- Modal for cropping -->
+            <div id="cropModal" class="modal">
+                <div class="modal-content">
+                    <h3>Adjust your photo</h3>
+                    <div class="crop-container">
+                        <img id="cropImage" style="max-width: 100%; display: block;">
+                    </div>
+                    <div class="modal-actions">
+                        <button id="cancelCrop">Cancel</button>
+                        <button id="confirmCrop">Upload Photo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-columns">
+                <div class="details1">
+                    <div class="dt-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" value=" ">
+                    </div>
+
+                    <div class="dt-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" value="">
+                    </div>
+
+                    <div class="dt-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" value="">
+                    </div>
+                </div>
+                <div class="details2">
+                    <div class="dt-group">
+                        <label for="phone">Contact Number</label>
+                        <input type="text" id="phone" value="">
+                        <p class="contact-description">
+                            <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
+                            Please add your contact number for administrative verification and important updates.
+                        </p>
+                    </div>
+
+                    <div class="dt-group">
+                        <label for="conpassword">Confirm Password</label>
+                        <input type="password" id="conpassword" value=" ">
+                    </div>
+                </div>
+            </div>
+            <button class="settings-save-btn">Save Changes</button>
+        </div>
+        <div class="settings-card2">
+            <h3> Model Management </h3>
+            <div class="model-section">
+                <label class="section-title">Active Model</label>
+                <input type="text" class="model-input" placeholder="">
+                <p class="field-description">Select which model should be used for the detection</p>
+            </div>
+
+            <div class="model-section">
+                <label class="section-title">Upload New Model (.pt)</label>
+                <input type="file" class="file-input">
+                <p class="field-description">Upload a new trained model file</p>
+            </div>
+            <h3> Model Version Control </h3>
+            <div class="table-container">
+                <table class="model-table">
+                    <thead>
+                        <tr>
+                            <th>Model Name</th>
+                            <th>Version</th>
+                            <th>Accuracy</th>
+                            <th>Uploaded on</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>LitterLens_CNN</td>
+                            <td>v1</td>
+                            <td>98%</td>
+                            <td>August 2025</td>
+                            <td class="status active">Active</td>
+                        </tr>
+                        <tr>
+                            <td>Las Vegas Mowdels</td>
+                            <td>v2</td>
+                            <td>69%</td>
+                            <td>June 2025</td>
+                            <td class="status inactive">Inactive</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="model-save-btn">Save Changes</button>
+        </div>
+
     </div>
 
-
-
-    <!--                                            SETTING SECTION                                   -->
 
 
 
@@ -730,6 +780,61 @@ $admin_name = $_SESSION['admin_name'] ?? '';
             }).addTo(map);
         });
     </script>
+
+    <!--                                                 Cropper JS                                  -->
+    <script>
+        let cropper;
+        const uploadInput = document.getElementById('upload');
+        const cropModal = document.getElementById('cropModal');
+        const cropImage = document.getElementById('cropImage');
+        const profilePic = document.getElementById('profilePic');
+        const cancelCrop = document.getElementById('cancelCrop');
+        const confirmCrop = document.getElementById('confirmCrop');
+
+        // When image is selected
+        uploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                cropImage.src = event.target.result;
+                cropModal.style.display = 'flex';
+
+                // Initialize cropper after image loads
+                cropImage.onload = () => {
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(cropImage, {
+                        aspectRatio: 1, // square
+                        viewMode: 1,
+                        dragMode: 'move',
+                        background: false
+                    });
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Cancel button
+        cancelCrop.addEventListener('click', () => {
+            cropModal.style.display = 'none';
+            uploadInput.value = ''; // reset file input
+            if (cropper) cropper.destroy();
+        });
+
+        // Confirm crop and update profile
+        confirmCrop.addEventListener('click', () => {
+            const canvas = cropper.getCroppedCanvas({
+                width: 200,
+                height: 200,
+            });
+
+            profilePic.src = canvas.toDataURL('image/png');
+            cropModal.style.display = 'none';
+            if (cropper) cropper.destroy();
+        });
+    </script>
+
 
 </body>
 
