@@ -29,6 +29,12 @@ $admin_name = $_SESSION['admin_name'] ?? '';
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
+    <!-- Date Range Picker -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 </head>
 
 <body>
@@ -44,6 +50,7 @@ $admin_name = $_SESSION['admin_name'] ?? '';
             <a class="tab-link" data-tab="analytics">Analytics</a>
             <a class="tab-link" data-tab="users">Users</a>
             <a class="tab-link" data-tab="logs">Activity Logs</a>
+            <a class="tab-link" data-tab="realtime">Real-Time Detection</a>
 
             <div class="menu-bottom">
                 <a href="#">Settings</a>
@@ -417,7 +424,104 @@ $admin_name = $_SESSION['admin_name'] ?? '';
 
     </div>
 
-    <!--                                            USER SECTION                                   -->
+    <!--                                            LOGS SECTION                                   -->
+
+    <div id="logs" class="tab-content">
+        <h2 class="l-title">Activity Logs</h2>
+        <div class="logs-search">
+            <input type="text" placeholder="Search activty...">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <div class="activity-card">
+            <div class="activity-section left">
+                <i class="fa-regular fa-clock"></i>
+                <span><strong>31</strong> Actions Today</span>
+            </div>
+            <div class="divider"></div>
+            <div class="activity-section right">
+                <i class="fa-regular fa-user"></i>
+                <div class="most-active">
+                    <span class="label">Most Active:</span>
+                    <span class="user">admin [#]</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="logs-container">
+            <div class="logs-header">
+                <div class="logs-filters">
+                    <!-- Date Range Picker -->
+                    <div class="date-range">
+                        <i class="fa-regular fa-calendar"></i>
+                        <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
+                    </div>
+
+                    <!-- Dropdown Filter -->
+                    <div class="action-filter">
+                        <button class="dropdown-btn" id="actionDropdown">
+                            All Actions <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu" id="dropdownMenu">
+                            <li data-value="all">All Actions</li>
+                            <li data-value="added">Added</li>
+                            <li data-value="updated">Updated</li>
+                            <li data-value="deleted">Deleted</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button class="download-btn">Download Logs (.pdf)</button>
+            </div>
+
+            <table class="logs-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Admin</th>
+                        <th>Action</th>
+                        <th>Affected Record</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="logsBody">
+                    <!-- Example data -->
+                    <tr>
+                        <td>10/01/2025</td>
+                        <td>Jervie Alentajan</td>
+                        <td>Updated</td>
+                        <td>admin</td>
+                        <td>Changed Email</td>
+                        <td class="status success">Success</td>
+                    </tr>
+                    <tr>
+                        <td>10/02/2025</td>
+                        <td>Pauline Serapion</td>
+                        <td>Added</td>
+                        <td>admin</td>
+                        <td>New Contact No.</td>
+                        <td class="status success">Success</td>
+                    </tr>
+                    <tr>
+                        <td>10/03/2025</td>
+                        <td>Emanuel Florida</td>
+                        <td>Deleted</td>
+                        <td>detections</td>
+                        <td>Removed Image</td>
+                        <td class="status success">Success</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <span id="prevPage">&lt; Previous</span>
+                <span id="pageInfo">Page 1 of 10</span>
+                <span id="nextPage">Next &gt;</span>
+            </div>
+        </div>
+
+
+    </div>
 
     <!--                                            SETTINGS SECTION                                   -->
     <div id="settings" class="tab-content">
@@ -530,8 +634,133 @@ $admin_name = $_SESSION['admin_name'] ?? '';
             </div>
             <button class="model-save-btn">Save Changes</button>
         </div>
-
     </div>
+
+
+    <!--                                            REAL-TIME DETECTION SECTION                                   -->
+    <div id="realtime" class="tab-content realtime">
+        <div class="realtime-header">
+            <h2 class="r-title">Real-Time Detection</h2>
+            <p>Monitor Live Litter Detection</p>
+        </div>
+        <div class="realtime-content">
+            <div class="realtime-upload">
+                <div class="cam-container">
+                    <h2>Live Feed: Sumilang Bridge</h2>
+                    <div class="camera-header">
+                        <div class="location-details">
+                            <h3>📍 Location Details</h3>
+                            <p>Latitude: <span id="latitude">--</span></p>
+                            <p>Longitude: <span id="longitude">--</span></p>
+                        </div>
+                        <div class="cam-controls">
+                            <button id="start-btn"><i class="fa-solid fa-play"></i> Start</button>
+                            <button id="stop-btn"><i class="fa-solid fa-stop"></i> Stop</button>
+                            <button id="refresh-btn"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                        </div>
+                    </div>
+                    <img src="" alt="Live Camera Feed" id="liveFeed">
+                    <div class="detection-status">
+                        <p>Time: <span class="time">1hr 10mins 30s</span></p>
+                        <p>Status: <span class="status">Active</span></p>
+                    </div>
+                </div>
+                <p class="realtime-footer">
+                    Real-Time Detection powered by <br>
+                    <span>LitterLens AI Model v1</span>
+                </p>
+            </div>
+
+            <div class="stats-container">
+                <div class="stats-card">
+                    <h3>Detection Stats</h3>
+                    <div class="stats-item">
+                        <p class="label">Total Detections</p>
+                        <p class="value">9,549</p>
+                    </div>
+                    <div class="stats-item">
+                        <p class="label">Top Detected Litter</p>
+                        <p class="value">58% <br><em>Organic Debris</em></p>
+                    </div>
+                    <div class="stats-item">
+                        <p class="label">Detection Speed</p>
+                        <p class="value">1.4s/frame</p>
+                    </div>
+                    <div class="stats-item">
+                        <p class="label">Camera Status</p>
+                        <p class="value active">Active</p>
+                    </div>
+                    <div class="stats-item">
+                        <p class="label">Detection Accuracy</p>
+                        <p class="value">99%</p>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <h3>Top Detected Litter:</h3>
+                    <table class="litter-table">
+                        <thead>
+                            <tr>
+                                <th>Classification</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Plastic</td>
+                                <td>2,622</td>
+                            </tr>
+                            <tr>
+                                <td>Organic Debris</td>
+                                <td>6,439</td>
+                            </tr>
+                            <tr>
+                                <td>Foamed Plastic</td>
+                                <td>160</td>
+                            </tr>
+                            <tr>
+                                <td>Paper and</td>
+                                <td>60</td>
+                            </tr>
+                            <tr>
+                                <td>Cardboard</td>
+                                <td>57</td>
+                            </tr>
+                            <tr>
+                                <td>Rubber</td>
+                                <td>25</td>
+                            </tr>
+                            <tr>
+                                <td>Fabric and Textiles</td>
+                                <td>33</td>
+                            </tr>
+                            <tr>
+                                <td>Metal</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>Glass and Ceramic</td>
+                                <td>80</td>
+                            </tr>
+                            <tr>
+                                <td>Biological Debris</td>
+                                <td>45</td>
+                            </tr>
+                            <tr>
+                                <td>Sanitary Waste</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>Electronic Waste</td>
+                                <td>5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 
@@ -833,6 +1062,71 @@ $admin_name = $_SESSION['admin_name'] ?? '';
             cropModal.style.display = 'none';
             if (cropper) cropper.destroy();
         });
+    </script>
+
+    // LOGS SECTION SCRIPTS
+
+    <script>
+        $(function() {
+            $('input[name="daterange"]').daterangepicker({
+                opens: 'left'
+            }, function(start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            });
+        });
+
+        // === DROPDOWN ===
+        const dropdownBtn = document.getElementById("actionDropdown");
+        const dropdownMenu = document.getElementById("dropdownMenu");
+
+        dropdownBtn.addEventListener("click", () => {
+            dropdownMenu.style.display =
+                dropdownMenu.style.display === "block" ? "none" : "block";
+        });
+
+        dropdownMenu.querySelectorAll("li").forEach((item) => {
+            item.addEventListener("click", () => {
+                dropdownBtn.innerHTML = `${item.textContent} <i class="fa-solid fa-chevron-down"></i>`;
+                dropdownMenu.style.display = "none";
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", (e) => {
+            if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.style.display = "none";
+            }
+        });
+
+
+        // ===== Pagination Simulation =====
+        let currentPage = 1;
+        const totalPages = 10;
+        const pageInfo = document.getElementById('pageInfo');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updatePagination() {
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePagination();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePagination();
+            }
+        });
+
+        updatePagination();
     </script>
 
 
