@@ -8,9 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const goBackBtn = document.getElementById("go-back-btn");
   const imgContainer = document.querySelector(".img-container");
 
+  
   let detectionResult = JSON.parse(localStorage.getItem("detectionResult"));
   let currentIndex = 0;
   let showingResult = true;
+
+  
 
   // 🌀 Spinner overlay inside image container
   const spinnerOverlay = document.createElement("div");
@@ -18,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   spinnerOverlay.innerHTML = `
     <div class="spinner"></div>
     <p>Updating threshold...</p>
-  `;
+  `; 
   imgContainer.appendChild(spinnerOverlay);
 
   function showSpinner() {

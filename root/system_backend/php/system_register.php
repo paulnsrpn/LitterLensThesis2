@@ -2,7 +2,7 @@
 require_once 'system_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_register.php');
 }
 
 // === Get form input ===
@@ -40,7 +40,7 @@ file_put_contents($debug_log, "Full Name: $fullname | Email: $email\n", FILE_APP
 if ($errors) {
     $_SESSION['register_errors'] = $errors;
     $_SESSION['show_register'] = true;
-    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_register.php');
 }
 
 // === Manual Email Check ===
@@ -60,7 +60,7 @@ file_put_contents($debug_log, "Email check result: " . ($emailExists ? "EXISTS" 
 if ($emailExists) {
     $_SESSION['register_errors'] = ["Email already exists."];
     file_put_contents($debug_log, "Registration blocked due to duplicate email.\n", FILE_APPEND);
-    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_register.php');
 }
 
 // === Hash password ===
@@ -83,8 +83,8 @@ $admin = $result[0] ?? null;
 
 if (!$admin) {
     $_SESSION['register_errors'] = ["Failed to create account. Please try again."];
-    file_put_contents($debug_log, "Insertion failed! Registration blocked.\n", FILE_APPEND);
-    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
+    file_put_contents(__DIR__.'/debug_register_hash.txt', $password_hash.PHP_EOL, FILE_APPEND);
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_register.php');
 }
 
 // === Auto-login ===

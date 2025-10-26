@@ -145,7 +145,7 @@ def redetect():
                 'summary': object_summary,
                 'total_items': sum(object_summary.values())
             })
-
+ 
             shutil.rmtree(str(results[0].save_dir), ignore_errors=True)
 
         accuracy = get_model_accuracy()

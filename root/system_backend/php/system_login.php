@@ -13,26 +13,36 @@ if (!$username_or_email || !$password) {
     redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
 }
 
-$ue = urlencode($username_or_email);
-$filter = "or(admin_name.eq.$ue,email.eq.$ue)";
+$encoded = rawurlencode($username_or_email);
+$filter = "or(admin_name.ilike.$encoded,email.ilike.$encoded)";
 
-// Fetch admin
+// Debug filter and result
+file_put_contents(__DIR__.'/debug_filter.txt', $filter.PHP_EOL);
 $admins = getRecords('admin', $filter);
-$admin = $admins[0] ?? null;
+file_put_contents(__DIR__.'/debug_login.txt', print_r($admins, true), FILE_APPEND);
 
-// Verify password
+// ✅ Match the correct account
+$admin = null;
+foreach ($admins as $row) {
+    if (
+        strcasecmp(trim($row['admin_name']), $username_or_email) === 0 ||
+        strcasecmp(trim($row['email']), $username_or_email) === 0
+    ) {
+        $admin = $row;
+        break;
+    }
+}
+
 if (!$admin || !password_verify($password, $admin['password'])) {
     $_SESSION['login_errors'] = ['Invalid username/email or password.'];
     redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
 }
 
-// Success — create session
 session_regenerate_id(true);
-$_SESSION['admin_id'] = $admin['admin_id'] ?? null; // use the actual column name
+$_SESSION['admin_id'] = $admin['admin_id'] ?? null;
 $_SESSION['admin_name'] = $admin['admin_name'] ?? '';
 $_SESSION['email'] = $admin['email'] ?? '';
 $_SESSION['role'] = $admin['role'] ?? '';
 
-// Redirect to dashboard
 redirect('/LITTERLENSTHESIS2/root/system_frontend/php/admin.php');
 ?>

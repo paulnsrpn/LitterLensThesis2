@@ -21,7 +21,7 @@ const myDropzone = new Dropzone("#my-dropzone", {
     this.on("error", function (file, errorMessage) {
       console.error("❌ Upload error:", errorMessage);
       showErrorModal("❌ Upload failed. Please check your file.");
-    });
+    }); 
   }
 });
 

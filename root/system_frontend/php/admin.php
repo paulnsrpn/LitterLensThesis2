@@ -279,9 +279,10 @@ $admin_name = $_SESSION['admin_name'] ?? '';
             <h2>The Team</h2>
 
             <div class="user-controls">
-                <button class="add-member-btn">
-                    <i class="fa-solid fa-plus"></i> Add Member
+                <button class="add-member-btn" onclick="window.location.href='../php/index_register.php'">
+                <i class="fa-solid fa-plus"></i> Add Member
                 </button>
+
                 <div class="search-wrapper">
                     <input type="text" placeholder="Search users..." class="user-search">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>

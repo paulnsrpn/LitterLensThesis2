@@ -42,7 +42,7 @@ if (isset($_GET['files'])) {
         </div>
     </div>
   </div>
-
+ 
   <div class="content-container">
     <div class="r-content">
       <div class="r-header">
@@ -70,7 +70,7 @@ if (isset($_GET['files'])) {
 
           <div class="r-buttons">
             <button id="go-back-btn" class="upload-photo-btn">Go Back</button>
-            <button> Analyze Photo</button>
+            <!-- <button> Analyze Photo</button> -->
           </div>
         </div>
         <div class="receipt">
@@ -127,4 +127,4 @@ const uploadedFolder = "<?php echo $folderName; ?>";
 <script src="../js/gallery.js"></script>
 </body>
 
-</html> 
+</html>

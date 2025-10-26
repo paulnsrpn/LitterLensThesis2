@@ -2,7 +2,7 @@
 $flaskPort = 5000;
 $flaskHost = "http://127.0.0.1:$flaskPort";
 $pythonAppPath = "C:\\xampp\\htdocs\\LitterLensThesis2\\root\\system_backend\\python\\app.py"; // adjust if needed
-$pythonExePath = "C:\\Python313\\python.exe"; // ✅ full Python path is safer
+$pythonExePath = "C:\\Programs Files\\Python313\\python.exe"; // ✅ full Python path is safer
 
 // --- Check if Flask is running ---
 $ch = curl_init($flaskHost);
