@@ -1,0 +1,1 @@
+or(admin_name.ilike.eflorida1024%40gmail.com,email.ilike.eflorida1024%40gmail.com)

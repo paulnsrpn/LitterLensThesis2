@@ -1,41 +1,137 @@
 <?php
 require_once '../../system_backend/php/system_config.php';
 
-
 // === Require login ===
 if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
     redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
 }
 
-// === Admin session is valid ===
 $admin_name = $_SESSION['admin_name'] ?? '';
+
+$total_images = 0;
+$total_detections = 0;
+$average_accuracy = 0; // 🆕 New
+$debug_logs = [];
+
+function debugLog(&$logs, $message) {
+    $time = date("H:i:s");
+    $logs[] = "[$time] $message";
+}
+
+// === Get total images ===
+$imgCountResponse = supabaseRequest('GET', 'images', null, 'select=count');
+if (is_array($imgCountResponse) && isset($imgCountResponse[0]['count'])) {
+    $total_images = (int)$imgCountResponse[0]['count'];
+    debugLog($debug_logs, "🟢 Total images retrieved: $total_images");
+} else {
+    debugLog($debug_logs, "❌ Failed to retrieve total images. Response: " . json_encode($imgCountResponse));
+}
+
+// === 🆕 Get total quantity of detections (not just detection_id count) ===
+$total_quantity = 0;
+$quantityResponse = supabaseRequest('GET', 'detections', null, 'select=quantity');
+
+if (is_array($quantityResponse)) {
+    foreach ($quantityResponse as $row) {
+        $total_quantity += (int)$row['quantity'];
+    }
+    $total_detections = $total_quantity; // ✅ Use total quantity instead of row count
+    debugLog($debug_logs, "🟢 Total quantity of detections retrieved: $total_detections");
+} else {
+    debugLog($debug_logs, "❌ Failed to retrieve detection quantities. Response: " . json_encode($quantityResponse));
+}
+
+// === 🆕 Calculate average accuracy ===
+if ($total_detections > 0) {
+    // Get all confidence levels
+    $accuracyResponse = supabaseRequest('GET', 'detections', null, 'select=confidence_lvl');
+    if (is_array($accuracyResponse)) {
+        $total_confidence = 0;
+        $count_confidence = 0;
+
+        foreach ($accuracyResponse as $row) {
+            $total_confidence += (float)$row['confidence_lvl'];
+            $count_confidence++;
+        }
+
+        if ($count_confidence > 0) {
+            $average_accuracy = $total_confidence / $count_confidence;
+            debugLog($debug_logs, "🟢 Average accuracy calculated: $average_accuracy%");
+        } else {
+            debugLog($debug_logs, "ℹ️ No confidence levels found, accuracy is 0%");
+        }
+    } else {
+        debugLog($debug_logs, "❌ Failed to retrieve confidence levels for accuracy.");
+    }
+} else {
+    debugLog($debug_logs, "ℹ️ No detections yet, accuracy is 0%");
+}
+
+$debug_json = json_encode($debug_logs);
 ?>
+
+
+
+<div id="php-debugger" style="
+  position:fixed;
+  bottom:10px;
+  right:10px;
+  width:350px;
+  height:200px;
+  background:#1e1e1e;
+  color:#eee;
+  font-family:monospace;
+  font-size:12px;
+  padding:8px;
+  border-radius:8px;
+  overflow-y:auto;
+  z-index:9999;
+  box-shadow:0 0 8px rgba(0,0,0,0.4);">
+  <strong>🐞 Debugger Panel</strong>
+  <hr>
+</div>
+
+<script>
+  const phpDebugLogs = <?= $debug_json ?>;
+  const debugContainer = document.getElementById("php-debugger");
+  phpDebugLogs.forEach(log => {
+    const el = document.createElement("div");
+    el.textContent = log;
+    if (log.includes("🟢")) el.style.color = "#4ade80";
+    if (log.includes("❌")) el.style.color = "#f87171";
+    debugContainer.appendChild(el);
+  });
+  console.log("[PHP DEBUG LOGS]", phpDebugLogs);
+</script>
+
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="../css/admin.css">
-    <title>admin</title>
+  <!-- ✅ Basic Meta -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-
-    <!-- Date Range Picker -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
+  <link rel="stylesheet" href="../css/admin.css">>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </head>
+
 
 <body>
     <div class="a-nav">
@@ -67,6 +163,7 @@ $admin_name = $_SESSION['admin_name'] ?? '';
         <span class="admin-label">Admin</span>
     </div>
 
+
     <!--                                            DASHBOARD SECTION                                     -->
     <!-- DASHBOARD SECTION -->
     <div id="dashboard" class="tab-content active">
@@ -74,18 +171,20 @@ $admin_name = $_SESSION['admin_name'] ?? '';
 
             <!-- Top Stats -->
             <div class="dashboard-stats">
-                <div class="stat-card">
+                    <div class="stat-card">
                     <h3>Images analyzed</h3>
-                    <p>1,069</p>
-                </div>
-                <div class="stat-card">
+                    <p><?= number_format($total_images) ?></p>
+                    </div>
+
+                    <div class="stat-card">
                     <h3>Litter Detected</h3>
-                    <p>19,069</p>
-                </div>
-                <div class="stat-card">
+                    <p><?= number_format($total_detections) ?></p>
+                    </div>
+
+                    <div class="stat-card">
                     <h3>Accuracy</h3>
-                    <p>88%</p>
-                </div>
+                    <p><?= number_format($average_accuracy, 2) ?>%</p>
+                    </div>
             </div>
 
             <!-- Charts -->
@@ -193,21 +292,21 @@ $admin_name = $_SESSION['admin_name'] ?? '';
                 <tbody>
                     <tr>
                         <td>Sept 29, 2025</td>
-                        <td><img src="../thumb1.jpg" alt="thumbnail" /></td>
+                        <td><img src="" alt="thumbnail" /></td>
                         <td>Plastic Bag</td>
                         <td>88%</td>
                         <td><a href="#">View</a></td>
                     </tr>
                     <tr>
                         <td>Sept 28, 2025</td>
-                        <td><img src="../thumb2.jpg" alt="thumbnail" /></td>
+                        <td><img src="" alt="thumbnail" /></td>
                         <td>Can, Bottle</td>
                         <td>91%</td>
                         <td><a href="#">View</a></td>
                     </tr>
                     <tr>
                         <td>Sept 27, 2025</td>
-                        <td><img src="../thumb3.jpg" alt="thumbnail" /></td>
+                        <td><img src="" alt="thumbnail" /></td>
                         <td>Styrofoam</td>
                         <td>86%</td>
                         <td><a href="#">View</a></td>

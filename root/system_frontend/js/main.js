@@ -3,14 +3,11 @@
 // ====================
 
 function scrollToAbsoluteTop() {
-    // Scroll the page to the absolute top (0, 0) instantly.
     window.scrollTo(0, 0);
 }
 
 function clearHashOnLoad() {
-    // Prevents the browser from scrolling to an element ID specified by a URL hash.
     if (window.location.hash) {
-        // Use replaceState to clear the hash fragment without causing a scroll or reload.
         history.replaceState(
             null,
             document.title,
@@ -21,8 +18,6 @@ function clearHashOnLoad() {
 
 function markHomeNavActive() {
     document.querySelectorAll(".nav a").forEach(link => {
-        // Assuming your 'Home' link goes to 'main.php' or '#' which resolves to the current page.
-        // We'll focus on the first link or the one with the correct text/structure if it's the 'Home' link.
         if (link.textContent.trim() === 'Home') {
             link.classList.add("active");
         } else {
@@ -31,28 +26,58 @@ function markHomeNavActive() {
     });
 }
 
+// =====================
+// GEOLOCATION FUNCTION
+// =====================
+function getUserLocation() {
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                console.log(`📍 Location: Lat ${latitude}, Lng ${longitude}`);
+
+                // ✅ Optional: send to backend (PHP)
+                fetch("save_location.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `latitude=${latitude}&longitude=${longitude}`
+                })
+                .then(res => res.text())
+                .then(data => console.log("✅ Location saved:", data))
+                .catch(err => console.error("❌ Failed to save location:", err));
+
+                // ✅ Optional: if you want to store in hidden fields
+                const latField = document.getElementById("latField");
+                const lonField = document.getElementById("lonField");
+                if (latField && lonField) {
+                    latField.value = latitude;
+                    lonField.value = longitude;
+                }
+            },
+            (error) => {
+                console.error(`❌ Geolocation error: ${error.message}`);
+            }
+        );
+    } else {
+        console.warn("⚠️ Geolocation is not supported by this browser.");
+    }
+}
 
 // ===================
 // LOADER & NAV HANDLING
 // ====================
-
 window.addEventListener("load", () => {
-    // Run this first to remove any hash that would cause scrolling
     clearHashOnLoad();
     scrollToAbsoluteTop();
-    
-    // Explicitly scroll to the absolute top of the page (0, 0)
-    scrollToAbsoluteTop(); 
     markHomeNavActive();
 
     const loader = document.getElementById("loader");
     const mainContent = document.getElementById("main-content") || document.body;
- 
-    // Only show loader if it's the first load (no sessionStorage flag)
+
     if (!sessionStorage.getItem("visited")) {
         sessionStorage.setItem("visited", "true");
 
-        // The loader must exist in the HTML for this to work. (It's not in the provided HTML, but kept here)
         if (loader) {
             setTimeout(() => {
                 loader.classList.add("hide");
@@ -60,73 +85,68 @@ window.addEventListener("load", () => {
                 setTimeout(() => {
                     loader.style.display = "none";
                     mainContent.style.display = "block";
-                }, 1000); // fade-out time
-            }, 3000); // loader visible time
+                }, 1000);
+            }, 3000);
         }
-        
     } else {
-        // If already visited or loader doesn't exist, skip loader setup
-        if (loader) {
-            loader.style.display = "none";
-        }
+        if (loader) loader.style.display = "none";
         mainContent.style.display = "block";
     }
 
-    // NOTE: The previous scrollToHome() and ensureHomeHash() calls are removed/replaced.
+    // 🛰️ Auto get location on first load
+    getUserLocation();
 });
 
 // ==============================
 // GUIDE STEP SCROLL HIGHLIGHT
 // ==============================
 document.addEventListener("DOMContentLoaded", () => {
-  const card = document.querySelector(".stepsCard");
-  const sections = card.querySelectorAll(".step");
-  const navLinks = document.querySelectorAll(".navParts a");
+    const card = document.querySelector(".stepsCard");
+    if (!card) return;
 
-  // Scroll sync with step indicators
-  card.addEventListener("scroll", () => {
-    const scrollTop = card.scrollTop;
+    const sections = card.querySelectorAll(".step");
+    const navLinks = document.querySelectorAll(".navParts a");
 
-    sections.forEach(section => {
-      const top = section.offsetTop;
-      const height = section.offsetHeight;
+    card.addEventListener("scroll", () => {
+        const scrollTop = card.scrollTop;
 
-      if (scrollTop >= top - height / 3 && scrollTop < top + height - height / 3) {
-        const id = section.getAttribute("id");
+        sections.forEach(section => {
+            const top = section.offsetTop;
+            const height = section.offsetHeight;
 
-        navLinks.forEach(link => {
-          link.classList.remove("active");
-          if (link.getAttribute("href") === `#${id}`) {
-            link.classList.add("active");
-          }
+            if (scrollTop >= top - height / 3 && scrollTop < top + height - height / 3) {
+                const id = section.getAttribute("id");
+                navLinks.forEach(link => {
+                    link.classList.remove("active");
+                    if (link.getAttribute("href") === `#${id}`) {
+                        link.classList.add("active");
+                    }
+                });
+            }
         });
-      }
     });
-  });
 
-  // Smooth scroll to section inside stepsCard
-  navLinks.forEach(link => {
-    link.addEventListener("click", e => {
-      e.preventDefault();
-      const targetId = link.getAttribute("href").substring(1);
-      const targetSection = document.getElementById(targetId);
+    navLinks.forEach(link => {
+        link.addEventListener("click", e => {
+            e.preventDefault();
+            const targetId = link.getAttribute("href").substring(1);
+            const targetSection = document.getElementById(targetId);
 
-      if (targetSection) {
-        const scrollTo = targetSection.offsetTop - (card.clientHeight / 2) + (targetSection.offsetHeight / 2);
-        card.scrollTo({ top: scrollTo, behavior: "smooth" });
-      }
+            if (targetSection) {
+                const scrollTo = targetSection.offsetTop - (card.clientHeight / 2) + (targetSection.offsetHeight / 2);
+                card.scrollTo({ top: scrollTo, behavior: "smooth" });
+            }
+        });
     });
-  });
 });
-
 
 // ==============================
 // AOS (Animate On Scroll) INIT
 // ==============================
 AOS.init({
-  duration: 800,
-  offset: 120,
-  easing: 'ease-in-out',
-  once: false,
-  mirror: true
+    duration: 800,
+    offset: 120,
+    easing: 'ease-in-out',
+    once: false,
+    mirror: true
 });

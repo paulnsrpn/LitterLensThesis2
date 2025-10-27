@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 11
+names: ['Biological Debris', 'Electronic Waste', 'Fabric and Textiles', 'Foamed Plastic', 'Glass and Ceramic', 'Metal', 'Organic Debris', 'Paper and Cardboard', 'Plastic', 'Rubber', 'Sanitary Waste']
+
+roboflow:
+  workspace: eman-isqsi
+  project: litterlens-zze2e
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/eman-isqsi/litterlens-zze2e/dataset/1

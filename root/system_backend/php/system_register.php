@@ -32,7 +32,7 @@ if (strlen($password) < 8) {
 }
 
 // === Debug log ===
-$debug_log = __DIR__ . '/debug_register.txt';
+$debug_log = __DIR__ . '/debugfiles/debug_register.txt';
 file_put_contents($debug_log, "==== Registration Attempt ====\n", FILE_APPEND);
 file_put_contents($debug_log, "Time: " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
 file_put_contents($debug_log, "Full Name: $fullname | Email: $email\n", FILE_APPEND);
@@ -83,7 +83,7 @@ $admin = $result[0] ?? null;
 
 if (!$admin) {
     $_SESSION['register_errors'] = ["Failed to create account. Please try again."];
-    file_put_contents(__DIR__.'/debug_register_hash.txt', $password_hash.PHP_EOL, FILE_APPEND);
+    file_put_contents(__DIR__.'/debugfiles/debug_register_hash.txt', $password_hash.PHP_EOL, FILE_APPEND);
     redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_register.php');
 }
 

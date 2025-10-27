@@ -1,1 +1,0 @@
-or(admin_name.ilike.alentajan_jervie%40plpasig.edu.ph,email.ilike.alentajan_jervie%40plpasig.edu.ph)

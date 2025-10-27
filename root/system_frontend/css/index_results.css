@@ -111,7 +111,7 @@
   align-items: flex-end;
   align-content: bottom;
   justify-content: bottom;
-  gap: 2rem;
+  gap: 7px;
 }
 
 .r-header h1 {
@@ -120,7 +120,7 @@
   margin: 0;
 }
 
-.threshold-dropdown {
+.threshold-dropdown, .label-mode-dropdown, .label-opacity-dropdown {
   background-color: white;
   border: 2px solid #1d4d1d;
   color: #1d4d1d;
@@ -135,12 +135,12 @@
   margin-bottom: 12px;
 }
 
-.threshold-dropdown:hover {
+.threshold-dropdown, .label-mode-dropdown, .label-opacity-dropdown :hover {
   background-color: #1d4d1d;
   color: white;
 }
 
-.threshold-dropdown:focus {
+.threshold-dropdown,  .label-mode-dropdown, .label-opacity-dropdown :focus {
   outline: none;
   box-shadow: 0 0 5px rgba(52, 99, 71, 0.4);
 }
@@ -153,29 +153,38 @@
 }
 
 .r-cards .img-container {
-  width: 700px;
-  height: 300px;
+  width: 900px;
+  height: 650px;
   border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   padding: 10px;
   flex-direction: column;
 }
 
+
 .img-container {
+  overflow: hidden;  
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  max-height: 80vh;
 }
 
 .main-img {
-  width: 250px;
-  height: 250px;
+  width: 500px;
+  height: 500px;
+  transform-origin: center center; /* ensures zoom happens from center */
+  cursor: grab;
   object-fit: contain; /* or 'cover' depending on what you want */
   border-radius: 10px;
   display: block;
 }
+
+
+
 
 .nav-btn {
   position: absolute;
@@ -242,19 +251,11 @@
   gap: 15px;
 }
 
-.img-container {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-
 
 .r-buttons {
   display: flex;
   flex-direction: row;
-  position: absolute;
+  position: static;
   left: 20%;
   gap: 420px;
   bottom: 190px;
@@ -274,6 +275,12 @@
   margin: 0;
   width: 200px;
   height: 35px;
+  cursor:pointer;
+}
+
+.upload-button{
+  position: relative;
+  left: 100px;
 }
 
 
@@ -281,6 +288,8 @@
 /*                                            TOGGLE SWITCH                                               */
  .switch {
   position: absolute;
+  margin-top: 10px;
+  margin-right: 10px;
   display: inline-block;
   width: 50px;
   height: 25px;
@@ -401,10 +410,24 @@ th {
 }
 
 .accuracy {
-  font-weight: bold;
-  color: #1d4d1d;
-  margin: 15px 0;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 8px;
+  transition: color 0.3s ease;
 }
+
+.accuracy-good {
+  color: #28a745; /* green */
+}
+
+.accuracy-medium {
+  color: #ffc107; /* yellow */
+}
+
+.accuracy-low {
+  color: #dc3545; /* red */
+}
+
 
 .divider {
   border-top: 2px dashed #333;
@@ -496,9 +519,40 @@ th {
   left: 0;
   pointer-events: none;
 }
-.img-container {
-  position: relative;
-  display: inline-block;
+
+.zoom-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  font-family: Arial, sans-serif;
+}
+
+.zoom-controls button {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: background 0.2s;
+}
+
+.zoom-controls button:hover {
+  background: rgba(0,0,0,0.05);
+  border-radius: 50%;
+}
+
+#zoom-level {
+  font-size: 14px;
+  min-width: 50px;
+  text-align: center;
 }
 
 

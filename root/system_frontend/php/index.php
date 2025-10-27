@@ -1,10 +1,10 @@
 <?php
 $flaskPort = 5000;
 $flaskHost = "http://127.0.0.1:$flaskPort";
-$pythonAppPath = "C:\\xampp\\htdocs\\LitterLensThesis2\\root\\system_backend\\python\\app.py"; // adjust if needed
-$pythonExePath = "C:\\Programs Files\\Python313\\python.exe"; // ✅ full Python path is safer
+$pythonExePath = "C:\\Program Files\\Python313\\python.exe";
+$pythonAppPath = "C:\\xampp\\htdocs\\LitterLensThesis2\\root\\system_backend\\python\\app.py";
 
-// --- Check if Flask is running ---
+// Check if Flask is already running
 $ch = curl_init($flaskHost);
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -13,32 +13,62 @@ $running = $response !== false;
 curl_close($ch);
 
 if (!$running) {
-    $logPath = __DIR__ . "\\flask_error_log.txt";
-    $command = "start /B \"$pythonExePath\" \"$pythonAppPath\" > \"$logPath\" 2>&1";
+    $logPath = __DIR__ . "\\debugfiles\\flask_error_log.txt";
+
+    // 🚀 Run Flask silently (no CMD popup)
+    $command = "start /b \"\" \"$pythonExePath\" \"$pythonAppPath\" >> \"$logPath\" 2>&1";
     pclose(popen($command, "r"));
-    $debugMessage = "🚀 Flask was not running — started successfully at $flaskHost";
-    $debugStatus = "started";
-} else {
-    $debugMessage = "🟢 Flask is already running on port $flaskPort";
-    $debugStatus = "running";
+
+    sleep(3); // wait for Flask to boot
+
+    // Re-check
+    $ch = curl_init($flaskHost);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    $running = $response !== false;
+    curl_close($ch);
 }
 
-// Save debug message in a file
-file_put_contents(__DIR__ . "/flask_debug_log.txt", date('Y-m-d H:i:s') . " - " . $debugMessage . "\n", FILE_APPEND);
+$debugMessage = $running
+    ? "🟢 Flask is already running on port $flaskPort"
+    : "❌ Flask failed to start — check flask_error_log.txt";
+$debugStatus = $running ? "running" : "error";
+
+file_put_contents(__DIR__ . "/debugfiles/flask_debug_log.txt", date('Y-m-d H:i:s') . " - " . $debugMessage . "\n", FILE_APPEND);
 ?>
 <script>
+
+  document.addEventListener("DOMContentLoaded", () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        console.log(`📍 Latitude: ${latitude}, Longitude: ${longitude}`);
+
+        // 📝 Save to localStorage so result page can access it
+        localStorage.setItem("user_latitude", latitude);
+        localStorage.setItem("user_longitude", longitude);
+      },
+      (error) => {
+        console.error("❌ Geolocation error:", error.message);
+      }
+    );
+  } else {
+    console.warn("⚠️ Geolocation not supported.");
+  }
+  });
+
   (() => {
     const status = "<?php echo $debugStatus; ?>";
     const msg = "<?php echo addslashes($debugMessage); ?>";
-
-    // ✨ Styled console message
-    if (status === "started") {
-      console.log("%c[Flask] " + msg, "color: #1c8c1c; font-weight: bold; background: #e6ffe6; padding: 4px; border-radius: 4px;");
-    } else {
-      console.log("%c[Flask] " + msg, "color: #2e6cff; font-weight: bold; background: #e6ecff; padding: 4px; border-radius: 4px;");
-    }
+    const color = status === "running" ? "#2e6cff" : "#b91c1c";
+    const bg = status === "running" ? "#e6ecff" : "#ffe6e6";
+    console.log(`%c[Flask] ${msg}`, `color:${color}; font-weight:bold; background:${bg}; padding:4px; border-radius:4px;`);
   })();
 </script>
+
 
 
 
@@ -64,8 +94,13 @@ file_put_contents(__DIR__ . "/flask_debug_log.txt", date('Y-m-d H:i:s') . " - " 
  
 </head>
 
+
 <body>
   <!--                                        MAIN PAGE                                   -->
+                                          <!-- Hidden fields if you want to store coordinates -->
+<input type="hidden" id="latField" name="latitude">
+<input type="hidden" id="lonField" name="longitude">
+
   <div class="nav">
     <div class="navbar">
         <a href="../php/index.php">

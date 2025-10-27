@@ -1,4 +1,0 @@
-<?php
-exec('taskkill /F /IM python.exe 2>nul');
-echo "Flask stopped.";
-?>

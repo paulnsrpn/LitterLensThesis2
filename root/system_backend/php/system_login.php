@@ -17,9 +17,9 @@ $encoded = rawurlencode($username_or_email);
 $filter = "or(admin_name.ilike.$encoded,email.ilike.$encoded)";
 
 // Debug filter and result
-file_put_contents(__DIR__.'/debug_filter.txt', $filter.PHP_EOL);
+file_put_contents(__DIR__.'/debugfiles/debug_filter.txt', $filter.PHP_EOL);
 $admins = getRecords('admin', $filter);
-file_put_contents(__DIR__.'/debug_login.txt', print_r($admins, true), FILE_APPEND);
+file_put_contents(__DIR__.'/debugfiles/debug_login.txt', print_r($admins, true), FILE_APPEND);
 
 // ✅ Match the correct account
 $admin = null;

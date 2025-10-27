@@ -1,0 +1,450 @@
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+        )
+
+)
