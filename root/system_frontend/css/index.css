@@ -73,7 +73,21 @@ body.fade-out {
 .navbar a:hover {
   color: #346347;
 }
+.upload-btn a {
+  color: white;           /* make text white */
+  text-decoration: none;  /* remove underline */
+}
 
+.upload-btn {
+  background-color: #007bff; /* example blue background */
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.upload-btn:hover {
+  background-color: #0056b3; /* darker on hover */
+}
 .navbar button {
   background: #141E46;
   color: white;

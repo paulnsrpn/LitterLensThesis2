@@ -1,44 +1,43 @@
 <?php
-$flaskPort = 5000;
-$flaskHost = "http://127.0.0.1:$flaskPort";
-$pythonExePath = "C:\\Program Files\\Python313\\python.exe";
-$pythonAppPath = "C:\\xampp\\htdocs\\LitterLensThesis2\\root\\system_backend\\python\\app.py";
+  $flaskPort = 5000;
+  $flaskHost = "http://127.0.0.1:$flaskPort";
+  $pythonExePath = "C:\\Program Files\\Python313\\python.exe";
+  $pythonAppPath = "C:\\xampp\\htdocs\\LitterLensThesis2\\root\\system_backend\\python\\app.py";
 
-// Check if Flask is already running
-$ch = curl_init($flaskHost);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-$running = $response !== false;
-curl_close($ch);
+  // Check if Flask is already running
+  $ch = curl_init($flaskHost);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  $running = $response !== false;
+  curl_close($ch);
 
-if (!$running) {
-    $logPath = __DIR__ . "\\debugfiles\\flask_error_log.txt";
+  if (!$running) {
+      $logPath = __DIR__ . "\\debugfiles\\flask_error_log.txt";
 
-    // 🚀 Run Flask silently (no CMD popup)
-    $command = "start /b \"\" \"$pythonExePath\" \"$pythonAppPath\" >> \"$logPath\" 2>&1";
-    pclose(popen($command, "r"));
+      // 🚀 Run Flask silently (no CMD popup)
+      $command = "start /b \"\" \"$pythonExePath\" \"$pythonAppPath\" >> \"$logPath\" 2>&1";
+      pclose(popen($command, "r"));
 
-    sleep(3); // wait for Flask to boot
+      sleep(3); // wait for Flask to boot
 
-    // Re-check
-    $ch = curl_init($flaskHost);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    $running = $response !== false;
-    curl_close($ch);
-}
+      // Re-check
+      $ch = curl_init($flaskHost);
+      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      $response = curl_exec($ch);
+      $running = $response !== false;
+      curl_close($ch);
+  }
 
-$debugMessage = $running
-    ? "🟢 Flask is already running on port $flaskPort"
-    : "❌ Flask failed to start — check flask_error_log.txt";
-$debugStatus = $running ? "running" : "error";
+  $debugMessage = $running
+      ? "🟢 Flask is already running on port $flaskPort"
+      : "❌ Flask failed to start — check flask_error_log.txt";
+  $debugStatus = $running ? "running" : "error";
 
-file_put_contents(__DIR__ . "/debugfiles/flask_debug_log.txt", date('Y-m-d H:i:s') . " - " . $debugMessage . "\n", FILE_APPEND);
+  file_put_contents(__DIR__ . "/debugfiles/flask_debug_log.txt", date('Y-m-d H:i:s') . " - " . $debugMessage . "\n", FILE_APPEND);
 ?>
 <script>
-
   document.addEventListener("DOMContentLoaded", () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -70,8 +69,6 @@ file_put_contents(__DIR__ . "/debugfiles/flask_debug_log.txt", date('Y-m-d H:i:s
 </script>
 
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -89,9 +86,6 @@ file_put_contents(__DIR__ . "/debugfiles/flask_debug_log.txt", date('Y-m-d H:i:s
     <link rel="stylesheet" href="../css/index_guidePage.css">
     <link rel="stylesheet" href="../css/index_footer.css">
     <link rel="stylesheet" href="../css/index_contactPage.css">
-
-
- 
 </head>
 
 
@@ -110,7 +104,7 @@ file_put_contents(__DIR__ . "/debugfiles/flask_debug_log.txt", date('Y-m-d H:i:s
           <a href="#"> Home </a>
           <a href="#about-page"> About </a>
           <a href="#contact-page"> Contacts </a>
-          <button> Upload </button>
+          <button class="upload-btn" onclick="location.href='#upload-page'">Upload</button>
           <a href="../php/index_login.php">
             <i class="fa-solid fa-user" id="user-icon"></i>
           </a>

@@ -1,0 +1,219 @@
+
+
+<!-- <script>
+const totalDetectionsEl = document.getElementById('totalDetections');
+const topLitterEl = document.getElementById('topLitter');
+const detectionSpeedEl = document.getElementById('detectionSpeed');
+const cameraStatusEl = document.getElementById('cameraStatus');
+const detectionAccuracyEl = document.getElementById('detectionAccuracy');
+const litterTableBody = document.getElementById('litterTableBody');
+const thresholdSelect = document.getElementById('threshold-select');
+
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+const liveFeed = document.getElementById('liveFeed');
+const timeEl = document.querySelector('.time');
+const statusEl = document.querySelector('.status');
+
+let statsInterval = null;
+let timerInterval = null;
+let startTime = null;
+let streaming = false;
+
+/* 🕒 Format time hh:mm:ss */
+function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${hours}hr ${minutes}mins ${seconds}s`;
+}
+
+/* 🕒 Start timer */
+function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        timeEl.textContent = formatTime(elapsed);
+    }, 1000);
+}
+
+/* 🕒 Stop timer */
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timeEl.textContent = '0hr 0mins 0s';
+}
+
+/* 🔸 Update Status display */
+function setStatus(state, text) {
+    statusEl.className = `status ${state}`;
+    let icon = '';
+    if (state === 'loading') icon = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+    if (state === 'active') icon = '<i class="fa-solid fa-circle-check"></i>';
+    if (state === 'error') icon = '<i class="fa-solid fa-circle-exclamation"></i>';
+    if (state === 'idle') icon = '<i class="fa-solid fa-circle-notch"></i>';
+    statusEl.innerHTML = `${icon} ${text}`;
+}
+
+/* 📊 Update stats UI */
+function updateStatsUI(data) {
+    totalDetectionsEl.textContent = data.total || 0;
+    detectionSpeedEl.textContent = `${data.speed || 0}s/frame`;
+    detectionAccuracyEl.textContent = `${data.accuracy || 0}%`;
+
+    const entries = Object.entries(data.classes || {});
+    if (entries.length > 0) {
+        const sorted = entries.sort((a, b) => b[1] - a[1]);
+        const [topClass, topCount] = sorted[0];
+        const topPercent = ((topCount / data.total) * 100).toFixed(0);
+        topLitterEl.innerHTML = `${topPercent}% <br><em>${topClass}</em>`;
+    } else {
+        topLitterEl.innerHTML = `--`;
+    }
+
+    litterTableBody.innerHTML = '';
+    entries.forEach(([cls, count]) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${cls}</td><td>${count}</td>`;
+        litterTableBody.appendChild(row);
+    });
+
+    cameraStatusEl.textContent = streaming ? 'Active' : 'Idle';
+    cameraStatusEl.classList.toggle('active', streaming);
+}
+
+/* 🧼 Reset stats UI */
+function resetStatsUI() {
+    totalDetectionsEl.textContent = '0';
+    detectionSpeedEl.textContent = '0s/frame';
+    detectionAccuracyEl.textContent = '0%';
+    topLitterEl.innerHTML = '--';
+    litterTableBody.innerHTML = '';
+    cameraStatusEl.textContent = 'Idle';
+    cameraStatusEl.classList.remove('active');
+}
+
+/* 🔁 Start fetching stats */
+function startStatsUpdates() {
+    if (!statsInterval) {
+        statsInterval = setInterval(() => {
+            fetch('http://127.0.0.1:5000/live_stats')
+                .then(res => res.json())
+                .then(data => updateStatsUI(data))
+                .catch(err => {
+                    console.error('Stats error:', err);
+                    setStatus('error', 'Camera Error');
+                });
+        }, 1000);
+    }
+}
+
+/* 🛑 Stop fetching stats */
+function stopStatsUpdates() {
+    clearInterval(statsInterval);
+    statsInterval = null;
+}
+
+/* ▶️ Start camera stream */
+startBtn.addEventListener('click', () => {
+    if (!streaming) {
+        streaming = true;
+        setStatus('loading', 'Starting...');
+
+        // 🆕 Update threshold on server
+        const selectedThreshold = parseFloat(thresholdSelect.value);
+        fetch('http://127.0.0.1:5000/set_threshold', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ threshold: selectedThreshold })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('✅ Threshold updated:', data.threshold);
+
+            // Start the camera stream after setting threshold
+            liveFeed.src = `http://127.0.0.1:5000/live?cb=${Date.now()}`;
+            liveFeed.style.display = 'block';
+            startTimer();
+            startStatsUpdates();
+
+            // fallback if onload doesn't fire
+            setTimeout(() => {
+                if (streaming && statusEl.textContent.includes('Idle')) {
+                    setStatus('active', 'Active');
+                }
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('❌ Failed to update threshold:', err);
+            setStatus('error', 'Camera Error');
+        });
+    }
+});
+
+/* ⏹ Stop camera stream */
+stopBtn.addEventListener('click', () => {
+    if (streaming) {
+        streaming = false;
+        fetch('http://127.0.0.1:5000/stop_camera').catch(() => {});
+        fetch('http://127.0.0.1:5000/reset_stats', { method: 'POST' }).catch(() => {});  // 🆕 reset backend stats too
+        liveFeed.src = '';
+        liveFeed.style.display = 'none';
+        stopTimer();
+        stopStatsUpdates();
+        resetStatsUI();
+        setStatus('idle', 'Idle');
+    }
+});
+
+/* 🟢 When stream loads successfully */
+liveFeed.onload = () => {
+    if (streaming) {
+        setStatus('active', 'Active');
+    }
+};
+
+/* 🔴 When stream fails to load (camera error / disconnected) */
+liveFeed.onerror = () => {
+    setStatus('error', 'Camera Error');
+    stopTimer();
+    stopStatsUpdates();
+    streaming = false;
+    resetStatsUI();  // 🧼 reset also on error
+};
+
+/* 🟡 On initial page load, update stats once */
+fetch('http://127.0.0.1:5000/live_stats')
+    .then(res => res.json())
+    .then(data => updateStatsUI(data))
+    .catch(err => {
+        console.error('Stats error:', err);
+        setStatus('error', 'Camera Error');
+    });
+
+    window.addEventListener('load', () => {
+    fetch('http://127.0.0.1:5000/reset_stats', { method: 'POST' }).catch(() => {});
+});
+
+
+thresholdSelect.addEventListener('change', () => {
+    if (streaming) {
+        const selectedThreshold = parseFloat(thresholdSelect.value);
+        fetch('http://127.0.0.1:5000/set_threshold', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ threshold: selectedThreshold })
+        })
+        .then(res => res.json())
+        .then(data => console.log('✅ Threshold live updated:', data.threshold))
+        .catch(err => console.error('❌ Failed to update threshold:', err));
+    }
+});
+
+</script> -->
+
+
+
+
+

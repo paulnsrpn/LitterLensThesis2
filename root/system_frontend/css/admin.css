@@ -1599,8 +1599,8 @@ input[type="text"]:focus {
   background: #141E46;
   color: #fff;
   font-family: 'Poppins', sans-serif;
-  min-height: 100vh; 
-  height: auto; 
+  min-height: 200vh; 
+  /* height: auto;  */
   overflow-y: auto;
 }
 

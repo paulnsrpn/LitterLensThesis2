@@ -1,0 +1,75 @@
+.cam-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.threshold-select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.cam-controls button {
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#start-btn { background: #28a745; color: white; }
+#stop-btn { background: #dc3545; color: white; }
+#refresh-btn { background: #007bff; color: white; }
+
+.status {
+  font-weight: bold;
+  color: red;
+}
+
+
+.preview-wrapper {
+  position: relative;
+  width: 100%;
+  max-height: 480px;
+  border-radius: 8px;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.noDisplay {
+  position: absolute;
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+}
+
+ #resultImage {
+      margin-top: 20px;
+      display: none;
+    }
+
+.status {
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.status.loading {
+  color: #ff9800; /* orange */
+}
+
+.status.active {
+  color: #4caf50; /* green */
+}
+
+.status.error {
+  color: #f44336; /* red */
+}

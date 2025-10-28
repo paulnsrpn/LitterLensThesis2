@@ -1,73 +1,332 @@
 <?php
 require_once '../../system_backend/php/system_config.php';
 
-// === Require login ===
+// ===============================
+// ✅ LOGIN CHECK
+// ===============================
 if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
     redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
 }
 
 $admin_name = $_SESSION['admin_name'] ?? '';
-
+$debug_logs = [];
 $total_images = 0;
 $total_detections = 0;
-$average_accuracy = 0; // 🆕 New
-$debug_logs = [];
+$average_accuracy = 0.0;
+$recent_activity = [];
 
+
+// ===============================
+// 🛠️ HELPER FUNCTIONS
+// ===============================
+
+/**
+ * 🪵 Log debug messages with timestamp
+ */
 function debugLog(&$logs, $message) {
-    $time = date("H:i:s");
-    $logs[] = "[$time] $message";
+    $logs[] = "[" . date("H:i:s") . "] " . $message;
 }
 
-// === Get total images ===
-$imgCountResponse = supabaseRequest('GET', 'images', null, 'select=count');
-if (is_array($imgCountResponse) && isset($imgCountResponse[0]['count'])) {
-    $total_images = (int)$imgCountResponse[0]['count'];
-    debugLog($debug_logs, "🟢 Total images retrieved: $total_images");
-} else {
-    debugLog($debug_logs, "❌ Failed to retrieve total images. Response: " . json_encode($imgCountResponse));
-}
-
-// === 🆕 Get total quantity of detections (not just detection_id count) ===
-$total_quantity = 0;
-$quantityResponse = supabaseRequest('GET', 'detections', null, 'select=quantity');
-
-if (is_array($quantityResponse)) {
-    foreach ($quantityResponse as $row) {
-        $total_quantity += (int)$row['quantity'];
+/**
+ * 📸 Get total number of images
+ */
+function getTotalImages(&$logs) {
+    $response = supabaseRequest('GET', 'images', null, 'select=count');
+    if (is_array($response) && isset($response[0]['count'])) {
+        debugLog($logs, "🟢 Total images retrieved: {$response[0]['count']}");
+        return (int)$response[0]['count'];
     }
-    $total_detections = $total_quantity; // ✅ Use total quantity instead of row count
-    debugLog($debug_logs, "🟢 Total quantity of detections retrieved: $total_detections");
-} else {
-    debugLog($debug_logs, "❌ Failed to retrieve detection quantities. Response: " . json_encode($quantityResponse));
+    debugLog($logs, "❌ Failed to retrieve total images. Response: " . json_encode($response));
+    return 0;
 }
 
-// === 🆕 Calculate average accuracy ===
-if ($total_detections > 0) {
-    // Get all confidence levels
-    $accuracyResponse = supabaseRequest('GET', 'detections', null, 'select=confidence_lvl');
-    if (is_array($accuracyResponse)) {
-        $total_confidence = 0;
-        $count_confidence = 0;
-
-        foreach ($accuracyResponse as $row) {
-            $total_confidence += (float)$row['confidence_lvl'];
-            $count_confidence++;
-        }
-
-        if ($count_confidence > 0) {
-            $average_accuracy = $total_confidence / $count_confidence;
-            debugLog($debug_logs, "🟢 Average accuracy calculated: $average_accuracy%");
-        } else {
-            debugLog($debug_logs, "ℹ️ No confidence levels found, accuracy is 0%");
-        }
-    } else {
-        debugLog($debug_logs, "❌ Failed to retrieve confidence levels for accuracy.");
+/**
+ * 📊 Get total detections (sum of quantity)
+ */
+function getTotalDetections(&$logs) {
+    $response = supabaseRequest('GET', 'detections', null, 'select=quantity');
+    if (!is_array($response)) {
+        debugLog($logs, "❌ Failed to retrieve detections. Response: " . json_encode($response));
+        return 0;
     }
-} else {
-    debugLog($debug_logs, "ℹ️ No detections yet, accuracy is 0%");
+
+    $total = 0;
+    foreach ($response as $row) {
+        $total += (int)$row['quantity'];
+    }
+
+    debugLog($logs, "🟢 Total detections quantity retrieved: $total");
+    return $total;
 }
 
+/**
+ * 📈 Get average accuracy (mean of confidence_lvl)
+ */
+function getAverageAccuracy(&$logs) {
+    $response = supabaseRequest('GET', 'detections', null, 'select=confidence_lvl');
+    if (!is_array($response) || count($response) === 0) {
+        debugLog($logs, "ℹ️ No confidence levels found, accuracy is 0%");
+        return 0.0;
+    }
+
+    $total_confidence = 0;
+    foreach ($response as $row) {
+        $total_confidence += (float)$row['confidence_lvl'];
+    }
+
+    $average = $total_confidence / count($response);
+    debugLog($logs, "🟢 Average accuracy calculated: {$average}%");
+    return $average;
+}
+
+/**
+ * 🖼 Generate full URL of image from Supabase bucket
+ */
+function getImageUrl($filename) {
+    $baseUrl = 'https://ksbgdgqpdoxabdefjsin.storage.supabase.co/storage/v1/object/public/images/';
+    return $baseUrl . rawurlencode($filename);
+}
+/**
+ * 🕒 Get recent activity (last 7 detections with image)
+ */
+function getRecentActivity(&$logs, $timeFilter = 'today') {
+    $today = date('Y-m-d');
+    $filter = '';
+
+    switch ($timeFilter) {
+        case 'today':
+            $filter = '&date=eq.' . $today;
+            break;
+        case 'last7':
+            $start = date('Y-m-d', strtotime('-7 days'));
+            $filter = '&date=gte.' . $start;
+            break;
+    }
+
+    $response = supabaseRequest(
+        'GET',
+        'detections',
+        null,
+        'select=detection_id,date,detection_time,image_id,images:image_id(image_id,imagefile_name)&order=date.desc,detection_time.desc&limit=100' . $filter
+    );
+
+    if (!is_array($response)) {
+        debugLog($logs, "❌ Failed to retrieve recent activity. Response: " . json_encode($response));
+        return [];
+    }
+
+    // 🧮 Keep only the latest detection per image_id
+    $unique = [];
+    foreach ($response as $row) {
+        $imgId = $row['images']['image_id'] ?? null;
+        if ($imgId && !isset($unique[$imgId])) {
+            $unique[$imgId] = [
+                'date' => $row['date'],
+                'time' => $row['detection_time'],
+                'filename' => $row['images']['imagefile_name'],
+                'image_id' => $imgId,
+                'detection_id' => $row['detection_id']
+            ];
+        }
+    }
+
+    // ⬆️ Sort by date & time
+    usort($unique, function ($a, $b) {
+        $aDT = strtotime($a['date'] . ' ' . $a['time']);
+        $bDT = strtotime($b['date'] . ' ' . $b['time']);
+        return $bDT <=> $aDT;
+    });
+
+    $cleaned = array_slice(array_values($unique), 0, 7);
+    debugLog($logs, "🟢 Unique recent activity retrieved (filter '$timeFilter'): " . count($cleaned) . " rows");
+    return $cleaned;
+}
+
+
+/**
+ * 📊 Get litter detection counts per type
+ */
+function getLitterSummary(&$logs) {
+    $response = supabaseRequest(
+        'GET',
+        'detections',
+        null,
+        'select=quantity,litter_types:littertype_id(littertype_name)'
+    );
+
+    if (!is_array($response)) {
+        debugLog($logs, "❌ Failed to retrieve litter summary. Response: " . json_encode($response));
+        return [];
+    }
+
+    $summary = [];
+    foreach ($response as $row) {
+        $type = $row['litter_types']['littertype_name'] ?? 'Unknown';
+        $qty = (int) $row['quantity'];
+        if (!isset($summary[$type])) {
+            $summary[$type] = 0;
+        }
+        $summary[$type] += $qty;
+    }
+
+    debugLog($logs, "🟢 Litter summary retrieved: " . json_encode($summary));
+    return $summary;
+}
+
+/**
+ * 📊 Total detections (sum of quantity)
+ */
+function getTotalDetectionsQty(&$logs) {
+    $response = supabaseRequest('GET', 'detections', null, 'select=quantity');
+    if (!is_array($response)) return 0;
+
+    $total = 0;
+    foreach ($response as $row) {
+        $total += (int)$row['quantity'];
+    }
+    debugLog($logs, "🟢 Total detections: $total");
+    return $total;
+}
+
+/**
+ * 👥 Total users
+ */
+function getTotalUsers(&$logs) {
+    $response = supabaseRequest('GET', 'users', null, 'select=count');
+    if (is_array($response) && isset($response[0]['count'])) {
+        debugLog($logs, "🟢 Total users: {$response[0]['count']}");
+        return (int)$response[0]['count'];
+    }
+    return 0;
+}
+
+/**
+ * 📝 Reports Today (detections created today)
+ */
+function getReportsToday(&$logs) {
+    $today = date('Y-m-d');
+    $response = supabaseRequest('GET', 'detections', null, 'select=count&date=eq.' . $today);
+    if (is_array($response) && isset($response[0]['count'])) {
+        debugLog($logs, "🟢 Reports today: {$response[0]['count']}");
+        return (int)$response[0]['count'];
+    }
+    return 0;
+}
+
+/**
+ * 📈 Average Accuracy (mean confidence_lvl)
+ */
+function getAverageAccuracyValue(&$logs) {
+    $response = supabaseRequest('GET', 'detections', null, 'select=confidence_lvl');
+    if (!is_array($response) || count($response) === 0) return 0;
+
+    $total = 0;
+    foreach ($response as $row) {
+        $total += (float)$row['confidence_lvl'];
+    }
+    $avg = $total / count($response);
+    debugLog($logs, "🟢 Average accuracy: $avg%");
+    return $avg;
+}
+
+
+/**
+ * 📈 Get litter detection trends grouped by month and litter type
+ */
+function getLitterTrends(&$logs) {
+    // Get all detections with litter type
+    $response = supabaseRequest(
+        'GET',
+        'detections',
+        null,
+        'select=quantity,date,litter_types:littertype_id(littertype_name)'
+    );
+
+    if (!is_array($response)) {
+        debugLog($logs, "❌ Failed to retrieve trends. Response: " . json_encode($response));
+        return [];
+    }
+
+    $trends = [];
+
+    foreach ($response as $row) {
+        $type = $row['litter_types']['littertype_name'] ?? 'Unknown';
+        $month = date('M Y', strtotime($row['date']));
+        $qty = (int) $row['quantity'];
+
+        if (!isset($trends[$type])) $trends[$type] = [];
+        if (!isset($trends[$type][$month])) $trends[$type][$month] = 0;
+
+        $trends[$type][$month] += $qty;
+    }
+
+    debugLog($logs, "🟢 Trends data retrieved: " . json_encode($trends));
+    return $trends;
+}
+
+/**
+ * 👥 Fetch all users from Supabase
+ */
+// $logs = supabaseRequest(
+//     'GET',
+//     'activity_logs',
+//     null,
+//     'select=log_id,action,timestamp,admin:admin_id(admin_name,email)&order=timestamp.desc'
+// );
+
+
+// ===============================
+// 🚀 EXECUTION
+// ===============================
+$litter_trends = getLitterTrends($debug_logs);
+
+$all_months = [];
+foreach ($litter_trends as $type => $months) {
+    foreach (array_keys($months) as $m) {
+        if (!in_array($m, $all_months)) $all_months[] = $m;
+    }
+}
+sort($all_months); // chronological order
+
+$trend_labels = json_encode($all_months);
+$trend_data = [];
+
+foreach ($litter_trends as $type => $months) {
+    $row = [
+        'label' => $type,
+        'data' => [],
+    ];
+    foreach ($all_months as $m) {
+        $row['data'][] = $months[$m] ?? 0;
+    }
+    $trend_data[] = $row;
+}
+
+$trend_data_json = json_encode($trend_data);
+
+
+
+
+
+
+
+
+$total_images = getTotalImages($debug_logs);
+$total_detections = getTotalDetections($debug_logs);
+$average_accuracy = $total_detections > 0 ? getAverageAccuracy($debug_logs) : 0.0;
 $debug_json = json_encode($debug_logs);
+$timeFilter = $_GET['time_filter'] ?? 'today';
+$recent_activity = getRecentActivity($debug_logs, $timeFilter);
+$litter_summary = getLitterSummary($debug_logs);
+$litter_labels = json_encode(array_keys($litter_summary));
+$litter_data = json_encode(array_values($litter_summary));
+$total_detections_summary = getTotalDetectionsQty($debug_logs);
+$total_users_summary = getTotalUsers($debug_logs);
+$reports_today_summary = getReportsToday($debug_logs);
+$accuracy_summary = getAverageAccuracyValue($debug_logs);
+// $users_list = getUsersList($debug_logs);
+
+
 ?>
 
 
@@ -89,7 +348,7 @@ $debug_json = json_encode($debug_logs);
   box-shadow:0 0 8px rgba(0,0,0,0.4);">
   <strong>🐞 Debugger Panel</strong>
   <hr>
-</div>
+</div> 
 
 <script>
   const phpDebugLogs = <?= $debug_json ?>;
@@ -108,7 +367,6 @@ $debug_json = json_encode($debug_logs);
 
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -119,10 +377,12 @@ $debug_json = json_encode($debug_logs);
   <title>Admin Dashboard</title>
 
   <link rel="stylesheet" href="../css/admin.css">>
+  <link rel="stylesheet" href="../css/camera.css">>  
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -137,14 +397,14 @@ $debug_json = json_encode($debug_logs);
     <div class="a-nav">
         <div class="a-header">
             <img src="../imgs/a-logo.png" alt="LitterLens logo">
-            <p><?php echo htmlspecialchars($admin_name); ?></p>
+            <p>Admin</p>
         </div>
 
         <div class="a-menu">
             <a class="tab-link active" data-tab="dashboard">Dashboard</a>
             <a class="tab-link" data-tab="image">Image and Detection</a>
             <a class="tab-link" data-tab="analytics">Analytics</a>
-            <a class="tab-link" data-tab="users">Users</a>
+            <a class="tab-link" data-tab="users">Team</a>
             <a class="tab-link" data-tab="logs">Activity Logs</a>
             <a class="tab-link" data-tab="realtime">Real-Time Detection</a>
 
@@ -160,109 +420,114 @@ $debug_json = json_encode($debug_logs);
     <div class="admin-button">
         <span class="admin-circle"></span>
         <span class="admin-divider"></span>
-        <span class="admin-label">Admin</span>
+        <span class="admin-label">
+            <p><?php echo htmlspecialchars($admin_name); ?></p>
+        </span>
     </div>
 
 
     <!--                                            DASHBOARD SECTION                                     -->
     <!-- DASHBOARD SECTION -->
-    <div id="dashboard" class="tab-content active">
-        <div class="dashboard-container">
+<div id="dashboard" class="tab-content active">
+    <div class="dashboard-container">
 
-            <!-- Top Stats -->
-            <div class="dashboard-stats">
-                    <div class="stat-card">
-                    <h3>Images analyzed</h3>
-                    <p><?= number_format($total_images) ?></p>
-                    </div>
-
-                    <div class="stat-card">
-                    <h3>Litter Detected</h3>
-                    <p><?= number_format($total_detections) ?></p>
-                    </div>
-
-                    <div class="stat-card">
-                    <h3>Accuracy</h3>
-                    <p><?= number_format($average_accuracy, 2) ?>%</p>
-                    </div>
+        <!-- Top Stats -->
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Images analyzed</h3>
+                <p><?= number_format($total_images) ?></p>
             </div>
 
-            <!-- Charts -->
-            <div class="dashboard-charts">
-                <div class="chart-card">
-                    <h3>Litter Trends</h3>
-                    <canvas id="trendChartDash"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h3>Litter Hotspots</h3>
-                    <canvas id="hotspotChartDash"></canvas>
-                </div>
+            <div class="stat-card">
+                <h3>Litter Detected</h3>
+                <p><?= number_format($total_detections) ?></p>
             </div>
 
-            <!-- Recent Activity -->
-            <div class="dashboard-activity">
-                <h3>Recent Activity</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Image</th>
-                            <th>Action</th>
-                            <th>Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>September 1</td>
-                            <td>Thumbnail</td>
-                            <td>New Upload</td>
-                            <td><a href="#">View Analytics</a></td>
-                        </tr>
-                        <tr>
-                            <td>September 5</td>
-                            <td>Thumbnail</td>
-                            <td>New Upload</td>
-                            <td><a href="#">View Analytics</a></td>
-                        </tr>
-                        <tr>
-                            <td>September 17</td>
-                            <td>Thumbnail</td>
-                            <td>New Upload</td>
-                            <td><a href="#">View Analytics</a></td>
-                        </tr>
-                        <tr>
-                            <td>September 29</td>
-                            <td>Thumbnail</td>
-                            <td>New Upload</td>
-                            <td><a href="#">View Analytics</a></td>
-                        </tr>
-                        <tr>
-                            <td>October 5</td>
-                            <td>Thumbnail</td>
-                            <td>New Upload</td>
-                            <td><a href="#">View Analytics</a></td>
-                        </tr>
-                        <tr>
-                            <td>October 19</td>
-                            <td>Thumbnail</td>
-                            <td>New Upload</td>
-                            <td><a href="#">View Analytics</a></td>
-                        </tr>
-                        <tr>
-                            <td>October 30</td>
-                            <td>Thumbnail</td>
-                            <td>New Upload</td>
-                            <td><a href="#">View Analytics</a></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="stat-card">
+                <h3>Accuracy</h3>
+                <p><?= number_format($average_accuracy, 2) ?>%</p>
             </div>
-
         </div>
-    </div>
+
+        <!-- Charts -->
+        <div class="dashboard-charts">
+            <div class="chart-card">
+                <h3>Litter Trends</h3>
+                <canvas id="trendChartDash"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Litter Hotspots</h3>
+                <canvas id="hotspotChartDash"></canvas>
+            </div>
+        </div>
+
+        <!-- 🕒 Recent Activity Table -->
+        <div class="filter-bar" style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <h3>Recent Activity</h3>
+            <form method="GET" style="display: flex; gap: 10px;">
+                <select name="time_filter" onchange="this.form.submit()">
+                    <option value="today" <?= ($_GET['time_filter'] ?? 'today') == 'today' ? 'selected' : '' ?>>Today</option>
+                    <option value="last7" <?= ($_GET['time_filter'] ?? '') == 'last7' ? 'selected' : '' ?>>Last 7 Days</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="dashboard-activity">
+            <h3>Recent Activity</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Image</th>
+                        <th>Action</th>
+                        <!-- <th>Details</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                <?php if (!empty($recent_activity)): ?>
+                    <?php foreach ($recent_activity as $row): ?>
+                        <tr>
+                            <td>
+                                <?= date("F j, Y", strtotime($row['date'])) ?><br>
+                                <small><?= date("g:i A", strtotime($row['time'])) ?></small>
+                            </td>
+                            <td>
+                                <img src="<?= getImageUrl($row['filename']) ?>" 
+                                     alt="Thumbnail" width="60" style="border-radius: 8px;">
+                            </td>
+                            <td>New Detection</td>
+                            <td>
+                                <!-- <a href="#"
+                                     class="analytics-btn"
+                                     data-litter="<?= htmlspecialchars($row['litterType'] ?? 'N/A') ?>"
+                                     data-quantity="<?= htmlspecialchars($row['quantity'] ?? '0') ?>">
+                                    View Analytics
+                                </a> -->
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr><td colspan="4" style="text-align:center;">No recent activity</td></tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+    </div> <!-- end of .dashboard-container -->
+</div> <!-- end of #dashboard -->
 
 
-    <!--                                            IMAGE AND DETECTION SECTION                                     -->
+
+
+
+
+
+
+
+
+
+
+            <!--                                            IMAGE AND DETECTION SECTION                                     -->
     <div id="image" class="tab-content image-detection">
         <!-- UPLOAD SECTION -->
         <div class="upload-card">
@@ -316,213 +581,118 @@ $debug_json = json_encode($debug_logs);
         </div>
     </div>
 
-    <!--                                            ANALYTICS SECTION                                     -->
-    <section id="analytics" class="tab-content">
-        <h2 class="a-title">Analytics Overview</h2>
 
-        <!-- KPI Cards -->
-        <div class="a-overview">
-            <div class="a-card">
-                <h3>Total Detections</h3>
-                <div class="a-value">1,000</div>
-            </div>
-            <div class="a-card">
-                <h3>Users</h3>
-                <div class="a-value">25</div>
-            </div>
-            <div class="a-card">
-                <h3>Reports Today</h3>
-                <div class="a-value">26</div>
-            </div>
-            <div class="a-card">
-                <h3>Accuracy</h3>
-                <div class="a-value">92%</div>
-            </div>
+
+
+<!--                                            ANALYTICS SECTION                                     -->
+<section id="analytics" class="tab-content">
+    <h2 class="a-title">Analytics Overview</h2>
+
+    <!-- KPI Cards -->
+    <div class="a-overview">
+        <div class="a-card">
+            <h3>Total Detections</h3>
+            <div class="a-value"><?= number_format($total_detections_summary) ?></div>
         </div>
-
-        <!-- Charts -->
-        <div class="a-grid">
-            <!-- Pie Chart -->
-            <div class="a-box">
-                <h3>Detections by Category</h3>
-                <div class="chart-container">
-                    <canvas id="pieChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Map -->
-            <div class="a-box">
-                <h3>Geospatial Mapping</h3>
-                <div id="a-map"></div>
-            </div>
-
-            <!-- Line Chart -->
-            <div class="a-box" style="grid-column: span 2;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3>Litter Trends</h3>
-                    <button class="a-dropdown">Monthly ⟳</button>
-                </div>
-                <div class="chart-container">
-                    <canvas id="lineChart"></canvas>
-                </div>
-            </div>
+        <div class="a-card">
+            <h3>Users</h3>
+            <div class="a-value"><?= number_format($total_users_summary) ?></div>
         </div>
-    </section>
-
-
-
-    <!--                                            USER SECTION                                   -->
-    <!-- Header -->
-    <div id="users" class="tab-content">
-        <div class="user-header">
-            <h2>The Team</h2>
-
-            <div class="user-controls">
-                <button class="add-member-btn" onclick="window.location.href='../php/index_register.php'">
-                <i class="fa-solid fa-plus"></i> Add Member
-                </button>
-
-                <div class="search-wrapper">
-                    <input type="text" placeholder="Search users..." class="user-search">
-                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                </div>
-            </div>
-
+        <div class="a-card">
+            <h3>Reports Today</h3>
+            <div class="a-value"><?= number_format($reports_today_summary) ?></div>
         </div>
-
-
-        <!-- User Grid -->
-        <div class="user-grid">
-
-            <div class="user-card">
-                <div class="user-menu">
-                    <button class="menu-btn">⋮</button>
-                    <div class="menu-options">
-                        <button>View</button>
-                        <button>Edit</button>
-                        <button class="danger">Delete</button>
-                    </div>
-                </div>
-
-                <img src="../imgs/avatar2.jpg" alt="User Avatar" class="user-avatar">
-                <h3>Jervie Alentajan</h3>
-                <p>jervie@gmail.com</p>
-                <span class="role">User</span>
-
-                <div class="user-contact">
-                    <button class="contact-btn email-btn">
-                        <i class="fa-solid fa-envelope"></i> Email
-                    </button>
-                    <button class="contact-btn call-btn">
-                        <i class="fa-solid fa-phone"></i> Call
-                    </button>
-                </div>
-            </div>
-
-            <div class="user-card">
-                <div class="user-menu">
-                    <button class="menu-btn">⋮</button>
-                    <div class="menu-options">
-                        <button>View</button>
-                        <button>Edit</button>
-                        <button class="danger">Delete</button>
-                    </div>
-                </div>
-
-                <img src="../imgs/avatar1.jpg" alt="User Avatar" class="user-avatar">
-                <h3>Vico Sotto</h3>
-                <p>sotto_vico@plpasig.edu.ph</p>
-                <span class="role">Admin</span>
-
-                <div class="user-contact">
-                    <button class="contact-btn email-btn">
-                        <i class="fa-solid fa-envelope"></i> Email
-                    </button>
-                    <button class="contact-btn call-btn">
-                        <i class="fa-solid fa-phone"></i> Call
-                    </button>
-                </div>
-            </div>
-
-            <div class="user-card">
-                <div class="user-menu">
-                    <button class="menu-btn">⋮</button>
-                    <div class="menu-options">
-                        <button>View</button>
-                        <button>Edit</button>
-                        <button class="danger">Delete</button>
-                    </div>
-                </div>
-
-                <img src="../imgs/avatar3.jpg" alt="User Avatar" class="user-avatar">
-                <h3>Mark Sison</h3>
-                <p>mars@gmail.com</p>
-                <span class="role">Admin</span>
-
-                <div class="user-contact">
-                    <button class="contact-btn email-btn">
-                        <i class="fa-solid fa-envelope"></i> Email
-                    </button>
-                    <button class="contact-btn call-btn">
-                        <i class="fa-solid fa-phone"></i> Call
-                    </button>
-                </div>
-            </div>
-
-            <div class="user-card">
-                <div class="user-menu">
-                    <button class="menu-btn">⋮</button>
-                    <div class="menu-options">
-                        <button>View</button>
-                        <button>Edit</button>
-                        <button class="danger">Delete</button>
-                    </div>
-                </div>
-
-                <img src="../imgs/avatar4.jpg" alt="User Avatar" class="user-avatar">
-                <h3>Emanuel Florida</h3>
-                <p>eman@gmail.com</p>
-                <span class="role">Admin</span>
-
-                <div class="user-contact">
-                    <button class="contact-btn email-btn">
-                        <i class="fa-solid fa-envelope"></i> Email
-                    </button>
-                    <button class="contact-btn call-btn">
-                        <i class="fa-solid fa-phone"></i> Call
-                    </button>
-                </div>
-            </div>
-
-            <div class="user-card">
-                <div class="user-menu">
-                    <button class="menu-btn">⋮</button>
-                    <div class="menu-options">
-                        <button>View</button>
-                        <button>Edit</button>
-                        <button class="danger">Delete</button>
-                    </div>
-                </div>
-
-                <img src="../imgs/avatar5.jpg" alt="User Avatar" class="user-avatar">
-                <h3>Pauline Serapion</h3>
-                <p>pauln@gmail.com</p>
-                <span class="role">Admin</span>
-
-                <div class="user-contact">
-                    <button class="contact-btn email-btn">
-                        <i class="fa-solid fa-envelope"></i> Email
-                    </button>
-                    <button class="contact-btn call-btn">
-                        <i class="fa-solid fa-phone"></i> Call
-                    </button>
-                </div>
-            </div>
-
-
+        <div class="a-card">
+            <h3>Accuracy</h3>
+            <div class="a-value"><?= number_format($accuracy_summary, 2) ?>%</div>
         </div>
-
     </div>
+
+    <!-- Charts -->
+    <div class="a-grid">
+        <!-- Pie Chart -->
+        <div class="a-box">
+            <h3>Detections by Category</h3>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Map -->
+        <div class="a-box">
+            <h3>Geospatial Mapping</h3>
+            <div id="a-map"></div>
+        </div>
+
+        <!-- Line Chart -->
+        <div class="a-box" style="grid-column: span 2;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Litter Trends</h3>
+                <button class="a-dropdown">Monthly ⟳</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!--                                            USER SECTION                                   -->
+ <div id="users" class="tab-content">
+    <div class="user-header">
+        <h2>The Team</h2>
+
+        <div class="user-controls">
+            <button class="add-member-btn" onclick="window.location.href='../php/index_register.php'">
+                <i class="fa-solid fa-plus"></i> Add Member
+            </button>
+
+            <div class="search-wrapper">
+                <input type="text" placeholder="Search users..." class="user-search">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="user-grid">
+        <?php if (!empty($users_list)): ?>
+            <?php foreach ($users_list as $user): ?>
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    Default avatar used since avatar_url is not in the table 
+                    <img src="../imgs/default-avatar.png" alt="User Avatar" class="user-avatar">
+
+                    <h3><?= htmlspecialchars($user['name']) ?></h3>
+                    <p><?= htmlspecialchars($user['email']) ?></p>
+                    <span class="role"><?= htmlspecialchars($user['role']) ?></span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn" onclick="window.location='mailto:<?= htmlspecialchars($user['email']) ?>'">
+                            <i class="fa-solid fa-envelope"></i> Email
+                        </button>
+                        <button class="contact-btn call-btn">
+                            <i class="fa-solid fa-phone"></i> Call
+                        </button>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p style="text-align:center; width:100%; margin-top: 20px;">No users found.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+
 
     <!--                                            LOGS SECTION                                   -->
 
@@ -742,61 +912,76 @@ $debug_json = json_encode($debug_logs);
         <div class="realtime-header">
             <h2 class="r-title">Real-Time Detection</h2>
             <p>Monitor Live Litter Detection</p>
-        </div>
-        <div class="realtime-content">
-            <div class="realtime-upload">
-                <div class="cam-container">
-                    <h2>Live Feed: Sumilang Bridge</h2>
-                    <div class="camera-header">
-                        <div class="location-details">
-                            <h3>📍 Location Details</h3>
-                            <p>Latitude: <span id="latitude">--</span></p>
-                            <p>Longitude: <span id="longitude">--</span></p>
-                        </div>
-                        <div class="cam-controls">
-                            <button id="start-btn"><i class="fa-solid fa-play"></i> Start</button>
-                            <button id="stop-btn"><i class="fa-solid fa-stop"></i> Stop</button>
-                            <button id="refresh-btn"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
-                        </div>
-                    </div>
-                    <img src="" alt="Live Camera Feed" id="liveFeed">
-                    <div class="detection-status">
-                        <p>Time: <span class="time">1hr 10mins 30s</span></p>
-                        <p>Status: <span class="status">Active</span></p>
-                    </div>
-                </div>
-                <p class="realtime-footer">
-                    Real-Time Detection powered by <br>
-                    <span>LitterLens AI Model v1</span>
-                </p>
             </div>
-
-            <div class="stats-container">
-                <div class="stats-card">
-                    <h3>Detection Stats</h3>
-                    <div class="stats-item">
-                        <p class="label">Total Detections</p>
-                        <p class="value">9,549</p>
+                <div class="realtime-content">
+                    <div class="realtime-upload">
+                        <div class="cam-container">
+                            <h2>Live Feed:</h2>
+                                    <select id="camera-select">
+                                        
+                                        <option value="local" selected>Local Camera</option>
+                                        <!-- <option value="">IP Camera 1</option> -->
+                                    </select>
+                            <div class="camera-header">
+                                <div class="location-details">
+                                    <h3>📍 Location Details</h3>
+                                    <p>Latitude: <span id="latitude">--</span></p>
+                                    <p>Longitude: <span id="longitude">--</span></p>
+                                </div>
+                                <div class="cam-controls">
+                                    <select id="threshold-select">  
+                                          <option value="0.25"> Threshold: 25%</option>
+                                          <option value="0.50"> Threshold: 50%</option>
+                                          <option value="0.75"> Threshold: 75%</option>
+                                          <option value="1.00"> Threshold: 100%</option>
+                                    </select>
+                                    <button id="startBtn"><i class="fa-solid fa-play"></i> Start</button>
+                                    <button id="stopBtn"><i class="fa-solid fa-stop"></i> Stop</button>
+                                    <button id="refresh-btn"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                                </div>
+                            </div>
+                             <img id="liveFeed" alt="Live Detection Preview" style="display:none; max-width:100%; border:2px solid #ccc; border-radius:8px;">
+                            <!-- <video id="liveVideo" autoplay playsinline></video> -->
+                             <!-- <div id="noDisplay">⚠️ No camera detected. Please check your device.</div> -->
+                            <div class="detection-status">
+                                <p>Time: <span class="time">1hr 10mins 30s</span></p>
+                                <!-- <p>Status: 
+                                    <span class="status">
+                                        <i class="fa-solid fa-circle-notch fa-spin"></i> Idle
+                                    </span>
+                                </p> -->
+                            </div>
+                        </div>
+                        <p class="realtime-footer">
+                            Real-Time Detection powered by <br>
+                            <span>LitterLens AI Model v1</span>
+                        </p>
                     </div>
-                    <div class="stats-item">
-                        <p class="label">Top Detected Litter</p>
-                        <p class="value">58% <br><em>Organic Debris</em></p>
-                    </div>
-                    <div class="stats-item">
-                        <p class="label">Detection Speed</p>
-                        <p class="value">1.4s/frame</p>
-                    </div>
-                    <div class="stats-item">
-                        <p class="label">Camera Status</p>
-                        <p class="value active">Active</p>
-                    </div>
-                    <div class="stats-item">
-                        <p class="label">Detection Accuracy</p>
-                        <p class="value">99%</p>
-                    </div>
-                </div>
-
-                <div class="stats-card">
+                    <div class="stats-container">
+                       <div class="stats-card">
+                            <h3>Detection Stats</h3>
+                            <div class="stats-item">
+                                <p class="label">Total Detections</p>
+                                <p class="value" id="totalDetections">0</p>
+                            </div>
+                            <div class="stats-item">
+                                <p class="label">Top Detected Litter</p>
+                                <p class="value" id="topLitter">--</p>
+                            </div>
+                            <div class="stats-item">
+                                <p class="label">Detection Speed</p>
+                                <p class="value" id="detectionSpeed">0.0s/frame</p>
+                            </div>
+                            <div class="stats-item">
+                                <p class="label">Camera Status</p>
+                                <p class="value active" id="cameraStatus">Idle</p>
+                            </div>
+                            <div class="stats-item">
+                                <p class="label">Detection Accuracy</p>
+                                <p class="value" id="detectionAccuracy">0%</p>
+                            </div>
+                        </div>
+                   <div class="stats-card">
                     <h3>Top Detected Litter:</h3>
                     <table class="litter-table">
                         <thead>
@@ -805,59 +990,12 @@ $debug_json = json_encode($debug_logs);
                                 <th>Count</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Plastic</td>
-                                <td>2,622</td>
-                            </tr>
-                            <tr>
-                                <td>Organic Debris</td>
-                                <td>6,439</td>
-                            </tr>
-                            <tr>
-                                <td>Foamed Plastic</td>
-                                <td>160</td>
-                            </tr>
-                            <tr>
-                                <td>Paper and</td>
-                                <td>60</td>
-                            </tr>
-                            <tr>
-                                <td>Cardboard</td>
-                                <td>57</td>
-                            </tr>
-                            <tr>
-                                <td>Rubber</td>
-                                <td>25</td>
-                            </tr>
-                            <tr>
-                                <td>Fabric and Textiles</td>
-                                <td>33</td>
-                            </tr>
-                            <tr>
-                                <td>Metal</td>
-                                <td>10</td>
-                            </tr>
-                            <tr>
-                                <td>Glass and Ceramic</td>
-                                <td>80</td>
-                            </tr>
-                            <tr>
-                                <td>Biological Debris</td>
-                                <td>45</td>
-                            </tr>
-                            <tr>
-                                <td>Sanitary Waste</td>
-                                <td>13</td>
-                            </tr>
-                            <tr>
-                                <td>Electronic Waste</td>
-                                <td>5</td>
-                            </tr>
+                        <tbody id="litterTableBody">
+                            <!-- dynamically generated -->
                         </tbody>
                     </table>
                 </div>
-            </div>
+             </div>
         </div>
     </div>
 
@@ -865,8 +1003,13 @@ $debug_json = json_encode($debug_logs);
 
 
 
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
+    <script src="../js/admin_realtime.js"></script>
+  
+
+
+  <script>
         // Category Chart
         const ctx1 = document.getElementById('categoryChart').getContext('2d');
         new Chart(ctx1, {
@@ -997,22 +1140,28 @@ $debug_json = json_encode($debug_logs);
     </script>
 
     <script>
-        // === PIE CHART ===
+    // 🟢 Fixed color palette (used for both charts)
+    const fixedColors = [
+        "#2d6a4f", "#40916c", "#52b788", "#74c69d",
+        "#95d5b2", "#b7e4c7", "#d8f3dc", "#74c69d",
+        "#52b788", "#40916c", "#2d6a4f"
+    ];
+
+    // ======================================================
+    // 🥧 PIE CHART
+    // ======================================================
+    const litterLabels = <?= isset($litter_labels) ? $litter_labels : '[]' ?>;
+    const litterData = <?= isset($litter_data) ? $litter_data : '[]' ?>;
+    const pieColors = fixedColors.slice(0, litterLabels.length);
+
+    if (Array.isArray(litterLabels) && litterLabels.length > 0) {
         new Chart(document.getElementById("pieChart"), {
             type: "pie",
             data: {
-                labels: [
-                    "Biological Debris", "Electronic Waste", "Fabric and Textiles",
-                    "Foamed Plastic", "Glass and Ceramic", "Metal", "Organic Debris",
-                    "Paper and Cardboard", "Plastic", "Rubber", "Sanitary Waste"
-                ],
+                labels: litterLabels,
                 datasets: [{
-                    data: [15, 12, 11, 10, 9, 10, 11, 10, 11, 10, 20],
-                    backgroundColor: [
-                        "#2d6a4f", "#40916c", "#52b788", "#74c69d",
-                        "#95d5b2", "#b7e4c7", "#d8f3dc", "#74c69d",
-                        "#52b788", "#40916c", "#2d6a4f"
-                    ],
+                    data: litterData,
+                    backgroundColor: pieColors,
                     borderWidth: 0
                 }]
             },
@@ -1029,54 +1178,89 @@ $debug_json = json_encode($debug_logs);
                 }
             }
         });
+    }
 
-        // === LINE CHART ===
-        new Chart(document.getElementById("lineChart"), {
-            type: "line",
-            data: {
-                labels: ["Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "Jun 2025"],
-                datasets: [{
-                        label: "Biological Debris",
-                        data: [55, 45, 52, 40, 49, 47],
-                        borderColor: "#2d6a4f",
-                        tension: 0.4,
-                        fill: false
-                    },
-                    {
-                        label: "Plastic",
-                        data: [50, 42, 48, 41, 45, 44],
-                        borderColor: "#52b788",
-                        tension: 0.4,
-                        fill: false
-                    }
-                ]
+    // ======================================================
+    // 📈 LINE CHART
+    // ======================================================
+    const trendLabels = <?= isset($trend_labels) ? $trend_labels : '[]' ?>;
+    const trendDatasetsRaw = <?= isset($trend_data_json) ? $trend_data_json : '[]' ?>;
+
+    let trendDatasets = [];
+
+    if (Array.isArray(trendDatasetsRaw) && trendDatasetsRaw.length > 0) {
+        // ✅ Build line datasets from DB
+        trendDatasets = trendDatasetsRaw.map((d, i) => ({
+            label: d.label,
+            data: d.data,
+            borderColor: fixedColors[i % fixedColors.length],
+            tension: 0.4,
+            fill: false,
+            pointRadius: 3,
+            pointHoverRadius: 5
+        }));
+    } else {
+        // 🪄 Fallback: static data when DB is empty
+        trendLabels.push("Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "Jun 2025");
+        trendDatasets = [
+            {
+                label: "Biological Debris",
+                data: [55, 48, 52, 40, 50, 47],
+                borderColor: fixedColors[0],
+                tension: 0.4,
+                fill: false,
+                pointRadius: 3,
+                pointHoverRadius: 5
             },
-            options: {
-                plugins: {
-                    legend: {
-                        position: "right",
-                        labels: {
-                            color: "#1b4332",
-                            boxWidth: 12,
-                            padding: 15
-                        }
+            {
+                label: "Plastic",
+                data: [50, 42, 48, 41, 45, 44],
+                borderColor: fixedColors[1],
+                tension: 0.4,
+                fill: false,
+                pointRadius: 3,
+                pointHoverRadius: 5
+            }
+        ];
+    }
+
+    new Chart(document.getElementById("lineChart"), {
+        type: "line",
+        data: {
+            labels: trendLabels,
+            datasets: trendDatasets
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "right",
+                    labels: {
+                        color: "#1b4332",
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: "#eee"
                     }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: "#eee"
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
+                x: {
+                    grid: {
+                        display: false
                     }
                 }
             }
-        });
+        }
+    });
+
+
+
+
 
         // === LEAFLET MAP ===
         const map = L.map("a-map").setView([14.5896, 121.0370], 13); // Center on Pasig River, Manila
@@ -1164,8 +1348,6 @@ $debug_json = json_encode($debug_logs);
         });
     </script>
 
-    // LOGS SECTION SCRIPTS
-
     <script>
         $(function() {
             $('input[name="daterange"]').daterangepicker({
@@ -1227,7 +1409,28 @@ $debug_json = json_encode($debug_logs);
         });
 
         updatePagination();
+
     </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </body>

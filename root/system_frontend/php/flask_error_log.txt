@@ -2929,3 +2929,741 @@ Speed: 2.7ms preprocess, 110.1ms inference, 2.2ms postprocess per image at shape
 127.0.0.1 - - [27/Oct/2025 07:01:31] "OPTIONS /cleanup HTTP/1.1" 200 -
 127.0.0.1 - - [27/Oct/2025 07:01:31] "POST /cleanup HTTP/1.1" 200 -
 127.0.0.1 - - [27/Oct/2025 07:01:31] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 07:08:58] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 07:09:08] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_065651
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_070908\20251027_070908_orig_1.jpg: 640x640 2 Organic Debriss, 4 Plastics, 104.0ms
+Speed: 2.9ms preprocess, 104.0ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 07:09:08] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 07:09:08] "GET /runs/save_20251027_070908/20251027_070908_result_1.jpg?t=1761520148835 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 07:09:11] "GET /runs/save_20251027_070908/20251027_070908_result_1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:14:18] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:15:38] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:15:48] "OPTIONS /analyze HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081548\20251027_081548_orig_1.jpg: 640x640 3 Plastics, 117.8ms
+Speed: 3.8ms preprocess, 117.8ms inference, 0.9ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081548\20251027_081548_orig_2.jpg: 640x640 4 Plastics, 102.2ms
+Speed: 2.0ms preprocess, 102.2ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081548\20251027_081548_orig_3.jpg: 640x640 4 Plastics, 106.7ms
+Speed: 2.9ms preprocess, 106.7ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:15:48] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:15:48] "GET /runs/save_20251027_081548/20251027_081548_result_1.jpg?t=1761524148459 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:11] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:11] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:11] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:16] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081548
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081616\20251027_081616_orig_1.jpg: 640x640 2 Organic Debriss, 4 Plastics, 108.5ms
+Speed: 2.2ms preprocess, 108.5ms inference, 0.9ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:16:17] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:17] "GET /runs/save_20251027_081616/20251027_081616_result_1.jpg?t=1761524177093 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:19] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:19] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:19] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:23] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081616
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081623\20251027_081623_orig_1.jpg: 640x640 3 Organic Debriss, 2 Plastics, 122.3ms
+Speed: 2.3ms preprocess, 122.3ms inference, 1.0ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:16:23] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:23] "GET /runs/save_20251027_081623/20251027_081623_result_1.jpg?t=1761524183618 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:27] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:27] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:27] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:33] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081623
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081633\20251027_081633_orig_1.jpg: 640x640 3 Plastics, 108.8ms
+Speed: 2.1ms preprocess, 108.8ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081633\20251027_081633_orig_2.jpg: 640x640 4 Plastics, 99.9ms
+Speed: 1.9ms preprocess, 99.9ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081633\20251027_081633_orig_3.jpg: 640x640 4 Plastics, 100.4ms
+Speed: 2.9ms preprocess, 100.4ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081633\20251027_081633_orig_4.jpg: 640x640 2 Organic Debriss, 5 Plastics, 99.0ms
+Speed: 1.9ms preprocess, 99.0ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081633\20251027_081633_orig_5.jpg: 640x640 1 Organic Debris, 4 Plastics, 99.8ms
+Speed: 2.3ms preprocess, 99.8ms inference, 1.2ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:16:34] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:16:34] "GET /runs/save_20251027_081633/20251027_081633_result_1.jpg?t=1761524194153 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:04] "GET /runs/save_20251027_081633/20251027_081633_result_1.jpg?t=1761524224348 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:04] "GET /runs/save_20251027_081633/20251027_081633_result_1.jpg?t=1761524224983 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:05] "GET /runs/save_20251027_081633/20251027_081633_result_1.jpg?t=1761524225459 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:05] "GET /runs/save_20251027_081633/20251027_081633_result_1.jpg?t=1761524225862 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:06] "GET /runs/save_20251027_081633/20251027_081633_result_1.jpg?t=1761524226295 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:06] "GET /runs/save_20251027_081633/20251027_081633_result_1.jpg?t=1761524226752 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:07] "GET /runs/save_20251027_081633/20251027_081633_result_1.jpg?t=1761524227230 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:08] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:08] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:09] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:12] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081633
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081712\20251027_081712_orig_1.jpg: 640x640 1 Foamed Plastic, 12 Organic Debriss, 26 Plastics, 107.3ms
+Speed: 2.0ms preprocess, 107.3ms inference, 1.0ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:17:13] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:17:13] "GET /runs/save_20251027_081712/20251027_081712_result_1.jpg?t=1761524233193 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:18:49] "GET /runs/save_20251027_081712/20251027_081712_result_1.jpg?t=1761524329024 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:18:56] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:18:56] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:18:56] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:18:59] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081712
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081859\20251027_081859_orig_1.jpg: 640x640 1 Foamed Plastic, 12 Organic Debriss, 26 Plastics, 109.3ms
+Speed: 2.0ms preprocess, 109.3ms inference, 0.9ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:18:59] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:18:59] "GET /runs/save_20251027_081859/20251027_081859_result_1.jpg?t=1761524339674 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:19:42] "GET /runs/save_20251027_081859/20251027_081859_result_1.jpg?t=1761524382592 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:19:49] "GET /runs/save_20251027_081859/20251027_081859_result_1.jpg?t=1761524389958 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:19:50] "GET /runs/save_20251027_081859/20251027_081859_result_1.jpg?t=1761524390096 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:19:50] "GET /runs/save_20251027_081859/20251027_081859_result_1.jpg?t=1761524390247 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:21:56] "GET /runs/save_20251027_081859/20251027_081859_result_1.jpg?t=1761524516871 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:21:59] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:21:59] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:21:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:22:02] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_081859
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082202\20251027_082202_orig_1.jpg: 640x640 6 Organic Debriss, 1 Plastic, 111.7ms
+Speed: 2.0ms preprocess, 111.7ms inference, 1.0ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:22:03] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:22:03] "GET /runs/save_20251027_082202/20251027_082202_result_1.jpg?t=1761524523047 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:22:18] "GET /runs/save_20251027_082202/20251027_082202_result_1.jpg?t=1761524538863 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:22:22] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:22:22] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:22:22] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:22:22] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:22:22] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:22:23] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:23:14] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:23:14] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:23:15] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:23:17] "OPTIONS /analyze HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082317\20251027_082317_orig_1.jpg: 640x640 2 Organic Debriss, 4 Plastics, 115.6ms
+Speed: 2.2ms preprocess, 115.6ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:23:18] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:23:18] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524598210 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:15] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524655246 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:17] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524655246 HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:24:19] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082317\20251027_082317_orig_1.jpg: 640x640 1 Organic Debris, 114.8ms
+Speed: 2.1ms preprocess, 114.8ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:24:19] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:19] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524659550 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082317\20251027_082317_orig_1.jpg: 640x640 1 Organic Debris, 102.1ms
+Speed: 2.0ms preprocess, 102.1ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:24:20] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:20] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524660470 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:21] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:21] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:21] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524661685 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:22] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:22] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524662667 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:24] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:24] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524664473 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:26] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:26] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524666025 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:26] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:26] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:26] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524666874 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:28] "GET /runs/save_20251027_082317/20251027_082317_orig_1.jpg?t=1761524668201 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:28] "GET /runs/save_20251027_082317/20251027_082317_result_1.jpg?t=1761524668537 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:35] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:35] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:24:35] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:19] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082317
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_1.jpg: 640x640 3 Plastics, 107.9ms
+Speed: 2.1ms preprocess, 107.9ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_2.jpg: 640x640 4 Plastics, 100.4ms
+Speed: 2.5ms preprocess, 100.4ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_3.jpg: 640x640 4 Plastics, 103.1ms
+Speed: 1.9ms preprocess, 103.1ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_4.jpg: 640x640 2 Organic Debriss, 5 Plastics, 103.7ms
+Speed: 2.5ms preprocess, 103.7ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_5.jpg: 640x640 1 Organic Debris, 4 Plastics, 101.3ms
+Speed: 2.5ms preprocess, 101.3ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:25:19] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:19] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524719968 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:21] "GET /runs/save_20251027_082519/20251027_082519_result_2.jpg?t=1761524721185 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:21] "GET /runs/save_20251027_082519/20251027_082519_result_3.jpg?t=1761524721529 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:21] "GET /runs/save_20251027_082519/20251027_082519_result_4.jpg?t=1761524721801 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:22] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524722185 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:22] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524722657 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:23] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:23] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:23] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524723861 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:25:27] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524723861 HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:27:12] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524832949 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:12] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524892046 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:15] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524895130 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:15] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524895249 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:15] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524895418 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:15] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524895537 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:22] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524902280 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:23] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524903185 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:23] "GET /runs/save_20251027_082519/20251027_082519_result_4.jpg?t=1761524903561 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:23] "GET /runs/save_20251027_082519/20251027_082519_result_3.jpg?t=1761524903769 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:23] "GET /runs/save_20251027_082519/20251027_082519_result_2.jpg?t=1761524903937 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:24] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524904105 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:24] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524904273 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:24] "GET /runs/save_20251027_082519/20251027_082519_result_4.jpg?t=1761524904433 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:24] "GET /runs/save_20251027_082519/20251027_082519_result_3.jpg?t=1761524904601 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:24] "GET /runs/save_20251027_082519/20251027_082519_result_2.jpg?t=1761524904801 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:25] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524905121 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:25] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524905457 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:25] "GET /runs/save_20251027_082519/20251027_082519_result_4.jpg?t=1761524905665 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:25] "GET /runs/save_20251027_082519/20251027_082519_result_3.jpg?t=1761524905857 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:26] "GET /runs/save_20251027_082519/20251027_082519_result_2.jpg?t=1761524906041 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:26] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524906209 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:26] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524906385 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:26] "GET /runs/save_20251027_082519/20251027_082519_result_4.jpg?t=1761524906569 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:51] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524931178 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:53] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524933057 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:53] "GET /runs/save_20251027_082519/20251027_082519_result_4.jpg?t=1761524933425 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:53] "GET /runs/save_20251027_082519/20251027_082519_result_3.jpg?t=1761524933657 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:53] "GET /runs/save_20251027_082519/20251027_082519_result_2.jpg?t=1761524933825 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:54] "GET /runs/save_20251027_082519/20251027_082519_result_1.jpg?t=1761524934001 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:54] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524934177 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:57] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_1.jpg: 640x640 (no detections), 106.3ms
+Speed: 2.2ms preprocess, 106.3ms inference, 0.5ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_2.jpg: 640x640 (no detections), 101.2ms
+Speed: 2.5ms preprocess, 101.2ms inference, 0.4ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_3.jpg: 640x640 (no detections), 101.5ms
+Speed: 2.5ms preprocess, 101.5ms inference, 0.4ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_4.jpg: 640x640 (no detections), 99.7ms
+Speed: 2.8ms preprocess, 99.7ms inference, 0.4ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_5.jpg: 640x640 (no detections), 102.1ms
+Speed: 2.5ms preprocess, 102.1ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:28:57] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:28:57] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524937710 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_1.jpg: 640x640 3 Plastics, 99.0ms
+Speed: 2.1ms preprocess, 99.0ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_2.jpg: 640x640 4 Plastics, 103.7ms
+Speed: 2.3ms preprocess, 103.7ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_3.jpg: 640x640 4 Plastics, 99.1ms
+Speed: 1.9ms preprocess, 99.1ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_4.jpg: 640x640 2 Organic Debriss, 5 Plastics, 100.5ms
+Speed: 2.4ms preprocess, 100.5ms inference, 1.2ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519\20251027_082519_orig_5.jpg: 640x640 1 Organic Debris, 4 Plastics, 104.0ms
+Speed: 3.1ms preprocess, 104.0ms inference, 0.9ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:29:00] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:00] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524940463 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:02] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:02] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:02] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524942390 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:04] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:04] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524944074 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:05] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:05] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524945984 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:07] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:07] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:07] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524947802 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:08] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:08] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524948969 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:10] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:10] "GET /runs/save_20251027_082519/20251027_082519_result_5.jpg?t=1761524950282 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:59] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:59] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:29:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:04] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_082519
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_1.jpg: 640x640 3 Plastics, 109.6ms
+Speed: 2.0ms preprocess, 109.6ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_2.jpg: 640x640 4 Plastics, 101.4ms
+Speed: 2.4ms preprocess, 101.4ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_3.jpg: 640x640 4 Plastics, 102.3ms
+Speed: 2.5ms preprocess, 102.3ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_4.jpg: 640x640 2 Organic Debriss, 5 Plastics, 102.3ms
+Speed: 2.5ms preprocess, 102.3ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:30:04] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:05] "GET /runs/save_20251027_083004/20251027_083004_result_1.jpg?t=1761525005086 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:09] "GET /runs/save_20251027_083004/20251027_083004_result_2.jpg?t=1761525009673 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:10] "GET /runs/save_20251027_083004/20251027_083004_result_3.jpg?t=1761525010329 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:10] "GET /runs/save_20251027_083004/20251027_083004_result_4.jpg?t=1761525010705 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:11] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:11] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:11] "GET /runs/save_20251027_083004/20251027_083004_result_4.jpg?t=1761525011727 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:13] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_1.jpg: 640x640 (no detections), 113.5ms
+Speed: 1.9ms preprocess, 113.5ms inference, 0.4ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_2.jpg: 640x640 (no detections), 106.2ms
+Speed: 2.7ms preprocess, 106.2ms inference, 0.5ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_3.jpg: 640x640 (no detections), 105.5ms
+Speed: 2.8ms preprocess, 105.5ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_4.jpg: 640x640 (no detections), 109.1ms
+Speed: 2.7ms preprocess, 109.1ms inference, 0.5ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:30:13] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:13] "GET /runs/save_20251027_083004/20251027_083004_result_4.jpg?t=1761525013722 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_1.jpg: 640x640 (no detections), 107.0ms
+Speed: 1.9ms preprocess, 107.0ms inference, 0.5ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_2.jpg: 640x640 (no detections), 101.8ms
+Speed: 2.4ms preprocess, 101.8ms inference, 0.4ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_3.jpg: 640x640 (no detections), 101.1ms
+Speed: 2.2ms preprocess, 101.1ms inference, 0.4ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_4.jpg: 640x640 (no detections), 109.9ms
+Speed: 2.5ms preprocess, 109.9ms inference, 0.3ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:30:15] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:15] "GET /runs/save_20251027_083004/20251027_083004_result_4.jpg?t=1761525015701 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_1.jpg: 640x640 3 Plastics, 98.7ms
+Speed: 2.1ms preprocess, 98.7ms inference, 0.9ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_2.jpg: 640x640 4 Plastics, 100.6ms
+Speed: 2.6ms preprocess, 100.6ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_3.jpg: 640x640 4 Plastics, 100.6ms
+Speed: 2.1ms preprocess, 100.6ms inference, 0.9ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_4.jpg: 640x640 2 Organic Debriss, 5 Plastics, 105.6ms
+Speed: 2.6ms preprocess, 105.6ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:30:17] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:17] "GET /runs/save_20251027_083004/20251027_083004_result_4.jpg?t=1761525017693 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:20] "GET /runs/save_20251027_083004/20251027_083004_result_1.jpg?t=1761525020137 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:24] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_1.jpg: 640x640 (no detections), 112.9ms
+Speed: 3.1ms preprocess, 112.9ms inference, 0.9ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_2.jpg: 640x640 (no detections), 105.3ms
+Speed: 2.9ms preprocess, 105.3ms inference, 0.5ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_3.jpg: 640x640 (no detections), 103.4ms
+Speed: 2.6ms preprocess, 103.4ms inference, 0.4ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004\20251027_083004_orig_4.jpg: 640x640 (no detections), 102.5ms
+Speed: 1.9ms preprocess, 102.5ms inference, 0.5ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:30:24] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:24] "GET /runs/save_20251027_083004/20251027_083004_result_1.jpg?t=1761525024655 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:25] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:25] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:25] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:30] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083004
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083030\20251027_083030_orig_1.jpg: 640x640 2 Organic Debriss, 4 Plastics, 121.5ms
+Speed: 2.2ms preprocess, 121.5ms inference, 0.9ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:30:30] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:30] "GET /runs/save_20251027_083030/20251027_083030_result_1.jpg?t=1761525030910 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:33] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083030\20251027_083030_orig_1.jpg: 640x640 1 Organic Debris, 114.8ms
+Speed: 1.9ms preprocess, 114.8ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:30:33] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:30:33] "GET /runs/save_20251027_083030/20251027_083030_result_1.jpg?t=1761525033196 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:31:48] "GET /runs/save_20251027_083030/20251027_083030_result_1.jpg?t=1761525108248 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:31:52] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:31:52] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:31:52] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:31:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:31:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:31:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:31:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:31:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:01] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083030
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083201\20251027_083201_orig_1.jpg: 640x640 3 Plastics, 107.8ms
+Speed: 2.5ms preprocess, 107.8ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083201\20251027_083201_orig_2.jpg: 640x640 4 Plastics, 99.6ms
+Speed: 2.2ms preprocess, 99.6ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083201\20251027_083201_orig_3.jpg: 640x640 4 Plastics, 105.5ms
+Speed: 2.7ms preprocess, 105.5ms inference, 1.0ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:32:01] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:01] "GET /runs/save_20251027_083201/20251027_083201_result_1.jpg?t=1761525121606 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:03] "GET /runs/save_20251027_083201/20251027_083201_result_1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:03] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:03] "GET /runs/save_20251027_083201/20251027_083201_result_3.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:19] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525139377 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:19] "GET /runs/save_20251027_083201/20251027_083201_result_3.jpg?t=1761525139769 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:20] "GET /runs/save_20251027_083201/20251027_083201_result_1.jpg?t=1761525140369 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:20] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525140920 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:21] "GET /runs/save_20251027_083201/20251027_083201_result_3.jpg?t=1761525141297 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:21] "GET /runs/save_20251027_083201/20251027_083201_result_1.jpg?t=1761525141472 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:21] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525141633 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:24] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:24] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:24] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525144537 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:25] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:25] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525145512 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:26] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083201\20251027_083201_orig_1.jpg: 640x640 (no detections), 113.3ms
+Speed: 3.1ms preprocess, 113.3ms inference, 0.5ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083201\20251027_083201_orig_2.jpg: 640x640 (no detections), 101.6ms
+Speed: 2.6ms preprocess, 101.6ms inference, 0.4ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083201\20251027_083201_orig_3.jpg: 640x640 (no detections), 104.3ms
+Speed: 2.6ms preprocess, 104.3ms inference, 0.4ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:32:27] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:27] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525147107 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083201\20251027_083201_orig_1.jpg: 640x640 3 Plastics, 104.6ms
+Speed: 1.9ms preprocess, 104.6ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083201\20251027_083201_orig_2.jpg: 640x640 4 Plastics, 97.7ms
+Speed: 2.8ms preprocess, 97.7ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083201\20251027_083201_orig_3.jpg: 640x640 4 Plastics, 102.0ms
+Speed: 2.4ms preprocess, 102.0ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:32:30] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:30] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525150184 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:31] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:31] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:31] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525151847 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:32] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:32] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525152828 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:34] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:34] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525154212 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:35] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:35] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525155309 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:36] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:36] "GET /runs/save_20251027_083201/20251027_083201_result_2.jpg?t=1761525156717 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:40] "GET /runs/save_20251027_083201/20251027_083201_result_1.jpg?t=1761525160536 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:42] "GET /runs/save_20251027_083201/20251027_083201_result_3.jpg?t=1761525162440 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:43] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:43] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:32:43] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:03] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083201
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 2 Organic Debriss, 4 Plastics, 110.0ms
+Speed: 2.1ms preprocess, 110.0ms inference, 0.9ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 4 Organic Debriss, 80.9ms
+Speed: 3.3ms preprocess, 80.9ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:33:04] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:04] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525184565 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:07] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 1 Organic Debris, 108.5ms
+Speed: 1.8ms preprocess, 108.5ms inference, 2.2ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 2 Organic Debriss, 79.1ms
+Speed: 3.1ms preprocess, 79.1ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:33:08] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:08] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525188177 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:09] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525189761 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:14] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 2 Organic Debriss, 4 Plastics, 105.2ms
+Speed: 2.2ms preprocess, 105.2ms inference, 2.0ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 4 Organic Debriss, 81.4ms
+Speed: 3.6ms preprocess, 81.4ms inference, 0.9ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:33:15] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:15] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525195324 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:21] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:21] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:21] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525201265 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:22] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:22] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525202239 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:23] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:23] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525203226 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:25] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:25] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525205272 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:28] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:33:30] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:30] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 1 Organic Debris, 109.4ms
+Speed: 3.5ms preprocess, 109.4ms inference, 2.3ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 2 Organic Debriss, 81.0ms
+Speed: 3.0ms preprocess, 81.0ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:35:30] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:30] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525330924 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 1 Organic Debris, 108.2ms
+Speed: 2.1ms preprocess, 108.2ms inference, 2.4ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 1 Organic Debris, 78.3ms
+Speed: 3.1ms preprocess, 78.3ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:35:33] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:33] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525333492 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:35] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 (no detections), 109.5ms
+Speed: 1.9ms preprocess, 109.5ms inference, 2.0ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 (no detections), 80.7ms
+Speed: 3.2ms preprocess, 80.7ms inference, 0.4ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:35:35] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:35] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525335920 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 1 Organic Debris, 101.4ms
+Speed: 2.0ms preprocess, 101.4ms inference, 2.3ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 1 Organic Debris, 79.0ms
+Speed: 3.2ms preprocess, 79.0ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:35:37] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:37] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525337447 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:40] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:40] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:40] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525340458 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:52] "GET /runs/save_20251027_083304/20251027_083304_orig_2.jpg?t=1761525352409 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:52] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525352761 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:53] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525353440 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:53] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525353649 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:53] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525353825 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:53] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg?t=1761525353992 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:54] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525354481 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:56] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 1 Organic Debris, 106.7ms
+Speed: 1.9ms preprocess, 106.7ms inference, 1.9ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 2 Organic Debriss, 75.7ms
+Speed: 2.7ms preprocess, 75.7ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:35:56] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:56] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525356909 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 2 Organic Debriss, 4 Plastics, 108.6ms
+Speed: 2.2ms preprocess, 108.6ms inference, 2.3ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 4 Organic Debriss, 74.9ms
+Speed: 2.9ms preprocess, 74.9ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:35:59] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:35:59] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525359565 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:36:27] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525387502 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:36:28] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:36:28] "GET /runs/save_20251027_083304/20251027_083304_result_2.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:12] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 1 Organic Debris, 110.6ms
+Speed: 2.0ms preprocess, 110.6ms inference, 2.3ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 2 Organic Debriss, 80.4ms
+Speed: 3.3ms preprocess, 80.4ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:39:13] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:13] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525553017 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 1 Organic Debris, 103.4ms
+Speed: 2.0ms preprocess, 103.4ms inference, 2.6ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 1 Organic Debris, 76.5ms
+Speed: 3.2ms preprocess, 76.5ms inference, 0.6ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:39:14] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:14] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525554087 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 (no detections), 114.6ms
+Speed: 3.1ms preprocess, 114.6ms inference, 1.9ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 (no detections), 83.5ms
+Speed: 3.3ms preprocess, 83.5ms inference, 0.5ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:39:17] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:17] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525557627 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:19] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 1 Organic Debris, 110.7ms
+Speed: 1.9ms preprocess, 110.7ms inference, 2.5ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 2 Organic Debriss, 84.1ms
+Speed: 3.2ms preprocess, 84.1ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:39:20] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:20] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525560274 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_1.jpg: 640x640 2 Organic Debriss, 4 Plastics, 109.2ms
+Speed: 1.9ms preprocess, 109.2ms inference, 2.2ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304\20251027_083304_orig_2.jpg: 640x480 4 Organic Debriss, 77.2ms
+Speed: 3.2ms preprocess, 77.2ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:39:24] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:24] "GET /runs/save_20251027_083304/20251027_083304_result_1.jpg?t=1761525564016 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:33] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:33] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:33] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:34] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:34] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:34] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:38] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083304
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083938\20251027_083938_orig_1.jpg: 640x640 2 Organic Debriss, 4 Plastics, 109.6ms
+Speed: 2.0ms preprocess, 109.6ms inference, 1.9ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:39:38] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:39:38] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525578540 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:09] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525789118 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:11] "GET /runs/save_20251027_083938/20251027_083938_orig_1.jpg?t=1761525791385 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:11] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525791848 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:13] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:13] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:13] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525793342 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:14] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:14] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525794318 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:15] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083938\20251027_083938_orig_1.jpg: 640x640 1 Organic Debris, 112.1ms
+Speed: 2.0ms preprocess, 112.1ms inference, 1.1ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:43:15] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:15] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525795603 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083938\20251027_083938_orig_1.jpg: 640x640 1 Organic Debris, 100.1ms
+Speed: 2.1ms preprocess, 100.1ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:43:16] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:16] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525796507 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083938\20251027_083938_orig_1.jpg: 640x640 (no detections), 105.6ms
+Speed: 2.3ms preprocess, 105.6ms inference, 0.5ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:43:18] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:18] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525798065 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083938\20251027_083938_orig_1.jpg: 640x640 2 Organic Debriss, 4 Plastics, 105.7ms
+Speed: 2.8ms preprocess, 105.7ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:43:19] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:19] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525799518 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:20] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:20] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:20] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525800655 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:21] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:21] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525801524 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:23] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525803080 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:23] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525803264 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:23] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525803505 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:23] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg?t=1761525803672 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:24] "GET /runs/save_20251027_083938/20251027_083938_result_1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:39] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:39] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:39] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:44] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_083938
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084344\20251027_084344_orig_1.jpg: 640x640 35 Organic Debriss, 38 Plastics, 106.9ms
+Speed: 2.0ms preprocess, 106.9ms inference, 0.8ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084344\20251027_084344_orig_2.jpg: 640x640 1 Fabric and Textiles, 40 Organic Debriss, 37 Plastics, 99.4ms
+Speed: 2.0ms preprocess, 99.4ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084344\20251027_084344_orig_3.jpg: 640x640 2 Organic Debriss, 4 Plastics, 103.4ms
+Speed: 2.8ms preprocess, 103.4ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084344\20251027_084344_orig_4.jpg: 640x640 2 Organic Debriss, 4 Plastics, 103.4ms
+Speed: 2.5ms preprocess, 103.4ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084344\20251027_084344_orig_5.jpg: 640x640 2 Organic Debriss, 4 Plastics, 109.4ms
+Speed: 2.4ms preprocess, 109.4ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 640)
+127.0.0.1 - - [27/Oct/2025 08:43:45] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:45] "GET /runs/save_20251027_084344/20251027_084344_result_1.jpg?t=1761525825597 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:47] "GET /runs/save_20251027_084344/20251027_084344_result_2.jpg?t=1761525827160 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:47] "GET /runs/save_20251027_084344/20251027_084344_result_3.jpg?t=1761525827561 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:48] "GET /runs/save_20251027_084344/20251027_084344_result_4.jpg?t=1761525828040 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:48] "GET /runs/save_20251027_084344/20251027_084344_result_5.jpg?t=1761525828488 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:48] "GET /runs/save_20251027_084344/20251027_084344_result_1.jpg?t=1761525828880 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:49] "GET /runs/save_20251027_084344/20251027_084344_result_2.jpg?t=1761525829432 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_2.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_3.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_4.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_5.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_2.jpg?t=1761525829432 HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_1.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_2.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_3.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_4.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:43:51] "GET /runs/save_20251027_084344/20251027_084344_result_5.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:44:09] "GET /runs/save_20251027_084344/20251027_084344_result_1.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:44:11] "GET /runs/save_20251027_084344/20251027_084344_result_2.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:44:12] "GET /runs/save_20251027_084344/20251027_084344_result_3.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:44:12] "GET /runs/save_20251027_084344/20251027_084344_result_4.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:44:13] "GET /runs/save_20251027_084344/20251027_084344_result_5.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:44:30] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:44:30] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:44:30] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:23] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:25] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:31] "OPTIONS /analyze HTTP/1.1" 200 -
+🧹 Cleaned folder: C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084344
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084831\20251027_084831_orig_1.jpg: 640x480 1 Organic Debris, 84.5ms
+Speed: 3.6ms preprocess, 84.5ms inference, 0.7ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:48:32] "POST /analyze HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:32] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526112251 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:36] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084831\20251027_084831_orig_1.jpg: 640x480 1 Organic Debris, 82.9ms
+Speed: 4.0ms preprocess, 82.9ms inference, 2.3ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:48:37] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:37] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526117207 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084831\20251027_084831_orig_1.jpg: 640x480 (no detections), 87.1ms
+Speed: 3.9ms preprocess, 87.1ms inference, 2.2ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:48:39] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:39] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526119874 HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084831\20251027_084831_orig_1.jpg: 640x480 1 Organic Debris, 80.0ms
+Speed: 3.1ms preprocess, 80.0ms inference, 2.5ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:48:41] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:41] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526121174 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:42] "OPTIONS /redetect HTTP/1.1" 200 -
+
+image 1/1 C:\xampp\htdocs\LitterLensThesis2\root\system_backend\python\runs\save_20251027_084831\20251027_084831_orig_1.jpg: 640x480 1 Organic Debris, 83.8ms
+Speed: 3.0ms preprocess, 83.8ms inference, 2.4ms postprocess per image at shape (1, 3, 640, 480)
+127.0.0.1 - - [27/Oct/2025 08:48:43] "POST /redetect HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:43] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526123140 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:45] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:45] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526123140 HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:48:45] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [27/Oct/2025 08:48:52] "GET /runs/save_20251027_084831/20251027_084831_orig_1.jpg?t=1761526132984 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:53] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526133440 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:54] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:54] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:54] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526134709 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:56] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:56] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526136460 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:57] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:57] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526137716 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:59] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:48:59] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526139278 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:49:01] "OPTIONS /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:49:01] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:49:01] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526141872 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:49:02] "POST /rerender HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:49:02] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg?t=1761526142981 HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:49:06] "GET /runs/save_20251027_084831/20251027_084831_result_1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:49:36] "OPTIONS /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:49:36] "POST /cleanup HTTP/1.1" 200 -
+127.0.0.1 - - [27/Oct/2025 08:49:36] "GET / HTTP/1.1" 200 -

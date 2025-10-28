@@ -2,10 +2,18 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from ultralytics import YOLO
 from datetime import datetime
+from flask import make_response
 import os
 import shutil
 import cv2
 import json
+import io
+from flask import Response
+import time
+import threading
+from collections import deque
+import math
+
 
 app = Flask(__name__)
 CORS(app)
@@ -24,7 +32,7 @@ model = YOLO(MODEL_PATH)
 # === CLASS COLOR MAP (BGR for OpenCV) ===
 CLASS_COLORS = {
     "Biological Debris": (255, 0, 0),
-    "Electronic Waste": (0, 165, 255),
+    "Electronic Waste": (0, 165, 255),      
     "Fabric and Textiles": (255, 255, 0),
     "Foamed Plastic": (255, 0, 255),
     "Glass and Ceramic": (255, 0, 0),
@@ -35,6 +43,198 @@ CLASS_COLORS = {
     "Rubber": (0, 0, 255),
     "Sanitary Waste": (204, 204, 255)
 }
+
+
+# === Live Stats Tracking ===
+detection_threshold = 0.25  # default
+recent_objects = deque(maxlen=200)  # limited memory
+object_lifetime = 2.0  # seconds — consider object "gone" after this
+object_id_counter = 0
+last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
+running_total_detections = 0
+running_accuracy_sum = 0.0
+frame_count = 0
+class_totals = {}
+
+camera = None
+running = False
+lock = threading.Lock()
+
+def generate_frames():
+    global camera, running
+    camera = cv2.VideoCapture(0)
+    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+    running = True
+
+    while running:
+        ret, frame = camera.read()
+        if not ret:
+            break
+
+        # 🕒 Start time for speed measurement
+        start_time = time.time()
+
+        # 🧠 YOLO detection
+        results = model(frame, conf=detection_threshold)[0]
+        dets = _serialize_dets(results)
+
+        # 🖼️ Draw boxes
+        for d in dets:
+            x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
+            label = model.names[d["cls"]]
+            conf = int(d["conf"] * 100)
+            color = CLASS_COLORS.get(label, (255, 255, 255))
+            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+            cv2.putText(frame, f"{label} {conf}%", (x1, max(0, y1 - 5)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+
+        # 🕒 Calculate speed (seconds/frame)
+        speed = time.time() - start_time
+
+        # ✅ Update stats for frontend
+        update_summary(dets, speed)
+
+        # 📸 Encode frame for MJPEG stream
+        _, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+
+        time.sleep(0.03)
+
+    if camera is not None:
+        camera.release()
+        camera = None
+
+
+@app.route('/live')
+def live_detection():
+    global running, running_total_detections, running_accuracy_sum, frame_count, class_totals, last_summary
+    # reset counters when starting new stream
+    running_total_detections = 0
+    running_accuracy_sum = 0.0
+    frame_count = 0
+    class_totals = {}
+    last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
+
+    if running:
+        running = False
+        time.sleep(0.5)
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/stop_camera')
+def stop_camera():
+    global running
+    running = False
+    return "Camera stopped", 200
+
+# === Detection Summary (For Live Stats Update) ===
+last_summary = {"total": 0, "accuracy": 0, "speed": 0.0, "classes": {}}
+last_frame_time = time.time()
+
+def update_summary(dets, speed):
+    global last_summary, running_total_detections, running_accuracy_sum, frame_count, class_totals, recent_objects, object_id_counter
+
+    current_time = time.time()
+    frame_count += 1
+    summary, total_items = _summary_from_dets(dets)
+    acc = calculate_image_accuracy(dets)
+
+    # Clean old detections
+    while recent_objects and current_time - recent_objects[0]['time'] > object_lifetime:
+        recent_objects.popleft()
+
+    new_detections = 0
+
+    for d in dets:
+        label = model.names[d["cls"]]
+        box = (d["x1"], d["y1"], d["x2"], d["y2"])
+        matched = False
+
+        # check against recently seen objects
+        for obj in recent_objects:
+            if obj['label'] == label and iou(obj['box'], box) > 0.5:
+                matched = True
+                obj['time'] = current_time  # refresh timestamp
+                break
+
+        if not matched:
+            # new object detected
+            object_id_counter += 1
+            recent_objects.append({'id': object_id_counter, 'label': label, 'box': box, 'time': current_time})
+            class_totals[label] = class_totals.get(label, 0) + 1
+            new_detections += 1
+
+    running_total_detections += new_detections
+    running_accuracy_sum += acc
+
+    avg_acc = (running_accuracy_sum / frame_count) if frame_count > 0 else 0.0
+    last_summary = {
+        "total": running_total_detections,
+        "accuracy": round(avg_acc, 2),
+        "speed": round(speed, 2),
+        "classes": class_totals
+    }
+
+
+@app.route('/live_stats')
+def live_stats():
+    return jsonify(last_summary)
+
+
+def iou(box1, box2):
+    """Compute Intersection-over-Union between two boxes."""
+    x1, y1, x2, y2 = box1
+    x1b, y1b, x2b, y2b = box2
+
+    inter_x1 = max(x1, x1b)
+    inter_y1 = max(y1, y1b)
+    inter_x2 = min(x2, x2b)
+    inter_y2 = min(y2, y2b)
+    inter_area = max(0, inter_x2 - inter_x1) * max(0, inter_y2 - inter_y1)
+
+    area1 = (x2 - x1) * (y2 - y1)
+    area2 = (x2b - x1b) * (y2b - y1b)
+    union = area1 + area2 - inter_area
+
+    if union == 0:
+        return 0
+    return inter_area / union
+
+@app.route('/reset_stats', methods=['POST'])
+def reset_stats():
+    global last_summary, running_total_detections, running_accuracy_sum, frame_count, class_totals
+    last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
+    running_total_detections = 0
+    running_accuracy_sum = 0.0
+    frame_count = 0
+    class_totals = {}
+    print("🔁 Stats reset successful")
+    return {"message": "Stats reset"}, 200
+
+
+
+@app.route('/set_threshold', methods=['POST'])
+def set_threshold():
+    global detection_threshold
+    data = request.get_json()
+    try:
+        val = float(data.get("threshold", 0.25))
+        detection_threshold = max(0.0, min(1.0, val))  # clamp between 0 and 1
+        print(f"🛠 Detection threshold set to: {detection_threshold}")
+        return {"message": "Threshold updated", "threshold": detection_threshold}, 200
+    except Exception as e:
+        return {"error": str(e)}, 400
+
+
+
+
+
+
+
+
+
 
 # === Helper Functions ===
 def _parse_opacity(val, default=1.0):
@@ -117,10 +317,16 @@ def render_from_dets(orig_path, dets, output_path, mode="confidence", box_opacit
 
     cv2.imwrite(output_path, img)
 
-# === Serve result images ===
 @app.route('/runs/<path:filename>')
 def serve_runs(filename):
-    return send_from_directory(RUNS_DIR, filename)
+    # Serve files from the "runs" folder
+    response = make_response(send_from_directory(RUNS_DIR, filename))
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return response
+
 
 @app.route('/')
 def home():
