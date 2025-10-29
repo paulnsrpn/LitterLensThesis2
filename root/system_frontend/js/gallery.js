@@ -1,5 +1,10 @@
+// ================================================
+// 🧠 RESULT PAGE SCRIPT — Detection Review, Redetect, Upload & Export
+// ================================================
 document.addEventListener("DOMContentLoaded", () => {
-  // === ELEMENTS ===
+  // ================================================
+  // 🧩 ELEMENT REFERENCES
+  // ================================================
   const imgElement = document.querySelector(".main-img");
   const prevBtn = document.querySelector(".prev-btn");
   const nextBtn = document.querySelector(".next-btn");
@@ -13,14 +18,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const uploadBtn = document.getElementById("upload-btn");
   const pdfButton = document.getElementById("download-pdf");
 
-  // === SUPABASE CONFIG ===
+  // ================================================
+  // ⚙️ SUPABASE CONFIGURATION
+  // ================================================
   const SUPABASE_URL = "https://ksbgdgqpdoxabdefjsin.supabase.co";
   const SUPABASE_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzYmdkZ3FwZG94YWJkZWZqc2luIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTAzMjUxOSwiZXhwIjoyMDc2NjA4NTE5fQ.WAai4nbsqgbe-7PgOw8bktVjk0V9Cm8sdEct_vlQCcY";
   const SUPABASE_REST_URL = `${SUPABASE_URL}/rest/v1`;
   const SUPABASE_STORAGE_URL = `${SUPABASE_URL}/storage/v1/object`;
 
-  // === DEBUGGER PANEL ===
+  // ================================================
+  // 🐞 DEBUGGER PANEL
+  // ================================================
   const debuggerPanel = document.createElement("div");
   Object.assign(debuggerPanel.style, {
     position: "fixed",
@@ -54,7 +63,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   debugLog("✅ Script loaded and debugger initialized", "success");
 
-  // === STATE ===
+  // ================================================
+  // 🔄 INITIAL STATE
+  // ================================================
   let currentLabelMode = localStorage.getItem("labelMode") || "confidence";
   localStorage.removeItem("boxOpacity");
   let currentOpacity = "1.00";
@@ -64,7 +75,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentIndex = 0;
   let showingResult = true;
 
-  // === SPINNER ===
+  // ================================================
+  // ⏳ SPINNER OVERLAY
+  // ================================================
   const spinnerOverlay = document.createElement("div");
   spinnerOverlay.classList.add("spinner-overlay");
   spinnerOverlay.innerHTML = `<div class="spinner"></div><p class="spinner-text">Updating...</p>`;
@@ -76,7 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   const hideSpinner = () => spinnerOverlay.classList.remove("active");
 
-  // === UI ===
+  // ================================================
+  // 🖼️ IMAGE + TABLE + ACCURACY UI
+  // ================================================
   function updateImageDisplay(src) {
     imgElement.src = src + `?t=${Date.now()}`;
     const filename = src.split("/").pop();
@@ -109,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showImage(index) {
-    if (!detectionResult?.results || detectionResult.results.length === 0) return;
+    if (!detectionResult?.results?.length) return;
     const imgData = detectionResult.results[index];
     const src = showingResult
       ? `http://127.0.0.1:5000/${imgData.result_image}`
@@ -117,12 +132,14 @@ document.addEventListener("DOMContentLoaded", () => {
     updateImageDisplay(src);
     updateTable(imgData.summary, imgData.total_items);
     updateAccuracy(imgData.accuracy ?? detectionResult.accuracy);
-    debugLog(`🖼️ Displaying image ${index + 1}/${detectionResult.results.length}`, "info");
+    debugLog(`🖼️ Displaying image ${index + 1}/${detectionResult.results.length}`);
   }
 
-  // === DETECTION CONTROLS ===
+  // ================================================
+  // ⚙️ DETECTION CONTROL FUNCTIONS
+  // ================================================
   function redetect(newThreshold, labelMode = currentLabelMode, opacity = currentOpacity) {
-    if (!detectionResult || !detectionResult.folder) return;
+    if (!detectionResult?.folder) return;
     showSpinner("Re-running detection...");
     fetch("http://127.0.0.1:5000/redetect", {
       method: "POST",
@@ -144,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function rerender(labelMode = currentLabelMode, opacity = currentOpacity) {
-    if (!detectionResult || !detectionResult.folder) return;
+    if (!detectionResult?.folder) return;
     showSpinner("Redrawing boxes...");
     fetch("http://127.0.0.1:5000/rerender", {
       method: "POST",
@@ -165,7 +182,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // === EVENTS ===
+  // ================================================
+  // 🎚️ EVENT HANDLERS
+  // ================================================
   thresholdDropdown.addEventListener("change", () => redetect(parseFloat(thresholdDropdown.value)));
   opacityDropdown.addEventListener("change", () => {
     currentOpacity = opacityDropdown.value;
@@ -176,20 +195,25 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("labelMode", currentLabelMode);
     rerender(currentLabelMode, currentOpacity);
   });
+
   prevBtn.addEventListener("click", () => {
     currentIndex = (currentIndex - 1 + detectionResult.results.length) % detectionResult.results.length;
     showImage(currentIndex);
   });
+
   nextBtn.addEventListener("click", () => {
     currentIndex = (currentIndex + 1) % detectionResult.results.length;
     showImage(currentIndex);
   });
+
   switchInput.addEventListener("change", e => {
     showingResult = e.target.checked;
     showImage(currentIndex);
   });
 
-  // === GO BACK ===
+  // ================================================
+  // 🔙 GO BACK BUTTON
+  // ================================================
   goBackBtn.addEventListener("click", () => {
     localStorage.removeItem("boxOpacity");
     if (detectionResult?.folder) {
@@ -198,11 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ folder: detectionResult.folder })
       })
-        .then(() => {
-          localStorage.removeItem("detectionResult");
-          window.location.href = "index.php";
-        })
-        .catch(() => {
+        .finally(() => {
           localStorage.removeItem("detectionResult");
           window.location.href = "index.php";
         });
@@ -212,7 +232,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // === SUPABASE MULTIPLE UPLOAD ===
+  // ================================================
+  // 🧰 SUPABASE UPLOAD FUNCTIONS (Images + Detection Data)
+  // ================================================
   async function uploadAllImagesToBucket(results) {
     const uploadedImages = [];
     for (const imgData of results) {
@@ -299,6 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const imgJson = await imgRes.json();
         const imageId = imgJson[0]?.image_id;
         if (!imageId) throw new Error("Failed to save image record.");
+
         for (const [typeName, qty] of Object.entries(imgData.summary || {})) {
           const typeId = await getLitterTypeId(typeName);
           const detPayload = {
@@ -334,7 +357,9 @@ document.addEventListener("DOMContentLoaded", () => {
     storeDetectionToSupabase(detectionResult);
   });
 
-  // === ZOOM ===
+  // ================================================
+  // 🔍 ZOOM & PAN CONTROLS
+  // ================================================
   const zoomInBtn = document.getElementById("zoom-in");
   const zoomOutBtn = document.getElementById("zoom-out");
   const zoomResetBtn = document.getElementById("zoom-reset");
@@ -383,7 +408,9 @@ document.addEventListener("DOMContentLoaded", () => {
     updateZoom();
   });
 
-  // === LOCATION DISPLAY ===
+  // ================================================
+  // 📍 LOCATION DISPLAY
+  // ================================================
   const latitude = localStorage.getItem("user_latitude");
   const longitude = localStorage.getItem("user_longitude");
   if (latitude && longitude) {
@@ -397,144 +424,136 @@ document.addEventListener("DOMContentLoaded", () => {
     if (locationLink) locationLink.href = `https://www.google.com/maps?q=${formattedLat},${formattedLng}`;
   }
 
-
-
-pdfButton.addEventListener("click", async () => {
-  if (!detectionResult || !detectionResult.results || detectionResult.results.length === 0) {
-    debugLog("❌ No detection data found to export.", "error");
-    return;
-  }
-
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
-
-  let y = 20;
-
-  // 🟢 COVER PAGE
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(20);
-  pdf.text("Litter Detection Report", 105, y, { align: "center" });
-  y += 15;
-
-  pdf.setFont("helvetica", "normal");
-  pdf.setFontSize(12);
-  pdf.text(`Generated: ${new Date().toLocaleString()}`, 20, y);
-  y += 10;
-
-  const lat = localStorage.getItem("user_latitude") || "N/A";
-  const lng = localStorage.getItem("user_longitude") || "N/A";
-  pdf.text(`Location: Latitude ${lat}, Longitude ${lng}`, 20, y);
-  y += 10;
-
-  pdf.text(`Total Images: ${detectionResult.results.length}`, 20, y);
-  y += 10;
-
-  pdf.text(`Average Accuracy: ${detectionResult.accuracy || 0}%`, 20, y);
-  y += 20;
-
-  pdf.setFont("helvetica", "bold");
-  pdf.text("Overall Detected Items", 20, y);
-  y += 10;
-
-  const totalSummary = detectionResult.total_summary || {};
-  pdf.setFont("helvetica", "normal");
-  pdf.setFontSize(11);
-
-  if (Object.keys(totalSummary).length === 0) {
-    pdf.text("No objects detected.", 20, y);
-  } else {
-    pdf.text("Type", 20, y);
-    pdf.text("Quantity", 150, y);
-    y += 7;
-
-    Object.entries(totalSummary).forEach(([label, count]) => {
-      pdf.text(label, 20, y);
-      pdf.text(String(count), 150, y);
-      y += 7;
-    });
-  }
-
-  // 🆕 New page for images
-  pdf.addPage();
-
-  for (let i = 0; i < detectionResult.results.length; i++) {
-    let imgData = detectionResult.results[i];
-    let imgUrl = `http://127.0.0.1:5000/${imgData.result_image}`;
-
-    y = 20;
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(14);
-    pdf.text(`Image ${i + 1}`, 20, y);
-    y += 8;
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(12);
-    pdf.text(`Detected Objects: ${imgData.total_items}`, 20, y);
-    pdf.text(`Accuracy: ${imgData.accuracy || 0}%`, 150, y);
-    y += 10;
-
-    // 🖼️ Add image
-    try {
-      const base64Img = await convertImageToBase64(imgUrl);
-      const imgProps = pdf.getImageProperties(base64Img);
-      const pdfWidth = 180;
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      if (y + pdfHeight > 270) {
-        pdf.addPage();
-        y = 20;
-      }
-      pdf.addImage(base64Img, "JPEG", 15, y, pdfWidth, pdfHeight);
-      y += pdfHeight + 10;
-    } catch (err) {
-      debugLog(`❌ Image ${i + 1} failed to load: ${err.message}`, "error");
+  // ================================================
+  // 📄 PDF EXPORT (jsPDF)
+  // ================================================
+  pdfButton.addEventListener("click", async () => {
+    if (!detectionResult?.results?.length) {
+      debugLog("❌ No detection data found to export.", "error");
+      return;
     }
 
-    // 🧾 Summary table for this image
-    const summary = imgData.summary || {};
-    if (Object.keys(summary).length > 0) {
-      pdf.setFont("helvetica", "bold");
-      pdf.text("Detected Litter Types", 20, y);
-      y += 8;
-      pdf.setFont("helvetica", "normal");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
+    let y = 20;
 
-      Object.entries(summary).forEach(([label, count]) => {
-        if (y > 270) {  // page break if needed
-          pdf.addPage();
-          y = 20;
-        }
+    // 🟢 COVER PAGE
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(20);
+    pdf.text("Litter Detection Report", 105, y, { align: "center" });
+    y += 15;
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+    pdf.text(`Generated: ${new Date().toLocaleString()}`, 20, y);
+    y += 10;
+
+    const lat = localStorage.getItem("user_latitude") || "N/A";
+    const lng = localStorage.getItem("user_longitude") || "N/A";
+    pdf.text(`Location: Latitude ${lat}, Longitude ${lng}`, 20, y);
+    y += 10;
+
+    pdf.text(`Total Images: ${detectionResult.results.length}`, 20, y);
+    y += 10;
+
+    pdf.text(`Average Accuracy: ${detectionResult.accuracy || 0}%`, 20, y);
+    y += 20;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Overall Detected Items", 20, y);
+    y += 10;
+
+    const totalSummary = detectionResult.total_summary || {};
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(11);
+
+    if (Object.keys(totalSummary).length === 0) {
+      pdf.text("No objects detected.", 20, y);
+    } else {
+      pdf.text("Type", 20, y);
+      pdf.text("Quantity", 150, y);
+      y += 7;
+
+      Object.entries(totalSummary).forEach(([label, count]) => {
         pdf.text(label, 20, y);
         pdf.text(String(count), 150, y);
         y += 7;
       });
     }
 
-    if (i < detectionResult.results.length - 1) {
-      pdf.addPage(); // 📝 new page for next image
+    // 🆕 New page for images
+    pdf.addPage();
+
+    for (let i = 0; i < detectionResult.results.length; i++) {
+      let imgData = detectionResult.results[i];
+      let imgUrl = `http://127.0.0.1:5000/${imgData.result_image}`;
+
+      y = 20;
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(14);
+      pdf.text(`Image ${i + 1}`, 20, y);
+      y += 8;
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(12);
+      pdf.text(`Detected Objects: ${imgData.total_items}`, 20, y);
+      pdf.text(`Accuracy: ${imgData.accuracy || 0}%`, 150, y);
+      y += 10;
+
+      try {
+        const base64Img = await convertImageToBase64(imgUrl);
+        const imgProps = pdf.getImageProperties(base64Img);
+        const pdfWidth = 180;
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        if (y + pdfHeight > 270) {
+          pdf.addPage();
+          y = 20;
+        }
+        pdf.addImage(base64Img, "JPEG", 15, y, pdfWidth, pdfHeight);
+        y += pdfHeight + 10;
+      } catch (err) {
+        debugLog(`❌ Image ${i + 1} failed to load: ${err.message}`, "error");
+      }
+
+      const summary = imgData.summary || {};
+      if (Object.keys(summary).length > 0) {
+        pdf.setFont("helvetica", "bold");
+        pdf.text("Detected Litter Types", 20, y);
+        y += 8;
+        pdf.setFont("helvetica", "normal");
+
+        Object.entries(summary).forEach(([label, count]) => {
+          if (y > 270) {
+            pdf.addPage();
+            y = 20;
+          }
+          pdf.text(label, 20, y);
+          pdf.text(String(count), 150, y);
+          y += 7;
+        });
+      }
+
+      if (i < detectionResult.results.length - 1) pdf.addPage();
     }
+
+    const fileName = `Litter_Report_${new Date().toISOString().split("T")[0]}.pdf`;
+    pdf.save(fileName);
+    debugLog(`📄 PDF downloaded: ${fileName}`, "success");
+  });
+
+  async function convertImageToBase64(url) {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 
-  // 📥 Save PDF
-  const fileName = `Litter_Report_${new Date().toISOString().split("T")[0]}.pdf`;
-  pdf.save(fileName);
-  debugLog(`📄 PDF downloaded: ${fileName}`, "success");
-});
-
-async function convertImageToBase64(url) {
-  const response = await fetch(url);
-  const blob = await response.blob();
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-}
-
-
-
-
-
-
-  // === INIT ===
+  // ================================================
+  // 🚀 INITIALIZATION
+  // ================================================
   imgElement.style.transition = "transform 0.2s ease";
   switchInput.checked = true;
   showingResult = true;

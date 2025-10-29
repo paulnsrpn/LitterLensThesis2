@@ -120,7 +120,9 @@
   margin: 0;
 }
 
-.threshold-dropdown, .label-mode-dropdown, .label-opacity-dropdown {
+.threshold-dropdown,
+.label-mode-dropdown,
+.label-opacity-dropdown {
   background-color: white;
   border: 2px solid #1d4d1d;
   color: #1d4d1d;
@@ -135,14 +137,22 @@
   margin-bottom: 12px;
 }
 
-.threshold-dropdown, .label-mode-dropdown, .label-opacity-dropdown :hover {
+/* ✅ Fixed: hover now applies to ALL dropdowns */
+.threshold-dropdown:hover,
+.label-mode-dropdown:hover,
+.label-opacity-dropdown:hover {
   background-color: #1d4d1d;
   color: white;
+
 }
 
-.threshold-dropdown,  .label-mode-dropdown, .label-opacity-dropdown :focus {
+/* ✅ Fixed: focus now correctly applies (removed space before :focus) */
+.threshold-dropdown:focus,
+.label-mode-dropdown:focus,
+.label-opacity-dropdown:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(52, 99, 71, 0.4);
+    border-radius:  8px;
 }
 
 
@@ -222,7 +232,7 @@
 
 .r-cards .receipt {
   width: 250px;
-  height: 360px;
+  height: auto;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -267,7 +277,7 @@
 
 .r-buttons button {
   border-radius: 20px;
-  background-color: #346347;
+  background-color: #3e905f;
   color: white;
   font-family: 'Afacad', sans-serif;
   font-size: 18px;

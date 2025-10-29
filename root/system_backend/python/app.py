@@ -1,3 +1,7 @@
+# =====================================================
+# 🚀 LITTERLENS FLASK BACKEND — YOLOv8 Real-Time Detection (FINAL)
+# =====================================================
+
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from ultralytics import YOLO
@@ -15,10 +19,15 @@ from collections import deque
 import math
 
 
+# =====================================================
+# ⚙️ FLASK CONFIGURATION
+# =====================================================
 app = Flask(__name__)
 CORS(app)
 
-# === PATH CONFIGURATION ===
+# =====================================================
+# 🗂 PATH CONFIGURATION
+# =====================================================
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 RUNS_DIR = os.path.join(SCRIPT_DIR, "runs")
 MODEL_PATH = os.path.join(SCRIPT_DIR, "my_model.pt")
@@ -28,11 +37,12 @@ os.makedirs(RUNS_DIR, exist_ok=True)
 # ✅ Load YOLO model
 print(f"📦 Loading YOLO model from: {MODEL_PATH}")
 model = YOLO(MODEL_PATH)
-
-# === CLASS COLOR MAP (BGR for OpenCV) ===
+# =====================================================
+# 🎨 CLASS COLOR MAP (BGR for OpenCV)
+# =====================================================
 CLASS_COLORS = {
     "Biological Debris": (255, 0, 0),
-    "Electronic Waste": (0, 165, 255),      
+    "Electronic Waste": (0, 165, 255),
     "Fabric and Textiles": (255, 255, 0),
     "Foamed Plastic": (255, 0, 255),
     "Glass and Ceramic": (255, 0, 0),
@@ -44,144 +54,101 @@ CLASS_COLORS = {
     "Sanitary Waste": (204, 204, 255)
 }
 
-
-# === Live Stats Tracking ===
-detection_threshold = 0.25  # default
-recent_objects = deque(maxlen=200)  # limited memory
-object_lifetime = 2.0  # seconds — consider object "gone" after this
+# =====================================================
+# 📈 LIVE DETECTION VARIABLES
+# =====================================================
+detection_threshold = 0.25
+recent_objects = deque(maxlen=200)
+object_lifetime = 2.0
 object_id_counter = 0
 last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
 running_total_detections = 0
 running_accuracy_sum = 0.0
 frame_count = 0
 class_totals = {}
-
 camera = None
 running = False
 lock = threading.Lock()
 
-def generate_frames():
-    global camera, running
-    camera = cv2.VideoCapture(0)
-    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-    running = True
+# =====================================================
+# 🎥 CAMERA AVAILABILITY CHECK
+# =====================================================
+def open_camera_index(idx, width=1280, height=720, open_wait=0.5):
+    """Helper: open a cv2.VideoCapture safely and set size."""
+    cap = cv2.VideoCapture(int(idx))
+    # small wait for camera to initialize
+    time.sleep(open_wait)
+    if cap is None or not cap.isOpened():
+        try:
+            cap.release()
+        except:
+            pass
+        return None
+    # set size (best-effort)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+    return cap
 
-    while running:
-        ret, frame = camera.read()
-        if not ret:
-            break
+# =====================================================
+# 🎯 /check_camera should also respect camera param
+# =====================================================
+@app.route('/check_camera')
+def check_camera():
+    """
+    Checks if a camera is connected and accessible.
+    Accepts ?camera=<index>
+    """
+    cam_param = request.args.get('camera', default='0')
+    try:
+        camera_index = int(cam_param)
+        if camera_index < 0:
+            camera_index = 0
+    except:
+        camera_index = 0
 
-        # 🕒 Start time for speed measurement
-        start_time = time.time()
+    try:
+        cap = cv2.VideoCapture(camera_index)
+        time.sleep(0.3)  # give it a moment
+        if not cap.isOpened():
+            cap.release()
+            print(f"❌ No camera detected at index {camera_index}.")
+            return jsonify({"detected": False}), 200
 
-        # 🧠 YOLO detection
-        results = model(frame, conf=detection_threshold)[0]
-        dets = _serialize_dets(results)
+        ret, frame = cap.read()
+        cap.release()
+        if not ret or frame is None:
+            print(f"⚠️ Camera {camera_index} opened but couldn't read a frame.")
+            return jsonify({"detected": False}), 200
 
-        # 🖼️ Draw boxes
-        for d in dets:
-            x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
-            label = model.names[d["cls"]]
-            conf = int(d["conf"] * 100)
-            color = CLASS_COLORS.get(label, (255, 255, 255))
-            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
-            cv2.putText(frame, f"{label} {conf}%", (x1, max(0, y1 - 5)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+        print(f"✅ Camera {camera_index} detected and working.")
+        return jsonify({"detected": True}), 200
+    except Exception as e:
+        print(f"❌ Camera check error for {camera_index}: {e}")
+        return jsonify({"detected": False}), 500
 
-        # 🕒 Calculate speed (seconds/frame)
-        speed = time.time() - start_time
+# =====================================================
+# 🧮 HELPER FUNCTIONS
+# =====================================================
+def _serialize_dets(results):
+    dets = []
+    for box in results.boxes:
+        x1, y1, x2, y2 = map(float, box.xyxy[0].tolist())
+        conf = float(box.conf.item())
+        cls_id = int(box.cls.item())
+        dets.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "conf": conf, "cls": cls_id})
+    return dets
 
-        # ✅ Update stats for frontend
-        update_summary(dets, speed)
-
-        # 📸 Encode frame for MJPEG stream
-        _, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
-
-        time.sleep(0.03)
-
-    if camera is not None:
-        camera.release()
-        camera = None
-
-
-@app.route('/live')
-def live_detection():
-    global running, running_total_detections, running_accuracy_sum, frame_count, class_totals, last_summary
-    # reset counters when starting new stream
-    running_total_detections = 0
-    running_accuracy_sum = 0.0
-    frame_count = 0
-    class_totals = {}
-    last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
-
-    if running:
-        running = False
-        time.sleep(0.5)
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-@app.route('/stop_camera')
-def stop_camera():
-    global running
-    running = False
-    return "Camera stopped", 200
-
-# === Detection Summary (For Live Stats Update) ===
-last_summary = {"total": 0, "accuracy": 0, "speed": 0.0, "classes": {}}
-last_frame_time = time.time()
-
-def update_summary(dets, speed):
-    global last_summary, running_total_detections, running_accuracy_sum, frame_count, class_totals, recent_objects, object_id_counter
-
-    current_time = time.time()
-    frame_count += 1
-    summary, total_items = _summary_from_dets(dets)
-    acc = calculate_image_accuracy(dets)
-
-    # Clean old detections
-    while recent_objects and current_time - recent_objects[0]['time'] > object_lifetime:
-        recent_objects.popleft()
-
-    new_detections = 0
-
+def _summary_from_dets(dets):
+    summary = {}
     for d in dets:
-        label = model.names[d["cls"]]
-        box = (d["x1"], d["y1"], d["x2"], d["y2"])
-        matched = False
+        lbl = model.names[d["cls"]]
+        summary[lbl] = summary.get(lbl, 0) + 1
+    return summary, sum(summary.values())
 
-        # check against recently seen objects
-        for obj in recent_objects:
-            if obj['label'] == label and iou(obj['box'], box) > 0.5:
-                matched = True
-                obj['time'] = current_time  # refresh timestamp
-                break
-
-        if not matched:
-            # new object detected
-            object_id_counter += 1
-            recent_objects.append({'id': object_id_counter, 'label': label, 'box': box, 'time': current_time})
-            class_totals[label] = class_totals.get(label, 0) + 1
-            new_detections += 1
-
-    running_total_detections += new_detections
-    running_accuracy_sum += acc
-
-    avg_acc = (running_accuracy_sum / frame_count) if frame_count > 0 else 0.0
-    last_summary = {
-        "total": running_total_detections,
-        "accuracy": round(avg_acc, 2),
-        "speed": round(speed, 2),
-        "classes": class_totals
-    }
-
-
-@app.route('/live_stats')
-def live_stats():
-    return jsonify(last_summary)
-
+def calculate_image_accuracy(dets):
+    if not dets:
+        return 0.0
+    return round(sum(d['conf'] for d in dets) / len(dets) * 100, 2)
 
 def iou(box1, box2):
     """Compute Intersection-over-Union between two boxes."""
@@ -202,6 +169,175 @@ def iou(box1, box2):
         return 0
     return inter_area / union
 
+# =====================================================
+# 📊 UPDATE SUMMARY (Non-Duplicating Counting)
+# =====================================================
+def update_summary(dets, speed):
+    global last_summary, running_total_detections, running_accuracy_sum, frame_count, class_totals, recent_objects, object_id_counter
+
+    current_time = time.time()
+    frame_count += 1
+    acc = calculate_image_accuracy(dets)
+
+    # 🧹 Remove old detections (expired)
+    while recent_objects and current_time - recent_objects[0]['time'] > object_lifetime:
+        recent_objects.popleft()
+
+    new_detections = 0
+
+    # 🧠 Process current detections
+    for d in dets:
+        label = model.names[d["cls"]]
+        box = (d["x1"], d["y1"], d["x2"], d["y2"])
+        matched = False
+
+        # 🔍 Check for match with existing object memory
+        for obj in list(recent_objects):
+            if obj['label'] == label and iou(obj['box'], box) > 0.6:
+                # same litter item → just update timestamp, not new
+                obj['box'] = box  # update position
+                obj['time'] = current_time
+                matched = True
+                break
+
+        if not matched:
+            # 🆕 New litter item (not overlapping with recent ones)
+            object_id_counter += 1
+            recent_objects.append({
+                'id': object_id_counter,
+                'label': label,
+                'box': box,
+                'time': current_time
+            })
+            class_totals[label] = class_totals.get(label, 0) + 1
+            new_detections += 1
+
+    running_total_detections += new_detections
+    running_accuracy_sum += acc
+
+    avg_acc = (running_accuracy_sum / frame_count) if frame_count > 0 else 0.0
+
+    # ✅ Update summary for /live_stats
+    last_summary = {
+        "total": running_total_detections,
+        "accuracy": round(avg_acc, 2),
+        "speed": round(speed, 2),
+        "classes": dict(sorted(class_totals.items(), key=lambda x: x[1], reverse=True))
+    }
+
+# =====================================================
+# 🎥 CAMERA STREAM GENERATOR (accepts camera_index)
+# =====================================================
+def generate_frames(camera_index=0):
+    """
+    Yield MJPEG frames from the specified camera index.
+    camera_index: int
+    """
+    global camera, running
+    print(f"🎬 Starting camera stream on device {camera_index}...")
+    try:
+        camera = cv2.VideoCapture(int(camera_index))
+    except Exception as e:
+        print("❌ Error opening camera:", e)
+        running = False
+        yield b''
+        return
+
+    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
+    if not camera.isOpened():
+        print(f"❌ Failed to open camera {camera_index}.")
+        running = False
+        if camera is not None:
+            camera.release()
+            camera = None
+        yield b''
+        return
+
+    print(f"✅ Camera {camera_index} opened.")
+    running = True
+
+    while running:
+        ret, frame = camera.read()
+        if not ret or frame is None:
+            print("⚠️ Failed to read frame. Exiting stream loop.")
+            break
+
+        start_time = time.time()
+        try:
+            results = model(frame, conf=detection_threshold)[0]
+            dets = _serialize_dets(results)
+        except Exception as e:
+            # In case model call fails, continue streaming original frame
+            print("⚠️ Model detection error:", e)
+            dets = []
+
+        # Update stats and draw boxes (your existing logic)
+        speed = time.time() - start_time
+        update_summary(dets, speed)
+
+        for d in dets:
+            x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
+            label = model.names[d["cls"]]
+            conf = int(d["conf"] * 100)
+            color = CLASS_COLORS.get(label, (255, 255, 255))
+            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+            cv2.putText(frame, f"{label} {conf}%", (x1, max(0, y1 - 5)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+
+        _, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+
+        time.sleep(0.03)
+
+    print("🛑 Camera streaming stopped.")
+    if camera is not None:
+        camera.release()
+        camera = None
+
+@app.route('/live')
+def live_detection():
+    """
+    Start MJPEG stream. Accepts ?camera=<index>
+    """
+    global running, running_total_detections, running_accuracy_sum, frame_count, class_totals, last_summary
+
+    # reset counters for a fresh stream
+    running_total_detections = 0
+    running_accuracy_sum = 0.0
+    frame_count = 0
+    class_totals = {}
+    last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
+
+    # parse camera param
+    cam_param = request.args.get('camera', default='0')
+    try:
+        camera_index = int(cam_param)
+        if camera_index < 0:
+            camera_index = 0
+    except:
+        camera_index = 0
+
+    # if a stream is already running, stop it briefly so we can open new device
+    if running:
+        running = False
+        time.sleep(0.5)
+
+    print(f"🌍 /live called for camera {camera_index}")
+    return Response(generate_frames(camera_index), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/stop_camera')
+def stop_camera():
+    global running
+    running = False
+    return "Camera stopped", 200
+
+@app.route('/live_stats')
+def live_stats():
+    return jsonify(last_summary)
+
 @app.route('/reset_stats', methods=['POST'])
 def reset_stats():
     global last_summary, running_total_detections, running_accuracy_sum, frame_count, class_totals
@@ -213,37 +349,25 @@ def reset_stats():
     print("🔁 Stats reset successful")
     return {"message": "Stats reset"}, 200
 
-
-
 @app.route('/set_threshold', methods=['POST'])
 def set_threshold():
     global detection_threshold
     data = request.get_json()
     try:
         val = float(data.get("threshold", 0.25))
-        detection_threshold = max(0.0, min(1.0, val))  # clamp between 0 and 1
+        detection_threshold = max(0.0, min(1.0, val))
         print(f"🛠 Detection threshold set to: {detection_threshold}")
         return {"message": "Threshold updated", "threshold": detection_threshold}, 200
     except Exception as e:
         return {"error": str(e)}, 400
 
-
-
-
-
-
-
-
-
-
-# === Helper Functions ===
+# =====================================================
+# 🧮 HELPER FUNCTIONS
+# =====================================================
 def _parse_opacity(val, default=1.0):
     try:
         f = float(val)
-        if f > 1.0:
-            f = f / 100.0
-        f = max(0.0, min(1.0, f))
-        return f
+        return max(0.0, min(1.0, f / 100 if f > 1.0 else f))
     except:
         return default
 
@@ -264,20 +388,23 @@ def _summary_from_dets(dets):
     return summary, sum(summary.values())
 
 def calculate_image_accuracy(dets):
-    """Compute per-image accuracy based on mean confidence."""
     if not dets:
         return 0.0
-    total_conf = sum(d['conf'] for d in dets)
-    mean_conf = total_conf / len(dets)
-    return round(mean_conf * 100, 2)
+    return round(sum(d['conf'] for d in dets) / len(dets) * 100, 2)
 
 def render_from_dets(orig_path, dets, output_path, mode="confidence", box_opacity=1.0):
+    """
+    Draws bounding boxes with visual cues:
+    - >=70% confidence: normal outline
+    - 25–70%: semi-transparent filled box
+    - <25%: fully filled
+    """
     img = cv2.imread(orig_path)
     if img is None:
         raise RuntimeError(f"Could not read image: {orig_path}")
 
     overlay = img.copy()
-    thickness = 2
+    thickness = 3
 
     for d in dets:
         x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
@@ -285,25 +412,49 @@ def render_from_dets(orig_path, dets, output_path, mode="confidence", box_opacit
         color = CLASS_COLORS.get(label_name, (255, 255, 255))
         conf_pct = int(round(d["conf"] * 100))
 
-        # Confidence-based fill
-        if 25 <= conf_pct < 70:
-            sub_overlay = overlay.copy()
-            cv2.rectangle(sub_overlay, (x1, y1), (x2, y2), color, -1)
-            cv2.addWeighted(sub_overlay, 0.3, overlay, 0.7, 0, overlay)
-        elif conf_pct < 25:
-            cv2.rectangle(overlay, (x1, y1), (x2, y2), color, -1)
+        # Create copy for overlay transparency blending
+        sub_overlay = overlay.copy()
 
+        # 🟡 Confidence-based transparency mapping (lower conf = more solid)
+        if conf_pct < 10:
+            alpha = 1.0   # fully solid (worst)
+        elif conf_pct < 20:
+            alpha = 0.9
+        elif conf_pct < 30:
+            alpha = 0.8
+        elif conf_pct < 40:
+            alpha = 0.7
+        elif conf_pct < 50:
+            alpha = 0.6
+        elif conf_pct < 60:
+            alpha = 0.5
+        elif conf_pct < 70:
+            alpha = 0.4
+        elif conf_pct < 80:
+            alpha = 0.3
+        elif conf_pct < 90:
+            alpha = 0.2
+        else:
+            alpha = 0.1   # most transparent (highest confidence)
+
+        # 🟢 Apply fill with computed alpha (only if alpha < 1)
+        cv2.rectangle(sub_overlay, (x1, y1), (x2, y2), color, -1)
+        cv2.addWeighted(sub_overlay, alpha, overlay, 1 - alpha, 0, overlay)
+
+        # 🟣 Always draw box outline (to keep edges visible)
         cv2.rectangle(overlay, (x1, y1), (x2, y2), color, thickness)
 
+    # 🔵 Blend final overlay with original image
     img = cv2.addWeighted(overlay, box_opacity, img, 1 - box_opacity, 0)
 
-    # === Labels
+    # === Labels ===
     for d in dets:
         x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
         conf_pct = int(round(d["conf"] * 100))
         label_name = model.names[d["cls"]]
         color = CLASS_COLORS.get(label_name, (255, 255, 255))
 
+        # 🏷️ Label mode logic
         text = ""
         if mode == "confidence":
             text = f"{conf_pct}%"
@@ -313,26 +464,30 @@ def render_from_dets(orig_path, dets, output_path, mode="confidence", box_opacit
         if text:
             (tw, th), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
             cv2.rectangle(img, (x1, max(0, y1 - th - 10)), (x1 + tw, y1), color, -1)
-            cv2.putText(img, text, (x1, max(0, y1 - 5)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+            cv2.putText(img, text, (x1, max(0, y1 - 5)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
     cv2.imwrite(output_path, img)
 
+# =====================================================
+# 📦 FILE HANDLING ROUTES
+# =====================================================
 @app.route('/runs/<path:filename>')
 def serve_runs(filename):
-    # Serve files from the "runs" folder
     response = make_response(send_from_directory(RUNS_DIR, filename))
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers.update({
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+    })
     return response
-
 
 @app.route('/')
 def home():
-    return "✅ Flask YOLO detection API with dynamic accuracy is running."
+    return "✅ Flask YOLO detection API is running."
 
-# === Analyze Endpoint ===
+# =====================================================
+# 📸 DETECTION ROUTES — ANALYZE, REDETECT, RERENDER
+# =====================================================
 @app.route('/analyze', methods=['POST'])
 def analyze_image():
     try:
@@ -400,7 +555,7 @@ def analyze_image():
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
-# === Redetect Endpoint ===
+
 @app.route('/redetect', methods=['POST'])
 def redetect():
     try:
@@ -420,7 +575,7 @@ def redetect():
 
         orig_images = sorted([f for f in os.listdir(run_folder) if "_orig" in f])
         for orig_img in orig_images:
-            dets_img = f"{orig_img.replace('_orig_', '_dets_').rsplit('.',1)[0]}.json"
+            dets_img = f"{orig_img.replace('_orig_', '_dets_').rsplit('.', 1)[0]}.json"
             result_img = orig_img.replace("_orig", "_result")
             orig_path = os.path.join(run_folder, orig_img)
             result_path = os.path.join(run_folder, result_img)
@@ -450,7 +605,7 @@ def redetect():
                 'accuracy': image_accuracy
             })
 
-        mean_accuracy = round(sum([r['accuracy'] for r in detection_results]) / len(detection_results), 2) if detection_results else 0.0
+        mean_accuracy = round(sum([r['accuracy'] for r in detection_results]) / len(detection_results), 2)
 
         return jsonify({
             'message': '✅ Redetection complete',
@@ -465,7 +620,7 @@ def redetect():
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
-# === Rerender Endpoint ===
+
 @app.route('/rerender', methods=['POST'])
 def rerender():
     try:
@@ -484,7 +639,7 @@ def rerender():
 
         orig_images = sorted([f for f in os.listdir(run_folder) if "_orig" in f])
         for orig_img in orig_images:
-            dets_img = f"{orig_img.replace('_orig_', '_dets_').rsplit('.',1)[0]}.json"
+            dets_img = f"{orig_img.replace('_orig_', '_dets_').rsplit('.', 1)[0]}.json"
             result_img = orig_img.replace("_orig", "_result")
             orig_path = os.path.join(run_folder, orig_img)
             result_path = os.path.join(run_folder, result_img)
@@ -521,7 +676,10 @@ def rerender():
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
-# === Cleanup ===
+
+# =====================================================
+# 🧹 CLEANUP ROUTE
+# =====================================================
 @app.route('/cleanup', methods=['POST'])
 def cleanup():
     try:
@@ -535,5 +693,9 @@ def cleanup():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+# =====================================================
+# 🏁 RUN APP
+# =====================================================
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)

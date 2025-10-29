@@ -1,11 +1,17 @@
+// ================================================
+// 📤 UPLOAD & ANALYZE SCRIPT — Dropzone + Flask Integration
+// ================================================
+
 // ✅ Disable autoDiscover to avoid double initialization
 Dropzone.autoDiscover = false;
 
-// 🟢 Initialize Dropzone
+// ================================================
+// 🟢 Initialize Dropzone Configuration
+// ================================================
 const myDropzone = new Dropzone("#my-dropzone", {
   url: "http://127.0.0.1:5000/analyze", // Flask endpoint
   maxFiles: 10,
-  maxFilesize: 5,
+  maxFilesize: 5, // MB
   acceptedFiles: "image/*",
   addRemoveLinks: true,
   dictRemoveFile: "×",
@@ -17,25 +23,31 @@ const myDropzone = new Dropzone("#my-dropzone", {
   paramName: "image",
   method: "post",
 
+  // 🧩 Event Initialization
   init: function () {
     this.on("error", function (file, errorMessage) {
       console.error("❌ Upload error:", errorMessage);
       showErrorModal("❌ Upload failed. Please check your file.");
-    }); 
+    });
   }
 });
 
-// 🟡 Drag-over feedback
+// ================================================
+// 🟡 Drag & Drop Visual Feedback
+// ================================================
 const dropzoneElement = document.getElementById("my-dropzone");
+
 myDropzone.on("dragenter", () => dropzoneElement.classList.add("drag-over"));
 myDropzone.on("dragleave", () => dropzoneElement.classList.remove("drag-over"));
 myDropzone.on("drop", () => dropzoneElement.classList.remove("drag-over"));
 
-// 🖱 Analyze Button
+// ================================================
+// 🖱 ANALYZE BUTTON HANDLER
+// ================================================
 const analyzeBtn = document.getElementById("analyze-btn");
 const originalBtnText = analyzeBtn.textContent;
 
-document.getElementById("analyze-btn").addEventListener("click", () => {
+analyzeBtn.addEventListener("click", () => {
   if (myDropzone.files.length === 0) {
     showErrorModal("⚠️ Please upload at least one image before analyzing.");
     return;
@@ -43,14 +55,16 @@ document.getElementById("analyze-btn").addEventListener("click", () => {
 
   console.log(`📸 Sending ${myDropzone.files.length} images to Flask...`);
 
-  // ✨ Start loading animation
+  // ✨ Show loading animation
   analyzeBtn.disabled = true;
   analyzeBtn.innerHTML = `<div class="spinner"></div> Analyzing...`;
 
   myDropzone.processQueue();
 });
 
-// ✅ On success
+// ================================================
+// ✅ SUCCESS — When Flask returns results
+// ================================================
 myDropzone.on("successmultiple", (files, response) => {
   console.log("✅ Flask response:", response);
   localStorage.setItem("detectionResult", JSON.stringify(response));
@@ -59,32 +73,38 @@ myDropzone.on("successmultiple", (files, response) => {
   analyzeBtn.disabled = false;
   analyzeBtn.textContent = originalBtnText;
 
-  // ✅ Redirect to result page
+  // 🌍 Redirect to result page
   window.location.href = "../php/index_result.php";
 });
 
-// ❌ On error
+// ================================================
+// ❌ ERROR — When Flask or Upload Fails
+// ================================================
 myDropzone.on("errormultiple", (files, errorMessage) => {
   console.error("❌ Error during detection:", errorMessage);
   showErrorModal("❌ Detection failed. Check Flask server.");
 
-  // 🛑 Stop loading animation
+  // 🛑 Reset button state
   analyzeBtn.disabled = false;
   analyzeBtn.textContent = originalBtnText;
 });
 
-/* ===============================
-   🔴 Error & Success Modals
-================================= */
+// ================================================
+// 🔴 Error & Success Modal Utility
+// ================================================
 function showErrorModal(message) {
   createModal(message, "#d9534f");
 }
 
+// ================================================
+// 💬 Modal Creator Function
+// ================================================
 function createModal(message, bgColor) {
   let modal = document.getElementById("feedback-modal");
   let msg = document.getElementById("feedback-message");
 
   if (!modal) {
+    // 🪟 Create modal structure
     modal = document.createElement("div");
     modal.id = "feedback-modal";
     modal.style.position = "fixed";

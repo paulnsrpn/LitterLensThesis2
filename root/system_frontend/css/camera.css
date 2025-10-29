@@ -1,14 +1,190 @@
+@import url("https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:ital,wght@0,300;0,400;0,500;0,600&family=Montserrat+Alternates:wght@400;500;600;700&display=swap");
+
+/* ============================= */
+/* ======== GLOBAL RESET ======= */
+/* ============================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Afacad", sans-serif;
+  background-color: #f8f8f8;
+  color: #1a1a1a;
+  min-height: 100vh;
+}
+
+/* ============================= */
+/* ======== SIDEBAR NAV ======== */
+/* ============================= */
+.a-nav {
+  width: 270px;
+  height: 100vh;
+  background-color: #d9d9d9;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 12px 0;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.a-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 20px 6px 20px;
+  border-bottom: 1px solid #c7c7c7;
+}
+
+.a-header img {
+  width: 140px;
+  height: auto;
+}
+
+.a-header p {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.a-menu {
+  display: flex;
+  flex-direction: column;
+  margin-top: 14px;
+  gap: 4px;
+}
+
+.a-menu a {
+  text-decoration: none;
+  color: #000;
+  font-size: 17px;
+  font-weight: 500;
+  margin: 3px 15px;
+  padding: 8px 36px;
+  border-radius: 25px;
+  transition: all 0.25s ease;
+}
+
+.a-menu a:hover {
+  background-color: rgba(52, 99, 71, 0.15);
+  color: #2e5339;
+}
+
+.a-menu a.active {
+  background-color: #346347;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Real-time tab highlight */
+.a-menu a[data-tab="realtime"].active,
+.a-menu a[data-tab="realtime"]:hover {
+  background-color: #141E46;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 25px 0 0 25px;
+}
+
+/* ============================= */
+/* ======== CONTENT AREA ======= */
+/* ============================= */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* ============================= */
+/* ===== REAL-TIME LAYOUT ===== */
+/* ============================= */
+#realtime {
+  margin-left: 270px;
+  padding: 40px 50px;
+  background: #141E46;
+  color: white;
+  min-height: 100vh;
+  font-family: "Afacad", sans-serif;
+}
+
+.realtime-header {
+  padding-bottom: 20px;
+}
+
+.realtime-header h2 {
+  font-size: 26px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.realtime-header p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* ===================================================== */
+/* 🎥 CAMERA + STATS GRID (Live Feed left | Stats right) */
+/* ===================================================== */
+.realtime-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+/* 🎥 CAMERA CONTAINER */
+.cam-container {
+  background: #0d1640;
+  border: 1.5px solid #5a678d;
+  border-radius: 10px;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 800px;
+}
+
+.cam-container h2 {
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #5a678d;
+}
+
+/* CAMERA HEADER */
+.camera-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+#camera-select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: transparent;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #d9d9d9;
+}
+
+/* ===================================================== */
+/* ✅ CAMERA CONTROLS */
+/* ===================================================== */
 .cam-controls {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.threshold-select {
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
 }
 
 .cam-controls button {
@@ -17,59 +193,272 @@
   cursor: pointer;
   border-radius: 6px;
   font-size: 14px;
+  transition: 0.3s ease;
 }
 
-#start-btn { background: #28a745; color: white; }
-#stop-btn { background: #dc3545; color: white; }
-#refresh-btn { background: #007bff; color: white; }
-
-.status {
-  font-weight: bold;
-  color: red;
+#startBtn {
+  background-color: #28a745;
+  color: white;
+}
+#startBtn:hover {
+  background-color: #1c994e;
 }
 
+#stopBtn {
+  background-color: #dc3545;
+  color: white;
+}
+#stopBtn:hover {
+  background-color: #b02a37;
+}
 
-.preview-wrapper {
+#refresh-btn {
+  background-color: #007bff;
+  color: white;
+}
+#refresh-btn:hover {
+  background-color: #0056b3;
+}
+
+/* ===================================================== */
+/* ✅ CAMERA PREVIEW + NO CAMERA OVERLAY */
+/* ===================================================== */
+.cam-preview {
   position: relative;
   width: 100%;
-  max-height: 480px;
-  border-radius: 8px;
+  height: 400px;
   background: #000;
+  border-radius: 8px;
+  border: 1px solid #5a678d;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#liveFeed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 8px;
+}
+
+/* ⚠️ Overlay when no camera */
+.noDisplay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.noDisplay {
-  position: absolute;
-  color: #fff;
-  text-align: center;
-  font-size: 16px;
-  padding: 10px;
   background: rgba(0, 0, 0, 0.6);
-  border-radius: 6px;
+  color: #ffffffcc;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 5;
 }
 
- #resultImage {
-      margin-top: 20px;
-      display: none;
-    }
+.noDisplay i {
+  color: #ff5555;
+  margin-right: 6px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
 
-.status {
-  font-weight: 600;
+@keyframes pulse {
+  0% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0.6; transform: scale(1); }
+}
+
+/* ===================================================== */
+/* ✅ LOCATION DETAILS */
+/* ===================================================== */
+.location-details {
+  margin-top: 15px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.location-details h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.location-details p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ===================================================== */
+/* ✅ STATUS LINE BELOW CAMERA (Time left | Status right) */
+/* ===================================================== */
+.detection-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #fff;
+  padding: 0 5px;
+}
+
+.detection-status .time {
+  color: #45F58D;
+  font-weight: bold;
+}
+
+.detection-status .status {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
-.status.loading {
-  color: #ff9800; /* orange */
+/* Colored states */
+.status.loading { color: #ff9800; }
+.status.active { color: #45F58D; }
+.status.error { color: #F54545; }
+.status.idle { color: #D9D9D9; }
+
+/* ===================================================== */
+/* ✅ STATS SIDE (Right Column) */
+/* ===================================================== */
+.stats-side {
+  width: 50vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.status.active {
-  color: #4caf50; /* green */
+.stats-card {
+  background: #0d1640;
+  border: 1.5px solid #5a678d;
+  border-radius: 10px;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-.status.error {
-  color: #f44336; /* red */
+.stats-card h3 {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.stats-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.stats-item .label {
+  color: #bbb;
+}
+
+.stats-item .value {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Table inside stats */
+.litter-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.litter-table th,
+.litter-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.litter-table th {
+  color: #aaa;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.litter-table td {
+  color: #fff;
+}
+
+/* ===================================================== */
+/* ✅ FOOTER */
+/* ===================================================== */
+.realtime-footer {
+  text-align: center;
+  color: #d3d6f3;
+  font-style: italic;
+  font-size: 13px;
+  margin-top: 25px;
+  line-height: 1.5;
+  opacity: 0.87;
+  padding-top: 20px;
+}
+
+.realtime-footer span {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* ===================================================== */
+/* ✅ THRESHOLD SELECT (Match button style) */
+/* ===================================================== */
+#threshold-select {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  appearance: none;
+  text-align: center;
+}
+
+#threshold-select:hover {
+  background-color: #1c994e;
+}
+
+#threshold-select:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.6);
+}
+
+/* ===================================================== */
+/* ✅ RESPONSIVE FIXES */
+/* ===================================================== */
+@media (max-width: 1024px) {
+  .realtime-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-side {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stats-card {
+    flex: 1 1 45%;
+  }
+
+  #realtime {
+    margin-left: 0;
+    padding: 30px 20px;
+  }
 }
