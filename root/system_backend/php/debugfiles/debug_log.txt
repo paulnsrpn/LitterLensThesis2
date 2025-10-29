@@ -1,0 +1,55 @@
+RAW: {"totalDetections":41,"topDetectedLitter":"Plastic","detectionSpeed":"0.07s/frame","detectionAccuracy":29.52,"litterSummary":{"Biological Debris":1,"Plastic":40},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+❌ ERROR: No realtime_id returned after insert.
+RAW: {"totalDetections":1,"topDetectedLitter":"Plastic","detectionSpeed":"0.07s/frame","detectionAccuracy":1.76,"litterSummary":{"Plastic":1},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+❌ ERROR: No realtime_id returned after insert.
+RAW: {"totalDetections":8,"topDetectedLitter":"Plastic","detectionSpeed":"0.07s/frame","detectionAccuracy":6.68,"litterSummary":{"Biological Debris":1,"Plastic":7},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+❌ ERROR: No realtime_id returned after insert.
+RAW JSON: {"totalDetections":8,"topDetectedLitter":"Plastic","detectionSpeed":"0.06s/frame","detectionAccuracy":10.99,"litterSummary":{"Biological Debris":1,"Plastic":7},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":8,"top_detected_litter":"Plastic","detection_speed":0.06,"detection_accuracy":10.99,"latitude":"14.683341","longitude":"121.054822"}
+Insert Response: {"code":"23503","details":"Key (admin_id)=(1) is not present in table \"admin\".","hint":null,"message":"insert or update on table \"realtime_detections\" violates foreign key constraint \"fk_realtime_admin\""}
+❌ ERROR: No realtime_id returned after insert. Response: {"code":"23503","details":"Key (admin_id)=(1) is not present in table \"admin\".","hint":null,"message":"insert or update on table \"realtime_detections\" violates foreign key constraint \"fk_realtime_admin\""}
+RAW JSON: {"totalDetections":6,"topDetectedLitter":"Plastic","detectionSpeed":"0.07s/frame","detectionAccuracy":7.27,"litterSummary":{"Biological Debris":1,"Plastic":5},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":6,"top_detected_litter":"Plastic","detection_speed":0.07,"detection_accuracy":7.27,"latitude":"14.683341","longitude":"121.054822"}
+Insert Response: [{"realtime_id":7,"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":6,"top_detected_litter":"Plastic","detection_speed":0.07,"detection_accuracy":7.27,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T19:47:42.076128"}]
+⚠️ Litter type not found: Biological Debris
+Inserted litter summary: {"realtime_id":7,"littertype_id":2,"litter_count":5}
+RAW JSON: {"totalDetections":0,"topDetectedLitter":"--","detectionSpeed":"0.07s/frame","detectionAccuracy":0,"litterSummary":{},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":0,"top_detected_litter":"--","detection_speed":0.07,"detection_accuracy":0,"latitude":"14.683341","longitude":"121.054822"}
+Insert Response: [{"realtime_id":8,"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":0,"top_detected_litter":"--","detection_speed":0.07,"detection_accuracy":0,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T20:10:09.24017"}]
+RAW JSON: {"totalDetections":1,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.07s/frame","detectionAccuracy":50.12,"litterSummary":{"Organic Debris":1},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":1,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":50.12,"latitude":"14.683341","longitude":"121.054822"}
+Insert Response: [{"realtime_id":9,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":1,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":50.12,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T20:12:48.533209"}]
+Inserted litter summary: {"realtime_id":9,"littertype_id":1,"litter_count":1}
+RAW JSON: {"totalDetections":1,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.07s/frame","detectionAccuracy":0.76,"litterSummary":{"Organic Debris":1},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":1,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":0.76,"latitude":"14.683341","longitude":"121.054822"}
+Insert Response: [{"realtime_id":10,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":1,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":0.76,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T20:15:38.846756"}]
+Inserted litter summary: {"realtime_id":10,"littertype_id":1,"litter_count":1}
+RAW JSON: {"totalDetections":0,"topDetectedLitter":"--","detectionSpeed":"0.06s/frame","detectionAccuracy":0,"litterSummary":{},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":0,"top_detected_litter":"--","detection_speed":0.06,"detection_accuracy":0,"latitude":"14.683341","longitude":"121.054822"}
+Insert Response: [{"realtime_id":11,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":0,"top_detected_litter":"--","detection_speed":0.06,"detection_accuracy":0,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T20:17:26.160569"}]
+RAW JSON: {"totalDetections":6,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.07s/frame","detectionAccuracy":7.6,"litterSummary":{"Organic Debris":3,"Plastic":3},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":6,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":7.6,"latitude":"14.683341","longitude":"121.054822"}
+Insert Response: [{"realtime_id":12,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":6,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":7.6,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T20:20:54.670419"}]
+Inserted litter summary: {"realtime_id":12,"littertype_id":1,"litter_count":3}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-10-29","quantity":3,"confidence_lvl":7.6,"detection_time":"21:20:55"}
+Inserted litter summary: {"realtime_id":12,"littertype_id":2,"litter_count":3}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-10-29","quantity":3,"confidence_lvl":7.6,"detection_time":"21:20:57"}
+Activity logged for admin 2
+RAW JSON: {"totalDetections":0,"topDetectedLitter":"--","detectionSpeed":"0s/frame","detectionAccuracy":0,"litterSummary":{},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":0,"top_detected_litter":"--","detection_speed":0,"detection_accuracy":0,"latitude":"14.683341","longitude":"121.054822"}
+Insert Response: [{"realtime_id":13,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":0,"top_detected_litter":"--","detection_speed":0,"detection_accuracy":0,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T20:23:36.289138"}]
+Activity logged for admin 2
+RAW JSON: {"totalDetections":3,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.07s/frame","detectionAccuracy":3.83,"litterSummary":{"Organic Debris":3},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":3,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":3.83,"latitude":"14.683341","longitude":"121.054822","date":"2025-10-29"}
+Insert Response: [{"realtime_id":14,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":3,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":3.83,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T20:27:12.927828","date":"2025-10-29"}]
+Inserted litter summary: {"realtime_id":14,"littertype_id":1,"litter_count":3}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-10-29","quantity":3,"confidence_lvl":3.83,"detection_time":"21:27:13"}
+Activity logged for admin 2
+RAW JSON: {"totalDetections":4,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.07s/frame","detectionAccuracy":5.24,"litterSummary":{"Organic Debris":3,"Plastic":1},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":5.24,"latitude":"14.683341","longitude":"121.054822","date":"2025-10-29"}
+Insert Response: [{"realtime_id":15,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":5.24,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T20:45:53.350758","date":"2025-10-29"}]
+Inserted litter summary: {"realtime_id":15,"littertype_id":1,"litter_count":3}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-10-29","quantity":3,"confidence_lvl":5.24,"detection_time":"21:45:54"}
+Inserted litter summary: {"realtime_id":15,"littertype_id":2,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-10-29","quantity":1,"confidence_lvl":5.24,"detection_time":"21:45:56"}
+Activity logged for admin 2

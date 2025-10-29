@@ -1773,3 +1773,25 @@ input[type="text"]:focus {
   background-color: #173f27;
 }
 
+.detection-header {
+  display: flex;
+  justify-content: space-between; /* Pushes title left, button right */
+  align-items: center;            /* Vertically centers them */
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+#uploadDb-btn {
+  background-color: #007bff; /* or your theme color */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#uploadDb-btn:hover {
+  background-color: #0056b3;
+}

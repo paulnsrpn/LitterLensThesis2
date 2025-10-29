@@ -439,6 +439,86 @@ body {
   box-shadow: 0 0 5px rgba(40, 167, 69, 0.6);
 }
 
+/* ====== UPLOAD MODAL ====== */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.5);
+  z-index: 10000;
+  transition: opacity 0.3s ease;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  padding: 25px 30px;
+  text-align: center;
+  width: 420px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-content h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.summary-box {
+  background: #f8f8f8;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #444;
+  text-align: left;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-confirm {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-confirm:hover {
+  background: #218838;
+}
+
+.btn-cancel:hover {
+  background: #c82333;
+}
+
+
+
+
+
+
 /* ===================================================== */
 /* ✅ RESPONSIVE FIXES */
 /* ===================================================== */

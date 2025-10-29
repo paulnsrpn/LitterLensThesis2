@@ -43,8 +43,8 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
   <?php else : ?>
     <span style="color:#faa;">⚠️ No coordinates found.</span>
   <?php endif; ?>
-</div> -->
-
+</div> 
+ -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,9 +81,6 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
             <link href="https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.css" rel="stylesheet" />
             <script src="https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.js"></script>
     </head>
-
-
-
 
   <body>
             <!-- ==============================================
@@ -301,9 +298,16 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
                   <!-- 📊 RIGHT: STATS PANEL -->
                   <div class="stats-side">
 
+                  
+
                     <!-- Detection Stats Card -->
                     <div class="stats-card">
-                      <h3>Detection Stats</h3>
+                     <h3 class="detection-header">
+                        Detection Stats
+                        <button id="uploadDb-btn">
+                           <i class="fa-solid fa-upload"></i> Upload to Database
+                        </button>
+                      </h3>
                       <div class="stats-item">
                         <p class="label">Total Detections</p>
                         <p class="value" id="totalDetections">0</p>
@@ -412,12 +416,15 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
     <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
     <script src="../js/admin_realtime.js"></script>
     <script src="../js/admin_Dashboard.js"></script>
+     <script src="../js/upload_realtime.js"></script>
     
   <script>
     const detections = <?= $heatmap_json ?? '[]' ?>;
     const trendLabels = <?= $trend_labels ?? '[]' ?>;
     const trendData = <?= $trend_data_json ?? '[]' ?>;
   </script>
+   
+
    
 
 </body>

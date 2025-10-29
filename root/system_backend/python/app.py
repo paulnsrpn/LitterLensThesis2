@@ -675,6 +675,9 @@ def rerender():
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
+    
+
+    
 
 
 # =====================================================

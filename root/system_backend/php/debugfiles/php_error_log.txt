@@ -1,0 +1,2 @@
+[29-Oct-2025 21:27:12 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9
+[29-Oct-2025 21:45:51 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9

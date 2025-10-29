@@ -18,28 +18,28 @@ function supabaseRequest($method, $table, $data = null, $filter = null)
 {
     $url = SUPABASE_URL . '/' . $table;
     if ($filter) {
-        $url .= '?' . $filter; // Example: id=eq.1
+        $url .= '?' . $filter;
     }
 
     $ch = curl_init($url);
 
+    // ✅ Always include these headers
     $headers = [
         "apikey: " . SUPABASE_KEY,
         "Authorization: Bearer " . SUPABASE_KEY,
-        "Content-Type: application/json"
+        "Content-Type: application/json",
+        "Prefer: return=representation"  // 👈 Added here globally
     ];
 
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    // 🧠 Determine HTTP method
     switch (strtoupper($method)) {
         case 'POST':
             curl_setopt($ch, CURLOPT_POST, true);
             if ($data) {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
             }
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge($headers, ["Prefer: return=representation"]));
             break;
 
         case 'PATCH':
@@ -47,7 +47,6 @@ function supabaseRequest($method, $table, $data = null, $filter = null)
             if ($data) {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
             }
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge($headers, ["Prefer: return=representation"]));
             break;
 
         case 'DELETE':
@@ -61,7 +60,6 @@ function supabaseRequest($method, $table, $data = null, $filter = null)
 
     $response = curl_exec($ch);
 
-    // 🧩 Handle cURL errors
     if ($response === false) {
         $error = curl_error($ch);
         curl_close($ch);
