@@ -88,12 +88,14 @@
                     <h1>Detection Results</h1>
 
                     <!-- 🔹 Confidence Threshold -->
-                    <select class="threshold-dropdown">
-                      <option value="0.25">Confidence Threshold: 25%</option>
-                      <option value="0.50">Confidence Threshold: 50%</option>
-                      <option value="0.75">Confidence Threshold: 75%</option>
-                      <option value="1.00">Confidence Threshold: 100%</option>
-                    </select>
+                  <select class="threshold-dropdown">
+                    <option value="0.05">Confidence Threshold: 10% (Very Sensitive)</option>
+                    <option value="0.10" selected>Confidence Threshold: 20% (Balanced Default)</option>
+                    <option value="0.20">Confidence Threshold: 40% (Moderate)</option>
+                    <option value="0.30">Confidence Threshold: 60% (Strict)</option>
+                    <option value="0.40">Confidence Threshold: 80% (Very Strict)</option>
+                  </select>
+
 
                     <!-- 🔹 Label Display Mode -->
                     <select class="label-mode-dropdown">

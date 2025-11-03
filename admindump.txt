@@ -1,62 +1,6 @@
 
 
 
-            <!--                                            IMAGE AND DETECTION SECTION                                     -->
-    <div id="image" class="tab-content image-detection">
-        <!-- UPLOAD SECTION -->
-        <div class="upload-card">
-            <p>Upload Image</p>
-            <p class="upload-desc">
-                Choose an image to analyze litter presence in the selected photo.
-            </p>
-            <form>
-                <input type="file" id="upload-file" accept="image/*" />
-                <div id="admin-dropzone" class="dropzone"></div>
-                <button id="admin-analyze-btn" class="analyze-btn">Analyze</button>
-            </form>
-        </div>
-
-        <!-- DETECTION HISTORY SECTION -->
-        <div class="history-card">
-            <p>Detection History</p>
-            <table class="history-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Image</th>
-                        <th>Litter Detected</th>
-                        <th>Accuracy</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Sept 29, 2025</td>
-                        <td><img src="" alt="thumbnail" /></td>
-                        <td>Plastic Bag</td>
-                        <td>88%</td>
-                        <td><a href="#">View</a></td>
-                    </tr>
-                    <tr>
-                        <td>Sept 28, 2025</td>
-                        <td><img src="" alt="thumbnail" /></td>
-                        <td>Can, Bottle</td>
-                        <td>91%</td>
-                        <td><a href="#">View</a></td>
-                    </tr>
-                    <tr>
-                        <td>Sept 27, 2025</td>
-                        <td><img src="" alt="thumbnail" /></td>
-                        <td>Styrofoam</td>
-                        <td>86%</td>
-                        <td><a href="#">View</a></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-
 
 
 <!--                                            ANALYTICS SECTION                                     -->

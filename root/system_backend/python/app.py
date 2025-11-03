@@ -2,22 +2,20 @@
 # 🚀 LITTERLENS FLASK BACKEND — YOLOv8 Real-Time Detection (FINAL)
 # =====================================================
 
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, make_response, Response
 from flask_cors import CORS
 from ultralytics import YOLO
 from datetime import datetime
-from flask import make_response
 import os
 import shutil
 import cv2
 import json
 import io
-from flask import Response
 import time
 import threading
 from collections import deque
 import math
-
+import numpy as np
 
 # =====================================================
 # ⚙️ FLASK CONFIGURATION
@@ -26,17 +24,150 @@ app = Flask(__name__)
 CORS(app)
 
 # =====================================================
-# 🗂 PATH CONFIGURATION
+# 🧠 MODEL LOADING — MANUAL ENSEMBLE (3 MODELS) + RUNS_DIR PRESERVED
 # =====================================================
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 RUNS_DIR = os.path.join(SCRIPT_DIR, "runs")
-MODEL_PATH = os.path.join(SCRIPT_DIR, "my_model.pt")
-
 os.makedirs(RUNS_DIR, exist_ok=True)
 
-# ✅ Load YOLO model
-print(f"📦 Loading YOLO model from: {MODEL_PATH}")
-model = YOLO(MODEL_PATH)
+MODEL_PATHS = [
+    os.path.join(SCRIPT_DIR, "best.pt"),
+    os.path.join(SCRIPT_DIR, "last.pt"),
+    os.path.join(SCRIPT_DIR, "my_model.pt")
+]
+
+print("\n🔍 Checking model paths...")
+for p in MODEL_PATHS:
+    print(f"  - {p} {'✅ FOUND' if os.path.exists(p) else '❌ MISSING'}")
+
+valid_models = [p for p in MODEL_PATHS if os.path.exists(p)]
+
+if not valid_models:
+    raise FileNotFoundError(f"❌ No YOLO models found in: {MODEL_PATHS}")
+
+# Load all YOLO models individually
+models = [YOLO(p) for p in valid_models]
+print(f"✅ Loaded {len(models)} YOLO model(s) successfully.\n")
+
+# Keep a reference "model" to the first model so code using model.names still works
+model = models[0]
+
+# =====================================================
+# 🔮 ENSEMBLE INFERENCE FUNCTION (with optional basic NMS merge)
+# =====================================================
+def ensemble_predict(image, conf=0.10, iou_thresh=0.5):
+    """
+    Run detection on all models and combine results.
+    Returns an object with .boxes.xyxy (N x 4), .boxes.conf (N,), .boxes.cls (N,)
+    """
+    all_boxes, all_confs, all_classes = [], [], []
+
+    last_results = None
+    for m in models:
+        try:
+            results = m(image, conf=conf, verbose=False)[0]
+            last_results = results
+            # Convert to numpy safely
+            try:
+                boxes_np = results.boxes.xyxy.cpu().numpy()
+                confs_np = results.boxes.conf.cpu().numpy()
+                cls_np = results.boxes.cls.cpu().numpy()
+            except Exception:
+                # Fallback: cast directly (some versions)
+                boxes_np = np.array(results.boxes.xyxy)
+                confs_np = np.array(results.boxes.conf)
+                cls_np = np.array(results.boxes.cls)
+            if boxes_np.size:
+                all_boxes.append(boxes_np)
+                all_confs.append(confs_np)
+                all_classes.append(cls_np)
+        except Exception as e:
+            print(f"⚠️ Model inference error: {e}")
+
+    # Merge all results
+    if all_boxes:
+        all_boxes = np.concatenate(all_boxes, axis=0)
+        all_confs = np.concatenate(all_confs, axis=0)
+        all_classes = np.concatenate(all_classes, axis=0)
+    else:
+        all_boxes = np.empty((0, 4))
+        all_confs = np.empty((0,))
+        all_classes = np.empty((0,))
+
+    # Perform simple class-agnostic NMS to remove duplicates (optional, recommended)
+    # We'll use a basic NMS implementation
+    def simple_nms(boxes, scores, iou_threshold=0.5):
+        if boxes.shape[0] == 0:
+            return np.array([], dtype=int)
+        x1 = boxes[:, 0]
+        y1 = boxes[:, 1]
+        x2 = boxes[:, 2]
+        y2 = boxes[:, 3]
+        areas = (x2 - x1) * (y2 - y1)
+        order = scores.argsort()[::-1]
+        keep = []
+        while order.size > 0:
+            i = order[0]
+            keep.append(i)
+            xx1 = np.maximum(x1[i], x1[order[1:]])
+            yy1 = np.maximum(y1[i], y1[order[1:]])
+            xx2 = np.minimum(x2[i], x2[order[1:]])
+            yy2 = np.minimum(y2[i], y2[order[1:]])
+            w = np.maximum(0.0, xx2 - xx1)
+            h = np.maximum(0.0, yy2 - yy1)
+            inter = w * h
+            union = areas[i] + areas[order[1:]] - inter
+            iou = np.zeros_like(inter)
+            valid = union > 0
+            iou[valid] = inter[valid] / union[valid]
+            inds = np.where(iou <= iou_threshold)[0]
+            order = order[inds + 1]
+        return np.array(keep, dtype=int)
+
+    # You may want class-aware NMS; here we'll do class-aware by running NMS per class
+    kept_indices = []
+    if all_boxes.shape[0] > 0:
+        unique_classes = np.unique(all_classes)
+        for cls in unique_classes:
+            cls_mask = (all_classes == cls)
+            cls_boxes = all_boxes[cls_mask]
+            cls_scores = all_confs[cls_mask]
+            # map back to global indices
+            global_indices = np.where(cls_mask)[0]
+            keep_local = simple_nms(cls_boxes, cls_scores, iou_threshold=iou_thresh)
+            kept_indices.extend(global_indices[keep_local].tolist())
+
+        # sort kept indices by score desc
+        if kept_indices:
+            kept_indices = np.array(kept_indices)
+            order = all_confs[kept_indices].argsort()[::-1]
+            kept_indices = kept_indices[order]
+        else:
+            kept_indices = np.array([], dtype=int)
+
+        final_boxes = all_boxes[kept_indices]
+        final_confs = all_confs[kept_indices]
+        final_classes = all_classes[kept_indices]
+    else:
+        final_boxes = np.empty((0, 4))
+        final_confs = np.empty((0,))
+        final_classes = np.empty((0,))
+
+    # Create a minimal result object resembling Ultralytics' structure enough for downstream funcs
+    class BoxesObj:
+        def __init__(self, xyxy, conf, cls):
+            self.xyxy = xyxy
+            self.conf = conf
+            self.cls = cls
+
+    class CombinedResult:
+        def __init__(self, boxes_obj):
+            self.boxes = boxes_obj
+
+    boxes_obj = BoxesObj(final_boxes, final_confs, final_classes)
+    return CombinedResult(boxes_obj)
+
+
 # =====================================================
 # 🎨 CLASS COLOR MAP (BGR for OpenCV)
 # =====================================================
@@ -57,7 +188,7 @@ CLASS_COLORS = {
 # =====================================================
 # 📈 LIVE DETECTION VARIABLES
 # =====================================================
-detection_threshold = 0.25
+detection_threshold = 0.10
 recent_objects = deque(maxlen=200)
 object_lifetime = 2.0
 object_id_counter = 0
@@ -76,7 +207,6 @@ lock = threading.Lock()
 def open_camera_index(idx, width=1280, height=720, open_wait=0.5):
     """Helper: open a cv2.VideoCapture safely and set size."""
     cap = cv2.VideoCapture(int(idx))
-    # small wait for camera to initialize
     time.sleep(open_wait)
     if cap is None or not cap.isOpened():
         try:
@@ -84,7 +214,6 @@ def open_camera_index(idx, width=1280, height=720, open_wait=0.5):
         except:
             pass
         return None
-    # set size (best-effort)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
     return cap
@@ -130,12 +259,36 @@ def check_camera():
 # 🧮 HELPER FUNCTIONS
 # =====================================================
 def _serialize_dets(results):
+    """
+    Robust serializer: works with Ultralytics result or our CombinedResult.
+    Returns list of dicts: {"x1","y1","x2","y2","conf","cls"}
+    """
     dets = []
-    for box in results.boxes:
-        x1, y1, x2, y2 = map(float, box.xyxy[0].tolist())
-        conf = float(box.conf.item())
-        cls_id = int(box.cls.item())
-        dets.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "conf": conf, "cls": cls_id})
+    try:
+        boxes = results.boxes
+        # boxes.xyxy might be numpy array or torch tensor
+        xy = boxes.xyxy
+        try:
+            arr = xy.cpu().numpy()
+        except Exception:
+            arr = np.array(xy)
+        try:
+            confs = boxes.conf.cpu().numpy()
+        except Exception:
+            confs = np.array(boxes.conf)
+        try:
+            classes = boxes.cls.cpu().numpy()
+        except Exception:
+            classes = np.array(boxes.cls)
+
+        for i in range(len(arr)):
+            x1, y1, x2, y2 = map(float, arr[i].tolist() if hasattr(arr[i], "tolist") else arr[i])
+            conf = float(confs[i])
+            cls_id = int(classes[i])
+            dets.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "conf": conf, "cls": cls_id})
+    except Exception as e:
+        # If anything fails, return empty list
+        print(f"⚠️ _serialize_dets error: {e}")
     return dets
 
 def _summary_from_dets(dets):
@@ -179,19 +332,19 @@ def update_summary(dets, speed):
     frame_count += 1
     acc = calculate_image_accuracy(dets)
 
-    # 🧹 Remove old detections (expired)
+    # Remove old detections (expired)
     while recent_objects and current_time - recent_objects[0]['time'] > object_lifetime:
         recent_objects.popleft()
 
     new_detections = 0
 
-    # 🧠 Process current detections
+    # Process current detections
     for d in dets:
         label = model.names[d["cls"]]
         box = (d["x1"], d["y1"], d["x2"], d["y2"])
         matched = False
 
-        # 🔍 Check for match with existing object memory
+        # Check for match with existing object memory
         for obj in list(recent_objects):
             if obj['label'] == label and iou(obj['box'], box) > 0.6:
                 # same litter item → just update timestamp, not new
@@ -201,7 +354,7 @@ def update_summary(dets, speed):
                 break
 
         if not matched:
-            # 🆕 New litter item (not overlapping with recent ones)
+            # New litter item (not overlapping with recent ones)
             object_id_counter += 1
             recent_objects.append({
                 'id': object_id_counter,
@@ -217,7 +370,7 @@ def update_summary(dets, speed):
 
     avg_acc = (running_accuracy_sum / frame_count) if frame_count > 0 else 0.0
 
-    # ✅ Update summary for /live_stats
+    # Update summary for /live_stats
     last_summary = {
         "total": running_total_detections,
         "accuracy": round(avg_acc, 2),
@@ -266,14 +419,13 @@ def generate_frames(camera_index=0):
 
         start_time = time.time()
         try:
-            results = model(frame, conf=detection_threshold)[0]
+            results = ensemble_predict(frame, conf=detection_threshold)
             dets = _serialize_dets(results)
         except Exception as e:
-            # In case model call fails, continue streaming original frame
             print("⚠️ Model detection error:", e)
             dets = []
 
-        # Update stats and draw boxes (your existing logic)
+        # Update stats and draw boxes
         speed = time.time() - start_time
         update_summary(dets, speed)
 
@@ -354,7 +506,7 @@ def set_threshold():
     global detection_threshold
     data = request.get_json()
     try:
-        val = float(data.get("threshold", 0.25))
+        val = float(data.get("threshold", 0.10))
         detection_threshold = max(0.0, min(1.0, val))
         print(f"🛠 Detection threshold set to: {detection_threshold}")
         return {"message": "Threshold updated", "threshold": detection_threshold}, 200
@@ -362,7 +514,7 @@ def set_threshold():
         return {"error": str(e)}, 400
 
 # =====================================================
-# 🧮 HELPER FUNCTIONS
+# 🧮 HELPER FUNCTIONS (opacity & render)
 # =====================================================
 def _parse_opacity(val, default=1.0):
     try:
@@ -371,15 +523,6 @@ def _parse_opacity(val, default=1.0):
     except:
         return default
 
-def _serialize_dets(results):
-    dets = []
-    for box in results.boxes:
-        x1, y1, x2, y2 = map(float, box.xyxy[0].tolist())
-        conf = float(box.conf.item())
-        cls_id = int(box.cls.item())
-        dets.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "conf": conf, "cls": cls_id})
-    return dets
-
 def _summary_from_dets(dets):
     summary = {}
     for d in dets:
@@ -387,17 +530,9 @@ def _summary_from_dets(dets):
         summary[lbl] = summary.get(lbl, 0) + 1
     return summary, sum(summary.values())
 
-def calculate_image_accuracy(dets):
-    if not dets:
-        return 0.0
-    return round(sum(d['conf'] for d in dets) / len(dets) * 100, 2)
-
 def render_from_dets(orig_path, dets, output_path, mode="confidence", box_opacity=1.0):
     """
-    Draws bounding boxes with visual cues:
-    - >=70% confidence: normal outline
-    - 25–70%: semi-transparent filled box
-    - <25%: fully filled
+    Draws bounding boxes with visual cues and writes to output_path
     """
     img = cv2.imread(orig_path)
     if img is None:
@@ -412,12 +547,11 @@ def render_from_dets(orig_path, dets, output_path, mode="confidence", box_opacit
         color = CLASS_COLORS.get(label_name, (255, 255, 255))
         conf_pct = int(round(d["conf"] * 100))
 
-        # Create copy for overlay transparency blending
         sub_overlay = overlay.copy()
 
-        # 🟡 Confidence-based transparency mapping (lower conf = more solid)
+        # Confidence-based transparency mapping
         if conf_pct < 10:
-            alpha = 1.0   # fully solid (worst)
+            alpha = 1.0
         elif conf_pct < 20:
             alpha = 0.9
         elif conf_pct < 30:
@@ -435,26 +569,20 @@ def render_from_dets(orig_path, dets, output_path, mode="confidence", box_opacit
         elif conf_pct < 90:
             alpha = 0.2
         else:
-            alpha = 0.1   # most transparent (highest confidence)
+            alpha = 0.1
 
-        # 🟢 Apply fill with computed alpha (only if alpha < 1)
         cv2.rectangle(sub_overlay, (x1, y1), (x2, y2), color, -1)
         cv2.addWeighted(sub_overlay, alpha, overlay, 1 - alpha, 0, overlay)
-
-        # 🟣 Always draw box outline (to keep edges visible)
         cv2.rectangle(overlay, (x1, y1), (x2, y2), color, thickness)
 
-    # 🔵 Blend final overlay with original image
     img = cv2.addWeighted(overlay, box_opacity, img, 1 - box_opacity, 0)
 
-    # === Labels ===
     for d in dets:
         x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
         conf_pct = int(round(d["conf"] * 100))
         label_name = model.names[d["cls"]]
         color = CLASS_COLORS.get(label_name, (255, 255, 255))
 
-        # 🏷️ Label mode logic
         text = ""
         if mode == "confidence":
             text = f"{conf_pct}%"
@@ -491,7 +619,7 @@ def home():
 @app.route('/analyze', methods=['POST'])
 def analyze_image():
     try:
-        threshold = float(request.form.get('threshold', 0.25))
+        threshold = float(request.form.get('threshold', 0.10))
         label_mode = request.form.get('label_mode', 'confidence')
         opacity_raw = request.form.get('opacity', '1.00')
         box_opacity = _parse_opacity(opacity_raw, default=1.0)
@@ -517,7 +645,7 @@ def analyze_image():
             dets_path = os.path.join(run_folder, dets_filename)
 
             file.save(orig_path)
-            results = model(orig_path, conf=threshold)[0]
+            results = ensemble_predict(orig_path, conf=threshold)
             dets = _serialize_dets(results)
 
             with open(dets_path, "w") as f:
@@ -561,7 +689,7 @@ def redetect():
     try:
         data = request.get_json()
         folder = data.get('folder')
-        threshold = float(data.get('threshold', 0.25))
+        threshold = float(data.get('threshold', 0.10))
         label_mode = data.get('label_mode', 'confidence')
         opacity_raw = data.get('opacity', '1.00')
         box_opacity = _parse_opacity(opacity_raw, default=1.0)
@@ -584,7 +712,8 @@ def redetect():
             if os.path.exists(result_path):
                 os.remove(result_path)
 
-            results = model(orig_path, conf=threshold)[0]
+            # Use ensemble for redetection
+            results = ensemble_predict(orig_path, conf=threshold)
             dets = _serialize_dets(results)
             with open(dets_path, "w") as f:
                 json.dump(dets, f)
@@ -675,9 +804,6 @@ def rerender():
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
-    
-
-    
 
 
 # =====================================================

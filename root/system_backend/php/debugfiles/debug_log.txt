@@ -53,3 +53,56 @@ Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-10-29","quantit
 Inserted litter summary: {"realtime_id":15,"littertype_id":2,"litter_count":1}
 Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-10-29","quantity":1,"confidence_lvl":5.24,"detection_time":"21:45:56"}
 Activity logged for admin 2
+RAW JSON: {"totalDetections":12,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.06s/frame","detectionAccuracy":5.44,"litterSummary":{"Foamed Plastic":4,"Organic Debris":5,"Plastic":3},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":12,"top_detected_litter":"Organic Debris","detection_speed":0.06,"detection_accuracy":5.44,"latitude":"14.683341","longitude":"121.054822","date":"2025-10-29"}
+Insert Response: [{"realtime_id":16,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":12,"top_detected_litter":"Organic Debris","detection_speed":0.06,"detection_accuracy":5.44,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T21:17:25.321795","date":"2025-10-29"}]
+🆕 Created new litter type: Foamed Plastic
+Inserted litter summary: {"realtime_id":16,"littertype_id":4,"litter_count":4}
+Inserted detection: {"image_id":1,"littertype_id":4,"date":"2025-10-29","quantity":4,"confidence_lvl":5.44,"detection_time":"22:17:27"}
+Inserted litter summary: {"realtime_id":16,"littertype_id":1,"litter_count":5}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-10-29","quantity":5,"confidence_lvl":5.44,"detection_time":"22:17:28"}
+Inserted litter summary: {"realtime_id":16,"littertype_id":2,"litter_count":3}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-10-29","quantity":3,"confidence_lvl":5.44,"detection_time":"22:17:30"}
+Activity logged for admin 2
+RAW JSON: {"totalDetections":3,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.06s/frame","detectionAccuracy":6.58,"litterSummary":{"Organic Debris":3},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":3,"top_detected_litter":"Organic Debris","detection_speed":0.06,"detection_accuracy":6.58,"latitude":"14.683341","longitude":"121.054822","date":"2025-10-29"}
+Insert Response: [{"realtime_id":17,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":3,"top_detected_litter":"Organic Debris","detection_speed":0.06,"detection_accuracy":6.58,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T21:19:57.031186","date":"2025-10-29"}]
+Inserted litter summary: {"realtime_id":17,"littertype_id":1,"litter_count":3}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-10-29","quantity":3,"confidence_lvl":6.58,"detection_time":"22:19:58"}
+Activity logged for admin 2
+RAW JSON: {"totalDetections":4,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.06s/frame","detectionAccuracy":12.81,"litterSummary":{"Organic Debris":4},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Organic Debris","detection_speed":0.06,"detection_accuracy":12.81,"latitude":"14.683341","longitude":"121.054822","date":"2025-10-29"}
+Insert Response: [{"realtime_id":18,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Organic Debris","detection_speed":0.06,"detection_accuracy":12.81,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T21:22:57.960819","date":"2025-10-29"}]
+Inserted litter summary: {"realtime_id":18,"littertype_id":1,"litter_count":4}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-10-29","quantity":4,"confidence_lvl":12.81,"detection_time":"22:22:59"}
+Activity logged for admin 2
+RAW JSON: {"totalDetections":3,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.07s/frame","detectionAccuracy":12.88,"litterSummary":{"Organic Debris":3},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":3,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":12.88,"latitude":"14.683341","longitude":"121.054822","date":"2025-10-29"}
+Insert Response: [{"realtime_id":19,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":3,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":12.88,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T21:33:16.561327","date":"2025-10-29"}]
+Inserted litter summary: {"realtime_id":19,"littertype_id":1,"litter_count":3}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-10-29","quantity":3,"confidence_lvl":12.88,"detection_time":"22:33:17"}
+Activity logged for admin 2
+RAW JSON: {"totalDetections":95,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.07s/frame","detectionAccuracy":25.44,"litterSummary":{"Biological Debris":4,"Foamed Plastic":2,"Organic Debris":68,"Plastic":21},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":95,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":25.44,"latitude":"14.683341","longitude":"121.054822","date":"2025-10-29"}
+Insert Response: [{"realtime_id":20,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":95,"top_detected_litter":"Organic Debris","detection_speed":0.07,"detection_accuracy":25.44,"longitude":121.054822,"latitude":14.683341,"timestamp":"2025-10-29T21:37:02.345298","date":"2025-10-29"}]
+🆕 Created new litter type: Biological Debris
+Inserted litter summary: {"realtime_id":20,"littertype_id":5,"litter_count":4}
+Inserted detection: {"image_id":1,"littertype_id":5,"date":"2025-10-29","quantity":4,"confidence_lvl":25.44,"detection_time":"22:37:03"}
+Inserted litter summary: {"realtime_id":20,"littertype_id":4,"litter_count":2}
+Inserted detection: {"image_id":1,"littertype_id":4,"date":"2025-10-29","quantity":2,"confidence_lvl":25.44,"detection_time":"22:37:05"}
+Inserted litter summary: {"realtime_id":20,"littertype_id":1,"litter_count":68}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-10-29","quantity":68,"confidence_lvl":25.44,"detection_time":"22:37:06"}
+Inserted litter summary: {"realtime_id":20,"littertype_id":2,"litter_count":21}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-10-29","quantity":21,"confidence_lvl":25.44,"detection_time":"22:37:08"}
+Activity logged for admin 2
+RAW JSON: {"totalDetections":6,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.2s/frame","detectionAccuracy":35.2,"litterSummary":{"Organic Debris":2,"Plastic":2,"Sanitary Waste":2},"latitude":"14.640742","longitude":"121.031885","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":6,"top_detected_litter":"Organic Debris","detection_speed":0.2,"detection_accuracy":35.2,"latitude":"14.640742","longitude":"121.031885","date":"2025-11-02"}
+Insert Response: [{"realtime_id":22,"admin_id":2,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":6,"top_detected_litter":"Organic Debris","detection_speed":0.2,"detection_accuracy":35.2,"longitude":121.031885,"latitude":14.640742,"timestamp":"2025-11-02T14:26:43.746251","date":"2025-11-02"}]
+Inserted litter summary: {"realtime_id":22,"littertype_id":1,"litter_count":2}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-11-02","quantity":2,"confidence_lvl":35.2,"detection_time":"15:26:43"}
+Inserted litter summary: {"realtime_id":22,"littertype_id":2,"litter_count":2}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-02","quantity":2,"confidence_lvl":35.2,"detection_time":"15:26:45"}
+🆕 Created new litter type: Sanitary Waste
+Inserted litter summary: {"realtime_id":22,"littertype_id":6,"litter_count":2}
+Inserted detection: {"image_id":1,"littertype_id":6,"date":"2025-11-02","quantity":2,"confidence_lvl":35.2,"detection_time":"15:26:46"}
+Activity logged for admin 2

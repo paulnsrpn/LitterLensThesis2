@@ -217,3 +217,434 @@ thresholdSelect.addEventListener('change', () => {
 
 
 
+  <!--           IMAGE AND DETECTION            -->
+  <div id="image" class="tab-content image-detection">
+    <div class="tabs">
+      <button class="tab active" id="detections-tab">Detections</button>
+      <button class="tab" id="realtime-tab">Real-Time Detections</button>
+    </div>
+
+    <!-- Detections Tab -->
+    <div id="detections" class="tab-section active">
+      <div class="upload-box">
+        <h3>Upload Image</h3>
+        <p>Choose an image to analyze litter presence in the selected photo</p>
+        <div class="upload-controls">
+          <input type="file" id="fileUpload">
+          <button class="analyze-btn">Analyze</button>
+        </div>
+      </div>
+
+      <div class="history-box">
+        <div class="history-header">
+          <h3>Detection History</h3>
+          <div class="action-buttons">
+            <button class="edit-btn"><i class="fa-solid fa-pen"></i> Edit</button>
+            <button class="delete-btn"><i class="fa-solid fa-trash"></i> Delete</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th><input type="checkbox" disabled></th>
+                <th>Date</th>
+                <th>Image</th>
+                <th>Litter Detected</th>
+                <th>Accuracy</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" disabled></td>
+                <td>September 1</td>
+                <td>Thumbnail</td>
+                <td>View</td>
+                <td>89%</td>
+                <td><a href="#">View Analytics</a></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" disabled></td>
+                <td>September 5</td>
+                <td>Thumbnail</td>
+                <td>View</td>
+                <td>79%</td>
+                <td><a href="#">View Analytics</a></td>
+              </tr>   
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-Time Detections Tab -->
+    <div id="realtime" class="tab-section">
+      <h2 class="section-title">Real-Time Detection Results</h2>
+      <p class="section-subtitle">
+        View and manage all detections captured during live monitoring sessions
+      </p>
+
+      <div class="realtime-dashboard">
+        <!-- Left Column -->
+        <div class="left-column">
+          <div class="stats-container">
+            <div class="stat-card">
+              <h4>Total Detections Recorded</h4>
+              <p class="stat-value">1,029</p>
+            </div>
+            <div class="stat-card">
+              <h4>Accuracy</h4>
+              <p class="stat-value">88%</p>
+            </div>
+          </div>
+
+          <div class="table-box">
+            <div class="search-bar">
+              <label for="date">Search by date</label>
+              <input type="date" id="date" value="2025-10-01">
+            </div>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date and Time</th>
+                    <th>Duration</th>
+                    <th>Camera Location</th>
+                    <th>Accuracy</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>01/11/2025 12:42</td>
+                    <td>1 hr 27 mins</td>
+                    <td>Manggahan Area</td>
+                    <td>98%</td>
+                    <td><a href="#">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>01/11/2025 12:42</td>
+                    <td>1 hr 27 mins</td>
+                    <td>Kalawaan Area</td>
+                    <td>88%</td>
+                    <td><a href="#">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>02/11/2025 12:42</td>
+                    <td>0 hr 17 mins</td>
+                    <td>San Joaquin Area</td>
+                    <td>78%</td>
+                    <td><a href="#">View</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+          <!-- Litter Distribution -->
+          <div class="chart-card">
+            <div class="pie-header">
+              <h4>Litter Distribution</h4>
+              <div class="dropdown">
+                <select id="timeFilter" class="filter-dropdown">
+                  <option>Monthly</option>
+                  <option>Weekly</option>
+                  <option>Yearly</option>
+                </select>
+                <i class="fa-solid fa-arrow-up-arrow-down"></i>
+              </div>
+            </div>
+            <canvas id="litterDistributionChart"></canvas>
+          </div>
+
+          <!-- Litter Hotspots -->
+          <div class="chart-card">
+            <h4>Litter Hotspots</h4>
+            <div id="litterHotspotMap" class="hotspot-map"></div>
+          </div>
+
+          <p class="chart-footer">
+              Real-Time Detection powered by <br />
+              <em>LitterLens AI Model v1</em>
+          </p>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  </div>
+
+
+
+
+  <!--IMAGE AND DETECTION TAB SWITCHING-->
+  <!-- <script>
+    const detectionsTabBtn = document.getElementById('detections-tab');
+    const realtimeTabBtn = document.getElementById('realtime-tab');
+    const detectionsSection = document.getElementById('detections');
+    const realtimeSection = document.getElementById('realtime');
+
+    detectionsTabBtn.addEventListener('click', () => {
+      detectionsTabBtn.classList.add('active');
+      realtimeTabBtn.classList.remove('active');
+      detectionsSection.classList.add('active');
+      realtimeSection.classList.remove('active');
+    });
+
+    realtimeTabBtn.addEventListener('click', () => {
+      realtimeTabBtn.classList.add('active');
+      detectionsTabBtn.classList.remove('active');
+      realtimeSection.classList.add('active');
+      detectionsSection.classList.remove('active');
+    });
+  </script>
+
+  <!-- EDIT AND DELETE BTNS FUNCTIONALITY -->
+  <!-- <script>
+    const editBtn = document.querySelector('.edit-btn');
+    const deleteBtn = document.querySelector('.delete-btn');
+    const checkboxes = document.querySelectorAll('tbody input[type="checkbox"], thead input[type="checkbox"]');
+
+    let isEditing = false;
+
+    // Edit button toggles editable state
+    editBtn.addEventListener('click', () => {
+      isEditing = !isEditing;
+      checkboxes.forEach(cb => cb.disabled = !isEditing);
+      editBtn.textContent = isEditing ? 'Cancel' : 'Edit';
+      deleteBtn.disabled = true; // reset delete button
+    });
+
+    // Enable delete button only if any checkbox is checked
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        const anyChecked = Array.from(checkboxes).some(c => c.checked);
+        deleteBtn.disabled = !anyChecked;
+      });
+    });
+
+    // Delete confirmation
+    deleteBtn.addEventListener('click', () => {
+      const confirmed = confirm('Are you sure to delete this record?');
+      if (confirmed) {
+        checkboxes.forEach(cb => {
+          if (cb.checked) {
+            cb.closest('tr').remove();
+          }
+        });
+        deleteBtn.disabled = true;
+      }
+    }); 
+  </script> -->
+
+  <!-- IMAGE AND DETECTION CHARTS -->
+  <!-- <script>
+    document.addEventListener("DOMContentLoaded", () => { -->
+
+      // === PIE CHART ===
+  //     const ctx = document.getElementById("litterDistributionChart").getContext("2d");
+  //     new Chart(ctx, {
+  //       type: "pie",
+  //       data: {
+  //         labels: [
+  //           "Biological Debris", "Electronic Waste", "Fabric and Textiles", "Foamed Plastic",
+  //           "Glass and Ceramic", "Metal", "Organic Debris", "Paper and Cardboard",
+  //           "Plastic", "Rubber", "Sanitary Waste"
+  //         ],
+  //         datasets: [{
+  //           data: [15, 12, 11, 10, 9, 10, 11, 11, 10, 20, 10],
+  //           backgroundColor: [
+  //             "#2E7D32", "#388E3C", "#43A047", "#4CAF50", "#66BB6A",
+  //             "#81C784", "#A5D6A7", "#C8E6C9", "#E8F5E9", "#1B5E20"
+  //           ]
+  //         }]
+  //       },
+  //       options: {
+  //         responsive: true,
+  //         plugins: {
+  //           legend: {
+  //             position: "right"
+  //           }
+  //         }
+  //       }
+  //     });
+
+  //     // === HEATMAP ===
+  //     const map = L.map("litterHotspotMap").setView([14.6, 121.0], 12);
+  //     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  //       attribution: "© OpenStreetMap"
+  //     }).addTo(map);
+
+  //     // Example coordinates
+  //     const heatData = [
+  //       [14.58, 121.04, 0.8],
+  //       [14.61, 121.03, 0.6],
+  //       [14.62, 121.06, 0.9],
+  //       [14.64, 121.02, 0.5]
+  //     ];
+
+  //     L.heatLayer(heatData, {
+  //       radius: 25,
+  //       blur: 15,
+  //       maxZoom: 17
+  //     }).addTo(map);
+  <!-- //   });
+  // </script> -->
+
+
+
+
+
+
+<!-- 
+<div id="php-debugger" style="
+  position:fixed;
+  bottom:10px;
+  right:10px;
+  width:350px;
+  height:240px;
+  background:#1e1e1e;
+  color:#eee;
+  font-family:monospace;
+  font-size:12px;
+  padding:8px;
+  border-radius:8px;
+  overflow-y:auto;
+  z-index:9999;
+  box-shadow:0 0 8px rgba(0,0,0,0.4);
+">
+  <strong>🐞 Debugger Panel</strong>
+  <hr>
+  <strong>📜 PHP Logs:</strong><br>
+  <pre style="max-height:120px;overflow-y:auto;">
+<?= htmlspecialchars(implode("\n", $debug_logs)) ?>
+  </pre>
+  <hr>
+  <strong>📍 Location Debug:</strong><br>
+  <?php if (!empty($heatmap_points)) : ?>
+    <pre style="max-height:100px;overflow-y:auto;color:#8ef;">
+<?= htmlspecialchars(print_r(array_slice($heatmap_points, 0, 5), true)) ?>
+<?= count($heatmap_points) > 5 ? "...\nTotal: " . count($heatmap_points) . " points" : "" ?>
+    </pre>
+  <?php else : ?>
+    <span style="color:#faa;">⚠️ No coordinates found.</span>
+  <?php endif; ?>
+</div> 
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+                                                     REAL-TIME DETECTION SECTION                                  
+          <div id="realtime" class="tab-content realtime">
+              <div class="realtime-header">
+                  <h2 class="r-title">Real-Time Detection</h2>
+                  <p>Monitor Live Litter Detection</p>
+                  </div>
+                      <div class="realtime-content">
+                          <div class="realtime-upload">
+                              <div class="cam-container">
+                                  <h2>Live Feed:</h2>
+                                          <select id="camera-select">
+                                              
+                                              <option value="local" selected>Local Camera</option>
+                                              <!-- <option value="">IP Camera 1</option> -->
+                                          </select>
+                                  <div class="camera-header">
+                                      <div class="location-details">
+                                          <h3>📍 Location Details</h3>
+                                          <p>Latitude: <span id="latitude">--</span></p>
+                                          <p>Longitude: <span id="longitude">--</span></p>
+                                      </div>
+                                      <div class="cam-controls">
+                                          <select id="threshold-select">  
+                                                <option value="0.25"> Threshold: 25%</option>
+                                                <option value="0.50"> Threshold: 50%</option>
+                                                <option value="0.75"> Threshold: 75%</option>
+                                                <option value="1.00"> Threshold: 100%</option>
+                                          </select>
+                                          <button id="startBtn"><i class="fa-solid fa-play"></i> Start</button>
+                                          <button id="stopBtn"><i class="fa-solid fa-stop"></i> Stop</button>
+                                          <button id="refresh-btn"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                                      </div>
+                                  </div>
+                                  <img id="liveFeed" alt="Live Detection Preview" style="display:none; max-width:100%; border:2px solid #ccc; border-radius:8px;">
+                                  <!-- <video id="liveVideo" autoplay playsinline></video> -->
+                                  <!-- <div id="noDisplay">⚠️ No camera detected. Please check your device.</div> -->
+                                  <div class="detection-status">
+                                      <p>Time: <span class="time">1hr 10mins 30s</span></p>
+                                      <!-- <p>Status: 
+                                          <span class="status">
+                                              <i class="fa-solid fa-circle-notch fa-spin"></i> Idle
+                                          </span>
+                                      </p> -->
+                                  </div>
+                              </div>
+                              <p class="realtime-footer">
+                                  Real-Time Detection powered by <br>
+                                  <span>LitterLens AI Model v1</span>
+                              </p>
+                          </div>
+                          <div class="stats-container">
+                            <div class="stats-card">
+                                  <h3>Detection Stats</h3>
+                                  <div class="stats-item">
+                                      <p class="label">Total Detections</p>
+                                      <p class="value" id="totalDetections">0</p>
+                                  </div>
+                                  <div class="stats-item">
+                                      <p class="label">Top Detected Litter</p>
+                                      <p class="value" id="topLitter">--</p>
+                                  </div>
+                                  <div class="stats-item">
+                                      <p class="label">Detection Speed</p>
+                                      <p class="value" id="detectionSpeed">0.0s/frame</p>
+                                  </div>
+                                  <div class="stats-item">
+                                      <p class="label">Camera Status</p>
+                                      <p class="value active" id="cameraStatus">Idle</p>
+                                  </div>
+                                  <div class="stats-item">
+                                      <p class="label">Detection Accuracy</p>
+                                      <p class="value" id="detectionAccuracy">0%</p>
+                                  </div>
+                              </div>
+                        <div class="stats-card">
+                          <h3>Top Detected Litter:</h3>
+                          <table class="litter-table">
+                              <thead>
+                                  <tr>
+                                      <th>Classification</th>
+                                      <th>Count</th>
+                                  </tr>
+                              </thead>
+                              <tbody id="litterTableBody">
+                                  <!-- dynamically generated -->
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>

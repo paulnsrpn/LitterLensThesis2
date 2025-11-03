@@ -28,25 +28,24 @@ function supabaseRequest($method, $table, $data = null, $filter = null)
         "apikey: " . SUPABASE_KEY,
         "Authorization: Bearer " . SUPABASE_KEY,
         "Content-Type: application/json",
-        "Prefer: return=representation"  // 👈 Added here globally
+        "Prefer: return=representation"
     ];
 
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+    // 🔹 Ensure payload is JSON string, not re-encoded array
+    $jsonPayload = is_array($data) ? json_encode($data) : $data;
+
     switch (strtoupper($method)) {
         case 'POST':
             curl_setopt($ch, CURLOPT_POST, true);
-            if ($data) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-            }
+            if ($data) curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload);
             break;
 
         case 'PATCH':
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
-            if ($data) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-            }
+            if ($data) curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload);
             break;
 
         case 'DELETE':
@@ -59,16 +58,31 @@ function supabaseRequest($method, $table, $data = null, $filter = null)
     }
 
     $response = curl_exec($ch);
+    $error = curl_error($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
 
-    if ($response === false) {
-        $error = curl_error($ch);
-        curl_close($ch);
+    // 🧩 Debug Logs (Visible in XAMPP > logs/error.log)
+    error_log("📡 Supabase URL: " . $url);
+    if ($data) error_log("📦 Payload: " . $jsonPayload);
+    error_log("🧾 HTTP Status: " . $status);
+    error_log("🔁 Response: " . $response);
+
+    if ($error) {
         return ['error' => $error];
     }
 
-    curl_close($ch);
-    return json_decode($response, true);
+    if ($status >= 400) {
+        return [
+            'error' => 'HTTP ' . $status,
+            'body' => $response
+        ];
+    }
+
+    $decoded = json_decode($response, true);
+    return $decoded ?: ['success' => true];
 }
+
 
 // ================================================
 // 🧱 HELPER FUNCTIONS (CRUD Shortcuts)

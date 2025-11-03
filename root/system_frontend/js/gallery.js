@@ -185,7 +185,26 @@ document.addEventListener("DOMContentLoaded", () => {
   // ================================================
   // 🎚️ EVENT HANDLERS
   // ================================================
-  thresholdDropdown.addEventListener("change", () => redetect(parseFloat(thresholdDropdown.value)));
+  thresholdDropdown.addEventListener("change", () => {
+  const newThreshold = parseFloat(thresholdDropdown.value);
+  debugLog(`🧠 Threshold changed to ${newThreshold}`, "info");
+
+  // Update backend global threshold first
+  fetch("http://127.0.0.1:5000/set_threshold", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ threshold: newThreshold })
+  })
+    .then(res => res.json())
+    .then(data => {
+      debugLog(`✅ Backend threshold set to ${data.threshold}`, "success");
+      // Then re-run detection using that new threshold
+      redetect(newThreshold);
+    })
+    .catch(err => debugLog(`❌ Threshold update failed: ${err}`, "error"));
+});
+
+
   opacityDropdown.addEventListener("change", () => {
     currentOpacity = opacityDropdown.value;
     rerender(currentLabelMode, currentOpacity);
@@ -559,4 +578,15 @@ document.addEventListener("DOMContentLoaded", () => {
   showingResult = true;
   showImage(currentIndex);
   updateZoom();
+
+    // 🧩 Reset backend confidence threshold to default (0.10) on page load
+  fetch("http://127.0.0.1:5000/set_threshold", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ threshold: 0.10 })
+  })
+    .then(res => res.json())
+    .then(data => debugLog(`🟢 Default confidence set to ${data.threshold}`, "success"))
+    .catch(err => debugLog(`⚠️ Could not reset confidence on load: ${err}`, "error"));
+    
 });
