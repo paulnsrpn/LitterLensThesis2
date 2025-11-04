@@ -40,7 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const refreshBtn = document.getElementById("refresh-btn");
   const thresholdSelect = document.getElementById("threshold-select");
   const liveFeed = document.getElementById("liveFeed");
-  const statusEl = document.querySelector(".status");
+const statusEl = document.getElementById("realtimeStatus");
+console.log("🎯 Detection status element:", statusEl);
+
   const noCameraOverlay = document.querySelector(".noDisplay");
   const timeEl = document.querySelector(".time");
   const latitudeEl = document.getElementById("latitude");
@@ -61,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let statsInterval = null;          // Polling interval reference
   let startTime = null;              // Timestamp when session started
   let availableCameraIndices = [];   // Detected camera indices
-  let lastLocationLabel = "Unknown Area"; // Resolved human-readable location
+
 
   // ================================================================
   // 🧠 HELPER FUNCTIONS
@@ -72,25 +74,29 @@ document.addEventListener("DOMContentLoaded", () => {
     console.debug("[Realtime]", ...args);
   }
 
-  /** Updates status banner (top of panel) with icon + message */
-  function setStatus(state, text) {
-    const icons = {
-      loading: '<i class="fa-solid fa-circle-notch fa-spin"></i>',
-      active: '<i class="fa-solid fa-circle-check"></i>',
-      error: '<i class="fa-solid fa-circle-exclamation"></i>',
-      idle: '<i class="fa-solid fa-circle"></i>',
-      refreshing: '<i class="fa-solid fa-rotate-right fa-spin"></i>',
-    };
-    if (!statusEl) return;
-    statusEl.className = `status ${state}`;
-    statusEl.innerHTML = `${icons[state] || ""} ${text}`;
-  }
+ /** Updates status banner (top of panel) with icon + message */
+/** Updates realtime detection status (independent from logs) */
+function setStatus(state, text) {
+  const icons = {
+    loading: '<i class="fa-solid fa-circle-notch fa-spin"></i>',
+    uploading: '<i class="fa-solid fa-cloud-arrow-up"></i>',
+    active: '<i class="fa-solid fa-circle-check"></i>',
+    error: '<i class="fa-solid fa-circle-exclamation"></i>',
+    idle: '<i class="fa-solid fa-circle"></i>',
+    refreshing: '<i class="fa-solid fa-rotate-right fa-spin"></i>',
+  };
 
-  /** Shows or hides overlay (used when idle or camera missing) */
-  function showOverlay(show = true) {
-    if (!noCameraOverlay) return;
-    noCameraOverlay.style.display = show ? "flex" : "none";
-  }
+  if (!statusEl) return;
+  statusEl.className = `realtime-status ${state}`;
+  statusEl.innerHTML = `${icons[state] || icons.idle} ${text}`;
+}
+
+ 
+function showOverlay(show = true) {
+  if (!noCameraOverlay) return;
+  noCameraOverlay.style.display = show ? "flex" : "none";
+}
+
 
   /** Converts ms → readable hh:mm:ss string */
   function formatTime(ms) {
@@ -148,89 +154,113 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /** Uses backend proxy to convert lat/lon → readable address */
-  async function getReadableLocationFromProxy(lat, lon) {
-    if (!lat || !lon) return "Unknown Area";
-    try {
-      const res = await fetch(`${BASE_URL}/reverse_geocode?lat=${lat}&lon=${lon}`, {
-        cache: "no-store",
-      });
-      if (!res.ok) return "Unknown Area";
-      const data = await res.json();
-      const addr = data.address || {};
-      const parts = [addr.suburb, addr.city, addr.state].filter(Boolean);
-      return parts.join(", ") || data.display_name || "Unknown Area";
-    } catch (e) {
-      log("Reverse geocode failed", e);
-      return "Unknown Area";
-    }
-  }
+async function getReadableLocationFromProxy(lat, lon) {
+  if (!lat || !lon) return "Unknown Area";
+  try {
+    const res = await fetch(`${BASE_URL}/reverse_geocode?lat=${lat}&lon=${lon}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return "Unknown Area";
+    const data = await res.json();
 
+    // 🏘️ Barangay + City + Province display
+    const barangay = data.barangay || "";
+    const city = data.city || "";
+    const province = data.province || "";
+    const country = data.country || "";
+    const parts = [barangay, city, province, country].filter(Boolean);
+
+    return parts.join(", ") || data.display_name || "Unknown Area";
+  } catch (e) {
+    console.warn("Reverse geocode failed:", e);
+    return "Unknown Area";
+  }
+}
+
+
+/**
+ * ======================================================
+ * 🧩 Backend Camera Checker — Helper
+ * ======================================================
+ * Calls the Flask /check_camera endpoint to verify
+ * if a given camera index is available.
+ * Returns: true (if working) or false (if not)
+ */
+async function backendCheckCamera(index) {
+  try {
+    const res = await fetch(`${BASE_URL}/check_camera?camera=${index}`, { cache: "no-store" });
+    if (!res.ok) return false;
+
+    const data = await res.json();
+    return !!data.detected; // true if { "detected": true }
+  } catch (e) {
+    console.warn(`⚠️ Camera probe error for index ${index}:`, e);
+    return false;
+  }
+}
   // ================================================================
   // 🎥 CAMERA CHECK + PROBING
   // ================================================================
 
-  /** Checks if backend can open a camera index */
-  async function backendCheckCamera(index) {
-    try {
-      const res = await fetch(`${BASE_URL}/check_camera?camera=${index}`, {
-        cache: "no-store",
-      });
-      if (!res.ok) return false;
-      const j = await res.json();
-      return !!j.detected;
-    } catch (e) {
-      return false;
-    }
+/** Probes cameras and populates dropdown with detected devices */
+async function probeCamerasAndLabel() {
+  setStatus("loading", "Probing cameras & location...");
+  showOverlay(true);
+  cameraSelect.innerHTML = "";
+
+  // === Get location once ===
+  let coords = await getCurrentPositionPromise();
+  let labelText = "Unknown Area";
+
+  if (coords) {
+    latitudeEl.textContent = coords.latitude.toFixed(6);
+    longitudeEl.textContent = coords.longitude.toFixed(6);
+    labelText = await getReadableLocationFromProxy(coords.latitude, coords.longitude);
   }
 
-  /** Probes cameras and populates dropdown with detected devices */
-  async function probeCamerasAndLabel() {
-    setStatus("loading", "Probing cameras & location...");
+  // 🧭 Save for reuse
+  lastLocationLabel = labelText;
+
+  // === Probe available cameras ===
+  const checks = [];
+  for (let i = 0; i <= MAX_PROBE_CAMERAS; i++) {
+    checks.push(backendCheckCamera(i).then((ok) => ({ idx: i, ok })));
+  }
+
+  const results = await Promise.all(checks);
+  availableCameraIndices = results.filter((r) => r.ok).map((r) => r.idx);
+
+  if (!availableCameraIndices.length) {
+    cameraSelect.innerHTML = "<option>No cameras found</option>";
+    cameraSelect.disabled = true;
+    startBtn.disabled = true;
+    setStatus("error", "No cameras available");
     showOverlay(true);
-    cameraSelect.innerHTML = "";
-
-    // === Location label ===
-    let coords = await getCurrentPositionPromise();
-    let labelText = "Unknown Area";
-    if (coords) {
-      latitudeEl.textContent = coords.latitude.toFixed(6);
-      longitudeEl.textContent = coords.longitude.toFixed(6);
-      labelText = await getReadableLocationFromProxy(coords.latitude, coords.longitude);
-    }
-    lastLocationLabel = labelText;
-
-    // === Probe available cameras ===
-    const checks = [];
-    for (let i = 0; i <= MAX_PROBE_CAMERAS; i++) {
-      checks.push(backendCheckCamera(i).then((ok) => ({ idx: i, ok })));
-    }
-
-    const results = await Promise.all(checks);
-    availableCameraIndices = results.filter((r) => r.ok).map((r) => r.idx);
-
-    if (!availableCameraIndices.length) {
-      cameraSelect.innerHTML = "<option>No cameras found</option>";
-      cameraSelect.disabled = true;
-      startBtn.disabled = true;
-      setStatus("error", "No cameras available");
-      showOverlay(true);
-      return;
-    }
-
-    cameraSelect.disabled = false;
-    cameraSelect.innerHTML = "";
-    availableCameraIndices.forEach((idx) => {
-      const opt = document.createElement("option");
-      opt.value = idx;
-      opt.textContent = `📷 Camera ${idx} • ${lastLocationLabel}`;
-      cameraSelect.appendChild(opt);
-    });
-
-    startBtn.disabled = false;
-    setStatus("idle", "Select camera");
-    showOverlay(false);
+    return;
   }
+
+  // === Populate dropdown ===
+  cameraSelect.disabled = false;
+  cameraSelect.innerHTML = "";
+
+  availableCameraIndices.forEach((idx) => {
+    const opt = document.createElement("option");
+
+    // 👇 Smartly format: Barangay first if available
+    let displayLabel = labelText;
+    if (displayLabel.includes("Barangay")) {
+      displayLabel = displayLabel.replace(/^Barangay\s*/i, "Brgy. ");
+    }
+
+    opt.value = idx;
+    opt.textContent = `📷 Camera ${idx} • ${displayLabel}`;
+    cameraSelect.appendChild(opt);
+  });
+
+  startBtn.disabled = false;
+  setStatus("idle", "Select camera");
+  showOverlay(false);
+}
 
   // ================================================================
   // 🧮 LIVE STATS POLLING + UI UPDATE
@@ -343,74 +373,95 @@ document.addEventListener("DOMContentLoaded", () => {
   // ================================================================
   // 📤 UPLOAD SESSION TO DATABASE (SUPABASE)
   // ================================================================
+uploadBtn?.addEventListener("click", async () => {
+  try {
+    // 🟡 Indicate preparation
+    setStatus("loading", "Preparing upload...");
+    showOverlay(true);
 
-  uploadBtn?.addEventListener("click", async () => {
-    try {
-      setStatus("loading", "Fetching session data...");
-      const statsRes = await fetch(`${BASE_URL}/live_stats`, { cache: "no-store" });
-      if (!statsRes.ok) throw new Error("Stats not available");
-      const stats = await statsRes.json();
+    // Fetch live stats
+    const statsRes = await fetch(`${BASE_URL}/live_stats`, { cache: "no-store" });
+    if (!statsRes.ok) throw new Error("Stats not available");
+    const stats = await statsRes.json();
 
-      const totalDetections = stats.total || 0;
-      const detectionAccuracy = stats.accuracy || 0;
-      const detectionSpeed = stats.speed ? `${stats.speed}s/frame` : "0s/frame";
-      const topDetected =
-        Object.keys(stats.classes || {}).length
-          ? Object.entries(stats.classes).sort((a, b) => b[1] - a[1])[0][0]
-          : "--";
-      const litterSummary = stats.classes || {};
-      const latitude = latitudeEl.textContent || null;
-      const longitude = longitudeEl.textContent || null;
-      const cameraName =
-        cameraSelect?.options[cameraSelect.selectedIndex]?.text || "Local Camera";
+    const totalDetections = stats.total || 0;
+    const detectionAccuracy = stats.accuracy || 0;
+    const detectionSpeed = stats.speed ? `${stats.speed}s/frame` : "0s/frame";
+    const topDetected =
+      Object.keys(stats.classes || {}).length
+        ? Object.entries(stats.classes).sort((a, b) => b[1] - a[1])[0][0]
+        : "--";
+    const litterSummary = stats.classes || {};
+    const latitude = latitudeEl.textContent || null;
+    const longitude = longitudeEl.textContent || null;
+    const cameraName =
+      cameraSelect?.options[cameraSelect.selectedIndex]?.text || "Local Camera";
 
-      const sessionData = {
-        totalDetections,
-        topDetectedLitter: topDetected,
-        detectionSpeed,
-        detectionAccuracy,
-        litterSummary,
-        latitude,
-        longitude,
-        cameraName,
-      };
+    const sessionData = {
+      totalDetections,
+      topDetectedLitter: topDetected,
+      detectionSpeed,
+      detectionAccuracy,
+      litterSummary,
+      latitude,
+      longitude,
+      cameraName,
+    };
 
-      const summaryMsg = `
+    const summaryMsg = `
 📊 Total Detections: ${totalDetections}
 🏷 Top Litter: ${topDetected}
 ⚡ Speed: ${detectionSpeed}
 🎯 Accuracy: ${detectionAccuracy}%
 📍 Location: ${latitude}, ${longitude}
 📹 Camera: ${cameraName}
-      `;
-      if (!confirm("Upload this detection session?\n\n" + summaryMsg)) {
-        setStatus("idle", "Upload cancelled");
-        return;
-      }
+    `;
 
-      setStatus("loading", "Uploading to Supabase...");
-        const uploadRes = await fetch("/LitterLensThesis2/root/system_backend/php/upload_realtime.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(sessionData),
-        });
-        
-      const result = await uploadRes.json();
-      if (result.success) {
-        showModal("✅ Realtime session uploaded successfully!", "#5cb85c");
-        await fetch(`${BASE_URL}/reset_stats`, { method: "POST" }).catch(() => {});
-        resetStatsUI();
-        setStatus("active", "Upload Complete");
-      } else {
-        showModal("❌ Upload failed. " + (result.error || ""), "#d9534f");
-        setStatus("error", "Upload Failed");
-      }
-    } catch (err) {
-      console.error("❌ Upload Error:", err);
-      showModal("❌ Failed to upload session.", "#d9534f");
-      setStatus("error", "Upload Error");
+    if (!confirm("Upload this detection session?\n\n" + summaryMsg)) {
+      setStatus("idle", "Upload cancelled");
+      showOverlay(false);
+      return;
     }
-  });
+
+    // 🟢 Uploading
+    setStatus("loading", "Uploading data to database...");
+    const uploadRes = await fetch("/LitterLensThesis2/root/system_backend/php/upload_realtime.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(sessionData),
+    });
+
+    const result = await uploadRes.json();
+
+    if (result.success) {
+      showModal("✅ Realtime session uploaded successfully!", "#5cb85c");
+      await fetch(`${BASE_URL}/reset_stats`, { method: "POST" }).catch(() => {});
+      resetStatsUI();
+
+      // ✅ Reset UI back to idle cleanly
+      setTimeout(() => {
+        setStatus("idle", "Idle");
+        showOverlay(false);
+      }, 1000);
+    } else {
+      showModal("❌ Upload failed. " + (result.error || ""), "#d9534f");
+      setTimeout(() => {
+        setStatus("error", "Upload Failed");
+        showOverlay(false);
+        // Automatically return to idle after 3 seconds
+        setTimeout(() => setStatus("idle", "Idle"), 3000);
+      }, 500);
+    }
+  } catch (err) {
+    console.error("❌ Upload Error:", err);
+    showModal("❌ Failed to upload session.", "#d9534f");
+    setStatus("error", "Upload Error");
+    showOverlay(false);
+    setTimeout(() => setStatus("idle", "Idle"), 3000);
+  }
+});
+
+
 
   // ================================================================
   // 💬 MODAL CREATOR (Feedback UI)

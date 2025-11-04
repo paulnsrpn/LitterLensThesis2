@@ -6,3 +6,201 @@
 [29-Oct-2025 22:33:16 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9
 [29-Oct-2025 22:37:01 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9
 [02-Nov-2025 15:26:42 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9
+[04-Nov-2025 05:14:00 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9
+[04-Nov-2025 05:14:01 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_detections
+[04-Nov-2025 05:14:01 Europe/Berlin] 📦 Payload: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":5,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":41.15,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+[04-Nov-2025 05:14:01 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 05:14:01 Europe/Berlin] 🔁 Response: [{"realtime_id":1,"admin_id":1,"camera_name":"📷 Camera 0 • Unknown Area","camera_status":"Stopped","total_detections":5,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":41.15,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T04:14:02.720733","date":"2025-11-04"}]
+[04-Nov-2025 05:14:01 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Plastic
+[04-Nov-2025 05:14:01 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 05:14:01 Europe/Berlin] 🔁 Response: [{"littertype_id":2,"littertype_name":"Plastic"}]
+[04-Nov-2025 05:14:02 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 05:14:02 Europe/Berlin] 📦 Payload: {"realtime_id":1,"littertype_id":2,"litter_count":5}
+[04-Nov-2025 05:14:02 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 05:14:02 Europe/Berlin] 🔁 Response: [{"summary_id":1,"realtime_id":1,"littertype_id":2,"litter_count":5}]
+[04-Nov-2025 05:14:02 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 05:14:02 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":5,"confidence_lvl":41.15,"detection_time":"05:14:02"}
+[04-Nov-2025 05:14:02 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 05:14:02 Europe/Berlin] 🔁 Response: [{"detection_id":9,"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":5,"confidence_lvl":41.15,"detection_time":"05:14:02"}]
+[04-Nov-2025 05:14:03 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/activity_logs
+[04-Nov-2025 05:14:03 Europe/Berlin] 📦 Payload: {"admin_id":1,"action":"Uploaded realtime detection for \ud83d\udcf7 Camera 0 \u2022 Unknown Area"}
+[04-Nov-2025 05:14:03 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 05:14:03 Europe/Berlin] 🔁 Response: [{"log_id":3,"admin_id":1,"action":"Uploaded realtime detection for 📷 Camera 0 • Unknown Area","timestamp":"2025-11-04T04:14:04.644635","admin_name":null,"affected_table":null,"description":null,"log_status":"Success"}]
+[04-Nov-2025 13:16:17 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9
+[04-Nov-2025 13:16:17 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_detections
+[04-Nov-2025 13:16:17 Europe/Berlin] 📦 Payload: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":2,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":37.77,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+[04-Nov-2025 13:16:17 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 13:16:17 Europe/Berlin] 🔁 Response: [{"realtime_id":2,"admin_id":1,"camera_name":"📷 Camera 0 • Unknown Area","camera_status":"Stopped","total_detections":2,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":37.77,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T12:16:20.46524","date":"2025-11-04"}]
+[04-Nov-2025 13:16:18 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Plastic
+[04-Nov-2025 13:16:18 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 13:16:18 Europe/Berlin] 🔁 Response: [{"littertype_id":2,"littertype_name":"Plastic"}]
+[04-Nov-2025 13:16:18 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 13:16:18 Europe/Berlin] 📦 Payload: {"realtime_id":2,"littertype_id":2,"litter_count":1}
+[04-Nov-2025 13:16:18 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 13:16:18 Europe/Berlin] 🔁 Response: [{"summary_id":2,"realtime_id":2,"littertype_id":2,"litter_count":1}]
+[04-Nov-2025 13:16:19 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 13:16:19 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":1,"confidence_lvl":37.77,"detection_time":"13:16:18"}
+[04-Nov-2025 13:16:19 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 13:16:19 Europe/Berlin] 🔁 Response: [{"detection_id":23,"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":1,"confidence_lvl":37.77,"detection_time":"13:16:18"}]
+[04-Nov-2025 13:16:19 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Sanitary+Waste
+[04-Nov-2025 13:16:19 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 13:16:19 Europe/Berlin] 🔁 Response: []
+[04-Nov-2025 13:16:20 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types
+[04-Nov-2025 13:16:20 Europe/Berlin] 📦 Payload: {"littertype_name":"Sanitary Waste"}
+[04-Nov-2025 13:16:20 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 13:16:20 Europe/Berlin] 🔁 Response: [{"littertype_id":5,"littertype_name":"Sanitary Waste"}]
+[04-Nov-2025 13:16:20 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 13:16:20 Europe/Berlin] 📦 Payload: {"realtime_id":2,"littertype_id":5,"litter_count":1}
+[04-Nov-2025 13:16:20 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 13:16:20 Europe/Berlin] 🔁 Response: [{"summary_id":3,"realtime_id":2,"littertype_id":5,"litter_count":1}]
+[04-Nov-2025 13:16:21 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 13:16:21 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":5,"date":"2025-11-04","quantity":1,"confidence_lvl":37.77,"detection_time":"13:16:20"}
+[04-Nov-2025 13:16:21 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 13:16:21 Europe/Berlin] 🔁 Response: [{"detection_id":24,"image_id":1,"littertype_id":5,"date":"2025-11-04","quantity":1,"confidence_lvl":37.77,"detection_time":"13:16:20"}]
+[04-Nov-2025 13:16:21 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/activity_logs
+[04-Nov-2025 13:16:21 Europe/Berlin] 📦 Payload: {"admin_id":1,"action":"Uploaded realtime detection for \ud83d\udcf7 Camera 0 \u2022 Unknown Area"}
+[04-Nov-2025 13:16:21 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 13:16:21 Europe/Berlin] 🔁 Response: [{"log_id":76,"admin_id":1,"action":"Uploaded realtime detection for 📷 Camera 0 • Unknown Area","timestamp":"2025-11-04T12:16:24.448965","admin_name":null,"affected_table":null,"description":null,"log_status":"Success"}]
+[04-Nov-2025 14:05:57 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9
+[04-Nov-2025 14:05:57 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_detections
+[04-Nov-2025 14:05:57 Europe/Berlin] 📦 Payload: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":2,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":90.97,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+[04-Nov-2025 14:05:57 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:05:57 Europe/Berlin] 🔁 Response: [{"realtime_id":3,"admin_id":1,"camera_name":"📷 Camera 0 • Unknown Area","camera_status":"Stopped","total_detections":2,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":90.97,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T13:06:00.487564","date":"2025-11-04"}]
+[04-Nov-2025 14:05:58 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Plastic
+[04-Nov-2025 14:05:58 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 14:05:58 Europe/Berlin] 🔁 Response: [{"littertype_id":2,"littertype_name":"Plastic"}]
+[04-Nov-2025 14:05:58 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 14:05:58 Europe/Berlin] 📦 Payload: {"realtime_id":3,"littertype_id":2,"litter_count":2}
+[04-Nov-2025 14:05:58 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:05:58 Europe/Berlin] 🔁 Response: [{"summary_id":4,"realtime_id":3,"littertype_id":2,"litter_count":2}]
+[04-Nov-2025 14:05:59 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 14:05:59 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":2,"confidence_lvl":90.97,"detection_time":"14:05:58"}
+[04-Nov-2025 14:05:59 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:05:59 Europe/Berlin] 🔁 Response: [{"detection_id":25,"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":2,"confidence_lvl":90.97,"detection_time":"14:05:58"}]
+[04-Nov-2025 14:05:59 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/activity_logs
+[04-Nov-2025 14:05:59 Europe/Berlin] 📦 Payload: {"admin_id":1,"action":"Uploaded realtime detection for \ud83d\udcf7 Camera 0 \u2022 Unknown Area"}
+[04-Nov-2025 14:05:59 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:05:59 Europe/Berlin] 🔁 Response: [{"log_id":90,"admin_id":1,"action":"Uploaded realtime detection for 📷 Camera 0 • Unknown Area","timestamp":"2025-11-04T13:06:02.534261","admin_name":null,"affected_table":null,"description":null,"log_status":"Success"}]
+[04-Nov-2025 14:13:23 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9
+[04-Nov-2025 14:13:23 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_detections
+[04-Nov-2025 14:13:23 Europe/Berlin] 📦 Payload: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":71.87,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+[04-Nov-2025 14:13:23 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:13:23 Europe/Berlin] 🔁 Response: [{"realtime_id":4,"admin_id":1,"camera_name":"📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":71.87,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T13:13:26.225636","date":"2025-11-04"}]
+[04-Nov-2025 14:13:24 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Metal
+[04-Nov-2025 14:13:24 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 14:13:24 Europe/Berlin] 🔁 Response: []
+[04-Nov-2025 14:13:24 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types
+[04-Nov-2025 14:13:24 Europe/Berlin] 📦 Payload: {"littertype_name":"Metal"}
+[04-Nov-2025 14:13:24 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:13:24 Europe/Berlin] 🔁 Response: [{"littertype_id":6,"littertype_name":"Metal"}]
+[04-Nov-2025 14:13:25 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 14:13:25 Europe/Berlin] 📦 Payload: {"realtime_id":4,"littertype_id":6,"litter_count":1}
+[04-Nov-2025 14:13:25 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:13:25 Europe/Berlin] 🔁 Response: [{"summary_id":5,"realtime_id":4,"littertype_id":6,"litter_count":1}]
+[04-Nov-2025 14:13:25 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 14:13:25 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":6,"date":"2025-11-04","quantity":1,"confidence_lvl":71.87,"detection_time":"14:13:25"}
+[04-Nov-2025 14:13:25 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:13:25 Europe/Berlin] 🔁 Response: [{"detection_id":26,"image_id":1,"littertype_id":6,"date":"2025-11-04","quantity":1,"confidence_lvl":71.87,"detection_time":"14:13:25"}]
+[04-Nov-2025 14:13:25 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Plastic
+[04-Nov-2025 14:13:25 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 14:13:25 Europe/Berlin] 🔁 Response: [{"littertype_id":2,"littertype_name":"Plastic"}]
+[04-Nov-2025 14:13:26 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 14:13:26 Europe/Berlin] 📦 Payload: {"realtime_id":4,"littertype_id":2,"litter_count":3}
+[04-Nov-2025 14:13:26 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:13:26 Europe/Berlin] 🔁 Response: [{"summary_id":6,"realtime_id":4,"littertype_id":2,"litter_count":3}]
+[04-Nov-2025 14:13:26 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 14:13:26 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":3,"confidence_lvl":71.87,"detection_time":"14:13:26"}
+[04-Nov-2025 14:13:26 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:13:26 Europe/Berlin] 🔁 Response: [{"detection_id":27,"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":3,"confidence_lvl":71.87,"detection_time":"14:13:26"}]
+[04-Nov-2025 14:13:27 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/activity_logs
+[04-Nov-2025 14:13:27 Europe/Berlin] 📦 Payload: {"admin_id":1,"action":"Uploaded realtime detection for \ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines"}
+[04-Nov-2025 14:13:27 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:13:27 Europe/Berlin] 🔁 Response: [{"log_id":91,"admin_id":1,"action":"Uploaded realtime detection for 📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines","timestamp":"2025-11-04T13:13:30.151165","admin_name":null,"affected_table":null,"description":null,"log_status":"Success"}]
+[04-Nov-2025 14:15:39 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9
+[04-Nov-2025 14:15:41 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_detections
+[04-Nov-2025 14:15:41 Europe/Berlin] 📦 Payload: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Plastic","detection_speed":0.18,"detection_accuracy":70.55,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+[04-Nov-2025 14:15:41 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:15:41 Europe/Berlin] 🔁 Response: [{"realtime_id":5,"admin_id":1,"camera_name":"📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Plastic","detection_speed":0.18,"detection_accuracy":70.55,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T13:15:43.886103","date":"2025-11-04"}]
+[04-Nov-2025 14:15:41 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Metal
+[04-Nov-2025 14:15:41 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 14:15:41 Europe/Berlin] 🔁 Response: [{"littertype_id":6,"littertype_name":"Metal"}]
+[04-Nov-2025 14:15:42 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 14:15:42 Europe/Berlin] 📦 Payload: {"realtime_id":5,"littertype_id":6,"litter_count":1}
+[04-Nov-2025 14:15:42 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:15:42 Europe/Berlin] 🔁 Response: [{"summary_id":7,"realtime_id":5,"littertype_id":6,"litter_count":1}]
+[04-Nov-2025 14:15:42 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 14:15:42 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":6,"date":"2025-11-04","quantity":1,"confidence_lvl":70.55,"detection_time":"14:15:42"}
+[04-Nov-2025 14:15:42 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:15:42 Europe/Berlin] 🔁 Response: [{"detection_id":28,"image_id":1,"littertype_id":6,"date":"2025-11-04","quantity":1,"confidence_lvl":70.55,"detection_time":"14:15:42"}]
+[04-Nov-2025 14:15:43 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Plastic
+[04-Nov-2025 14:15:43 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 14:15:43 Europe/Berlin] 🔁 Response: [{"littertype_id":2,"littertype_name":"Plastic"}]
+[04-Nov-2025 14:15:43 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 14:15:43 Europe/Berlin] 📦 Payload: {"realtime_id":5,"littertype_id":2,"litter_count":3}
+[04-Nov-2025 14:15:43 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:15:43 Europe/Berlin] 🔁 Response: [{"summary_id":8,"realtime_id":5,"littertype_id":2,"litter_count":3}]
+[04-Nov-2025 14:15:44 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 14:15:44 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":3,"confidence_lvl":70.55,"detection_time":"14:15:43"}
+[04-Nov-2025 14:15:44 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:15:44 Europe/Berlin] 🔁 Response: [{"detection_id":29,"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":3,"confidence_lvl":70.55,"detection_time":"14:15:43"}]
+[04-Nov-2025 14:15:44 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/activity_logs
+[04-Nov-2025 14:15:44 Europe/Berlin] 📦 Payload: {"admin_id":1,"action":"Uploaded realtime detection for \ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines"}
+[04-Nov-2025 14:15:44 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:15:44 Europe/Berlin] 🔁 Response: [{"log_id":92,"admin_id":1,"action":"Uploaded realtime detection for 📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines","timestamp":"2025-11-04T13:15:47.213601","admin_name":null,"affected_table":null,"description":null,"log_status":"Success"}]
+[04-Nov-2025 14:50:38 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\LitterLensThesis2\root\system_backend\php\upload_realtime.php on line 9
+[04-Nov-2025 14:50:39 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_detections
+[04-Nov-2025 14:50:39 Europe/Berlin] 📦 Payload: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":9,"top_detected_litter":"Plastic","detection_speed":0.2,"detection_accuracy":52.71,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+[04-Nov-2025 14:50:39 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:39 Europe/Berlin] 🔁 Response: [{"realtime_id":6,"admin_id":1,"camera_name":"📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":9,"top_detected_litter":"Plastic","detection_speed":0.20,"detection_accuracy":52.71,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T13:50:41.866088","date":"2025-11-04"}]
+[04-Nov-2025 14:50:39 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Metal
+[04-Nov-2025 14:50:39 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 14:50:39 Europe/Berlin] 🔁 Response: [{"littertype_id":6,"littertype_name":"Metal"}]
+[04-Nov-2025 14:50:40 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 14:50:40 Europe/Berlin] 📦 Payload: {"realtime_id":6,"littertype_id":6,"litter_count":1}
+[04-Nov-2025 14:50:40 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:40 Europe/Berlin] 🔁 Response: [{"summary_id":9,"realtime_id":6,"littertype_id":6,"litter_count":1}]
+[04-Nov-2025 14:50:40 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 14:50:40 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":6,"date":"2025-11-04","quantity":1,"confidence_lvl":52.71,"detection_time":"14:50:40"}
+[04-Nov-2025 14:50:40 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:40 Europe/Berlin] 🔁 Response: [{"detection_id":30,"image_id":1,"littertype_id":6,"date":"2025-11-04","quantity":1,"confidence_lvl":52.71,"detection_time":"14:50:40"}]
+[04-Nov-2025 14:50:41 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Organic+Debris
+[04-Nov-2025 14:50:41 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 14:50:41 Europe/Berlin] 🔁 Response: [{"littertype_id":1,"littertype_name":"Organic Debris"}]
+[04-Nov-2025 14:50:41 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 14:50:41 Europe/Berlin] 📦 Payload: {"realtime_id":6,"littertype_id":1,"litter_count":1}
+[04-Nov-2025 14:50:41 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:41 Europe/Berlin] 🔁 Response: [{"summary_id":10,"realtime_id":6,"littertype_id":1,"litter_count":1}]
+[04-Nov-2025 14:50:42 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 14:50:42 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":1,"date":"2025-11-04","quantity":1,"confidence_lvl":52.71,"detection_time":"14:50:41"}
+[04-Nov-2025 14:50:42 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:42 Europe/Berlin] 🔁 Response: [{"detection_id":31,"image_id":1,"littertype_id":1,"date":"2025-11-04","quantity":1,"confidence_lvl":52.71,"detection_time":"14:50:41"}]
+[04-Nov-2025 14:50:42 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Plastic
+[04-Nov-2025 14:50:42 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 14:50:42 Europe/Berlin] 🔁 Response: [{"littertype_id":2,"littertype_name":"Plastic"}]
+[04-Nov-2025 14:50:43 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 14:50:43 Europe/Berlin] 📦 Payload: {"realtime_id":6,"littertype_id":2,"litter_count":6}
+[04-Nov-2025 14:50:43 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:43 Europe/Berlin] 🔁 Response: [{"summary_id":11,"realtime_id":6,"littertype_id":2,"litter_count":6}]
+[04-Nov-2025 14:50:43 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 14:50:43 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":6,"confidence_lvl":52.71,"detection_time":"14:50:43"}
+[04-Nov-2025 14:50:43 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:43 Europe/Berlin] 🔁 Response: [{"detection_id":32,"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":6,"confidence_lvl":52.71,"detection_time":"14:50:43"}]
+[04-Nov-2025 14:50:44 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types?littertype_name=eq.Rubber
+[04-Nov-2025 14:50:44 Europe/Berlin] 🧾 HTTP Status: 200
+[04-Nov-2025 14:50:44 Europe/Berlin] 🔁 Response: []
+[04-Nov-2025 14:50:44 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/litter_types
+[04-Nov-2025 14:50:44 Europe/Berlin] 📦 Payload: {"littertype_name":"Rubber"}
+[04-Nov-2025 14:50:44 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:44 Europe/Berlin] 🔁 Response: [{"littertype_id":7,"littertype_name":"Rubber"}]
+[04-Nov-2025 14:50:45 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/realtime_litter_summary
+[04-Nov-2025 14:50:45 Europe/Berlin] 📦 Payload: {"realtime_id":6,"littertype_id":7,"litter_count":1}
+[04-Nov-2025 14:50:45 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:45 Europe/Berlin] 🔁 Response: [{"summary_id":12,"realtime_id":6,"littertype_id":7,"litter_count":1}]
+[04-Nov-2025 14:50:45 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/detections
+[04-Nov-2025 14:50:45 Europe/Berlin] 📦 Payload: {"image_id":1,"littertype_id":7,"date":"2025-11-04","quantity":1,"confidence_lvl":52.71,"detection_time":"14:50:45"}
+[04-Nov-2025 14:50:45 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:45 Europe/Berlin] 🔁 Response: [{"detection_id":33,"image_id":1,"littertype_id":7,"date":"2025-11-04","quantity":1,"confidence_lvl":52.71,"detection_time":"14:50:45"}]
+[04-Nov-2025 14:50:46 Europe/Berlin] 📡 Supabase URL: https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/activity_logs
+[04-Nov-2025 14:50:46 Europe/Berlin] 📦 Payload: {"admin_id":1,"action":"Uploaded realtime detection for \ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines"}
+[04-Nov-2025 14:50:46 Europe/Berlin] 🧾 HTTP Status: 201
+[04-Nov-2025 14:50:46 Europe/Berlin] 🔁 Response: [{"log_id":95,"admin_id":1,"action":"Uploaded realtime detection for 📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines","timestamp":"2025-11-04T13:50:48.680483","admin_name":null,"affected_table":null,"description":null,"log_status":"Success"}]

@@ -3988,3 +3988,1782 @@ Array
         )
 
 )
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Local Admin
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => Main
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+            [profile_pic] => avatar2.jpg
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+            [profile_pic] => avatar5.jpg
+            [contact_number] => 
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => user
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+            [profile_pic] => avatar2.jpg
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+            [profile_pic] => avatar5.jpg
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Local Admin
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+            [profile_pic] => avatar2.jpg
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+            [profile_pic] => avatar5.jpg
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Local Admin
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+            [profile_pic] => avatar2.jpg
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+            [profile_pic] => avatar5.jpg
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Local Admin
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+            [profile_pic] => avatar2.jpg
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+            [profile_pic] => avatar5.jpg
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Local Admin
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+            [profile_pic] => avatar2.jpg
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+            [profile_pic] => avatar5.jpg
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Local Admin
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+            [profile_pic] => avatar2.jpg
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+            [profile_pic] => avatar5.jpg
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Local Admin
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+            [profile_pic] => avatar2.jpg
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+            [profile_pic] => avatar5.jpg
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Local Admin
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+            [profile_pic] => avatar2.jpg
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+            [profile_pic] => avatar5.jpg
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Local Admin
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => alentajan_jervie@plpasig.edu.ph
+            [password] => $2y$10$xJ8oeSE7Eao7lKX5KIqpROX0GGRRLQ.HMWHM/Rgo67f.NxDExDh.y
+            [role] => user
+            [profile_pic] => avatar2.jpg
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$PpJZCvMURWiD6SsFo9tK/.jlHg0slaRX1HGk4qgzHuBK6y6aOvVaq
+            [role] => user
+            [profile_pic] => avatar5.jpg
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Local Admin
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuelita Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762159491.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Admin 1
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => password
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$jPlCIy1WRz.i1afbIHItiOnDJXhumfqU.CMoyv8ewUsaOhNKeV/z.
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Admin 1
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Admin 1
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Admin 1
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$XnIRm8AC0GyQhD.1ttBOZC...
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$XnIRm8AC0GyQhD.1ttBOZC...
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$XnIRm8AC0GyQhD.1ttBOZC...
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$XnIRm8AC0GyQhD.1ttBOZC...
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$XnIRm8AC0GyQhD.1ttBOZC...
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$XnIRm8AC0GyQhD.1ttBOZC...
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$XnIRm8AC0GyQhD.1ttBOZC...
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+    [3] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$XnIRm8AC0GyQhD.1ttBOZC...
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => Mayor Vico
+            [email] => admin@litterlens.local
+            [password] => $2a$10$mzTgsoeQ3mdpdLH58wb.YOMWWZO0FSQzXPOqaqIIlKVOeaRgnkaIe
+            [role] => admin
+            [profile_pic] => avatar1.jpg
+            [contact_number] => 09998088382
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Florida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$kR.mGDFKC5UGEmkTz41MZOOJxR6bpxSSKaJiJCo9i1PI5luHKOv06
+            [role] => admin
+            [profile_pic] => admin_2_1762201295.png
+            [contact_number] => 09998088382
+        )
+
+    [2] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Pauline
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => admin_5_1762211511.png
+            [contact_number] => 0912345678999
+        )
+
+)
+Array
+(
+    [success] => 1
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => user
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Eman
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => user
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Eman
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => user
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Eman
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => user
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 09998088382
+        )
+
+)

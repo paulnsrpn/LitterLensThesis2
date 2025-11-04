@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  //  document.body.classList.add("loaded");
   // ==============================
   // 📊 BAR CHART (Total Litter Detections)
   // ==============================
@@ -8,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const trendFilterSelect = document.getElementById("trendFilter");
   let trendChart = null;
 
-  // 🌀 Show / Hide Loader
+  // Loader visibility
   function showTrendChartLoader(show = true, message = "Loading trend data...") {
     if (!trendLoader || !trendCanvas) return;
     trendLoader.style.display = show ? "flex" : "none";
@@ -16,18 +15,16 @@ document.addEventListener("DOMContentLoaded", () => {
     trendCanvas.style.display = show ? "none" : "block";
   }
 
-  // 🎨 Render / Update Chart
+  // Render / Update Chart
   function renderTrendBarChart(labels, datasets) {
     showTrendChartLoader(false);
     const ctx = trendCanvas.getContext("2d");
 
     if (trendChart) {
-      // ✅ Update existing chart smoothly
       trendChart.data.labels = labels;
       trendChart.data.datasets = datasets;
       trendChart.update();
     } else {
-      // ✅ First-time render
       trendChart = new Chart(ctx, {
         type: "bar",
         data: { labels, datasets },
@@ -41,45 +38,42 @@ document.addEventListener("DOMContentLoaded", () => {
               backgroundColor: "rgba(0,0,0,0.8)",
               padding: 10,
               callbacks: {
-                label: (context) => `Total: ${context.parsed.y}`
-              }
-            }
+                label: (context) => `Total: ${context.parsed.y}`,
+              },
+            },
           },
           scales: {
             x: {
               title: { display: true, text: "Date / Period" },
               ticks: { autoSkip: false, maxRotation: 45 },
-              grid: { display: false }
+              grid: { display: false },
             },
             y: {
               beginAtZero: true,
               title: { display: true, text: "Total Detections" },
-              grid: { color: "rgba(0,0,0,0.05)" }
-            }
-          }
-        }
+              grid: { color: "rgba(0,0,0,0.05)" },
+            },
+          },
+        },
       });
     }
   }
 
-  // 🌐 Fetch Chart Data
+  // Fetch Chart Data
   async function fetchTrendData(filter = "month") {
     showTrendChartLoader(true, `Loading ${filter} data...`);
     try {
       const response = await fetch(
         `http://localhost/LitterLensThesis2/root/system_backend/php/system_admin_data.php?ajax=trend_total&trend_filter=${filter}`
       );
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const data = await response.json();
-      console.log("✅ Trend Data:", data);
 
       if (data?.labels?.length && data?.datasets?.length) {
-        // 🎨 Apply consistent colors
         const colors = [
           "#2E7D32", "#388E3C", "#43A047", "#4CAF50", "#66BB6A",
-          "#81C784", "#A5D6A7", "#C8E6C9", "#E8F5E9", "#1B5E20"
+          "#81C784", "#A5D6A7", "#C8E6C9", "#E8F5E9", "#1B5E20",
         ];
 
         data.datasets[0].backgroundColor = colors;
@@ -92,15 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         showTrendChartLoader(true, "No data available for this period.");
       }
-    } catch (err) {
+    } catch {
       showTrendChartLoader(true, "Error loading chart data.");
-      console.error("❌ Fetch error:", err);
     }
   }
 
-  // 🚀 Initial Load + Filter Change
+  // Initial Load + Filter Change
   fetchTrendData("month");
-
   if (trendFilterSelect) {
     trendFilterSelect.addEventListener("change", (e) => {
       const selected = e.target.value.toLowerCase();
@@ -109,14 +101,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ============================
-  // 🌍 HEATMAP MAPLIBRE SECTION
+  // 🌍 HEATMAP (MapLibre)
   // ============================
-  if (typeof detections === "undefined" || detections.length === 0) {
-    console.warn("⚠️ No detection coordinates found.");
-    return;
-  }
-
-  console.log("✅ Loaded detections:", detections.length);
+  if (typeof detections === "undefined" || detections.length === 0) return;
 
   const geoData = {
     type: "FeatureCollection",
@@ -179,9 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const bounds = new maplibregl.LngLatBounds();
     detections.forEach(([lat, lng]) => bounds.extend([lng, lat]));
     map.fitBounds(bounds, { padding: 60, duration: 1000, maxZoom: 16 });
-
     document.getElementById("hotspotMap").classList.add("loaded");
-    console.log("✅ Map + heatmap ready");
   });
 });
 
@@ -190,33 +175,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const activityLoader = document.getElementById("activityLoader");
   const activityTable = document.getElementById("activityTable").querySelector("tbody");
 
-  // 🔧 Helper to show/hide loader
+  // Loader helper
   function showLoader(show = true, msg = "Loading recent activity...") {
     const loaderText = document.querySelector("#activityLoader .loader-text");
     if (loaderText) loaderText.textContent = msg;
-
     activityLoader.style.display = show ? "flex" : "none";
     activityTable.style.opacity = show ? "0.3" : "1";
   }
 
-  // ⚙️ Fetch activity data dynamically
+  // Fetch activity data
   async function fetchRecentActivity(filter = "today") {
     showLoader(true, `Loading ${filter === "today" ? "today's" : "last 7 days'"} data...`);
-
     try {
       const response = await fetch(
         `http://localhost/LitterLensThesis2/root/system_backend/php/system_admin_data.php?ajax=recent_activity&time_filter=${filter}`
       );
-
       if (!response.ok) throw new Error("Network error");
 
       const data = await response.json();
-      console.log("✅ Recent Activity Data:", data);
-
-      // 🧹 Clear existing table content
       activityTable.innerHTML = "";
 
-      // 🧩 Build new rows
       if (Array.isArray(data) && data.length > 0) {
         data.forEach((row) => {
           const date = new Date(`${row.date}T${row.time}`);
@@ -236,19 +214,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       showLoader(false);
-    } catch (err) {
-      console.error("❌ Failed to fetch activity:", err);
+    } catch {
       showLoader(true, "Error loading activity data.");
     }
   }
 
-  // 🚀 Initial load
+  // Initial load + dropdown change
   fetchRecentActivity("today");
-
-  // 🔁 Change listener for dropdown
   timeFilter.addEventListener("change", (e) => {
-    const filter = e.target.value.toLowerCase();
-    fetchRecentActivity(filter);
+    fetchRecentActivity(e.target.value.toLowerCase());
   });
 });
- 

@@ -106,3 +106,54 @@ Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-02","quantit
 Inserted litter summary: {"realtime_id":22,"littertype_id":6,"litter_count":2}
 Inserted detection: {"image_id":1,"littertype_id":6,"date":"2025-11-02","quantity":2,"confidence_lvl":35.2,"detection_time":"15:26:46"}
 Activity logged for admin 2
+RAW JSON: {"totalDetections":5,"topDetectedLitter":"Plastic","detectionSpeed":"0.19s/frame","detectionAccuracy":41.15,"litterSummary":{"Plastic":5},"latitude":"14.644019","longitude":"121.035162","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":5,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":41.15,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+Insert Response: [{"realtime_id":1,"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":5,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":41.15,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T04:14:02.720733","date":"2025-11-04"}]
+Inserted litter summary: {"realtime_id":1,"littertype_id":2,"litter_count":5}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":5,"confidence_lvl":41.15,"detection_time":"05:14:02"}
+Activity logged for admin 1
+RAW JSON: {"totalDetections":2,"topDetectedLitter":"Plastic","detectionSpeed":"0.19s/frame","detectionAccuracy":37.77,"litterSummary":{"Plastic":1,"Sanitary Waste":1},"latitude":"14.644019","longitude":"121.035162","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":2,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":37.77,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+Insert Response: [{"realtime_id":2,"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":2,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":37.77,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T12:16:20.46524","date":"2025-11-04"}]
+Inserted litter summary: {"realtime_id":2,"littertype_id":2,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":1,"confidence_lvl":37.77,"detection_time":"13:16:18"}
+🆕 Created new litter type: Sanitary Waste
+Inserted litter summary: {"realtime_id":2,"littertype_id":5,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":5,"date":"2025-11-04","quantity":1,"confidence_lvl":37.77,"detection_time":"13:16:20"}
+Activity logged for admin 1
+RAW JSON: {"totalDetections":2,"topDetectedLitter":"Plastic","detectionSpeed":"0.19s/frame","detectionAccuracy":90.97,"litterSummary":{"Plastic":2},"latitude":"14.644019","longitude":"121.035162","cameraName":"📷 Camera 0 • Unknown Area"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":2,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":90.97,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+Insert Response: [{"realtime_id":3,"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Unknown Area","camera_status":"Stopped","total_detections":2,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":90.97,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T13:06:00.487564","date":"2025-11-04"}]
+Inserted litter summary: {"realtime_id":3,"littertype_id":2,"litter_count":2}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":2,"confidence_lvl":90.97,"detection_time":"14:05:58"}
+Activity logged for admin 1
+RAW JSON: {"totalDetections":4,"topDetectedLitter":"Plastic","detectionSpeed":"0.19s/frame","detectionAccuracy":71.87,"litterSummary":{"Metal":1,"Plastic":3},"latitude":"14.644019","longitude":"121.035162","cameraName":"📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":71.87,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+Insert Response: [{"realtime_id":4,"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Plastic","detection_speed":0.19,"detection_accuracy":71.87,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T13:13:26.225636","date":"2025-11-04"}]
+🆕 Created new litter type: Metal
+Inserted litter summary: {"realtime_id":4,"littertype_id":6,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":6,"date":"2025-11-04","quantity":1,"confidence_lvl":71.87,"detection_time":"14:13:25"}
+Inserted litter summary: {"realtime_id":4,"littertype_id":2,"litter_count":3}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":3,"confidence_lvl":71.87,"detection_time":"14:13:26"}
+Activity logged for admin 1
+RAW JSON: {"totalDetections":4,"topDetectedLitter":"Plastic","detectionSpeed":"0.18s/frame","detectionAccuracy":70.55,"litterSummary":{"Metal":1,"Plastic":3},"latitude":"14.644019","longitude":"121.035162","cameraName":"📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Plastic","detection_speed":0.18,"detection_accuracy":70.55,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+Insert Response: [{"realtime_id":5,"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":4,"top_detected_litter":"Plastic","detection_speed":0.18,"detection_accuracy":70.55,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T13:15:43.886103","date":"2025-11-04"}]
+Inserted litter summary: {"realtime_id":5,"littertype_id":6,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":6,"date":"2025-11-04","quantity":1,"confidence_lvl":70.55,"detection_time":"14:15:42"}
+Inserted litter summary: {"realtime_id":5,"littertype_id":2,"litter_count":3}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":3,"confidence_lvl":70.55,"detection_time":"14:15:43"}
+Activity logged for admin 1
+RAW JSON: {"totalDetections":9,"topDetectedLitter":"Plastic","detectionSpeed":"0.2s/frame","detectionAccuracy":52.71,"litterSummary":{"Metal":1,"Organic Debris":1,"Plastic":6,"Rubber":1},"latitude":"14.644019","longitude":"121.035162","cameraName":"📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":9,"top_detected_litter":"Plastic","detection_speed":0.2,"detection_accuracy":52.71,"latitude":"14.644019","longitude":"121.035162","date":"2025-11-04"}
+Insert Response: [{"realtime_id":6,"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":9,"top_detected_litter":"Plastic","detection_speed":0.2,"detection_accuracy":52.71,"longitude":121.035162,"latitude":14.644019,"timestamp":"2025-11-04T13:50:41.866088","date":"2025-11-04"}]
+Inserted litter summary: {"realtime_id":6,"littertype_id":6,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":6,"date":"2025-11-04","quantity":1,"confidence_lvl":52.71,"detection_time":"14:50:40"}
+Inserted litter summary: {"realtime_id":6,"littertype_id":1,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-11-04","quantity":1,"confidence_lvl":52.71,"detection_time":"14:50:41"}
+Inserted litter summary: {"realtime_id":6,"littertype_id":2,"litter_count":6}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":6,"confidence_lvl":52.71,"detection_time":"14:50:43"}
+🆕 Created new litter type: Rubber
+Inserted litter summary: {"realtime_id":6,"littertype_id":7,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":7,"date":"2025-11-04","quantity":1,"confidence_lvl":52.71,"detection_time":"14:50:45"}
+Activity logged for admin 1

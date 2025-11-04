@@ -1,0 +1,58 @@
+==== Registration Attempt ====
+Time: 2025-11-03 20:17:29
+Full Name: Pauline Serapion | Email: serapion_pauline@plpasig.edu.ph
+Email check result: NOT EXISTS
+Supabase insert result:
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$0XnlRm8AGODgOhID.t1zBOZtOSS1.uwS5AZ.EaYfgbDQNptHRuA4i
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+
+Registration successful. Auto-login done.
+
+==== Registration Attempt ====
+Time: 2025-11-04 12:54:04
+Full Name: Pau | Email: paulineserapion127@gmail.com
+==== Registration Attempt ====
+Time: 2025-11-04 12:55:34
+Full Name: Emanuel Flroida | Email: eflorida1024@gmail.com
+Email check result: NOT EXISTS
+Supabase insert result:
+Array
+(
+    [error] => HTTP 409
+    [body] => {"code":"23505","details":"Key (admin_id)=(1) already exists.","hint":null,"message":"duplicate key value violates unique constraint \"admin_pkey\""}
+)
+
+==== Registration Attempt ====
+Time: 2025-11-04 12:55:45
+Full Name: Emanuel Flroida | Email: eflorida1024@gmail.com
+Email check result: NOT EXISTS
+Supabase insert result:
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel Flroida
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+
+Registration successful. Auto-login done.
+

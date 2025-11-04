@@ -1,108 +1,275 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const teamContainer = document.querySelector("#users .user-grid");
   const searchInput = document.querySelector(".user-search");
-  const cards = Array.from(document.querySelectorAll(".user-card"));
   const noResults = document.getElementById("no-results");
-  const hideTimers = new WeakMap();
+
+  const editModal = document.getElementById("editMemberModal");
+  const deleteModal = document.getElementById("deleteConfirmModal");
+  const editName = document.getElementById("editName");
+  const editEmail = document.getElementById("editEmail");
+  const editRole = document.getElementById("editRole");
+  const deleteName = document.getElementById("deleteName");
+
+  let currentEditId = null;
+  let currentDeleteId = null;
   let debounceTimer;
 
-  // 🪄 Smooth FLIP Animation
-  function flipAnimate() {
-    const activeCards = cards.filter(c => c.style.display !== "none");
-    const firstRects = new Map(activeCards.map(c => [c, c.getBoundingClientRect()]));
+  // ==============================
+  // 🧠 Initialize All Functions
+  // ==============================
+  function initTeamFunctions() {
+    const cards = Array.from(document.querySelectorAll(".user-card"));
 
-    // Wait for layout to settle, prevents blur
-    setTimeout(() => {
-      requestAnimationFrame(() => {
-        activeCards.forEach(card => {
-          const lastRect = card.getBoundingClientRect();
-          const first = firstRects.get(card);
-          if (!first) return;
+    // 🔍 SEARCH FUNCTION
+    searchInput?.addEventListener("input", () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const query = searchInput.value.trim().toLowerCase();
+        let visibleCount = 0;
 
-          const dx = first.left - lastRect.left;
-          const dy = first.top - lastRect.top;
+        cards.forEach(card => {
+          const name = card.querySelector("h3")?.textContent.toLowerCase() || "";
+          const email = card.querySelector("p")?.textContent.toLowerCase() || "";
+          const role = card.querySelector(".role")?.textContent.toLowerCase() || "";
+          const matches = name.includes(query) || email.includes(query) || role.includes(query);
 
-          const anim = card.animate(
-            [
-              { transform: `translate(${dx}px, ${dy}px)` },
-              { transform: "translate(0, 0)" }
-            ],
-            {
-              duration: 600,
-              easing: "cubic-bezier(0.25, 1, 0.5, 1)"
-            }
-          );
-
-          anim.onfinish = () => {
-            card.style.transform = "translate(0, 0)";
-          };
+          if (!query || matches) {
+            card.style.display = "block";
+            card.classList.remove("hide");
+            visibleCount++;
+          } else {
+            card.classList.add("hide");
+            setTimeout(() => (card.style.display = "none"), 300);
+          }
         });
+
+        // Show/hide "No results"
+        if (visibleCount === 0) {
+          noResults.style.display = "block";
+          noResults.style.opacity = "1";
+        } else {
+          noResults.style.opacity = "0";
+          setTimeout(() => (noResults.style.display = "none"), 300);
+        }
+      }, 150);
+    });
+
+    // ⚙️ MENU TOGGLE
+    document.querySelectorAll(".menu-btn").forEach(menu => {
+      if (menu.disabled) return;
+      menu.addEventListener("click", e => {
+        e.stopPropagation();
+        const options = menu.closest(".user-menu").querySelector(".menu-options");
+        if (!options) return;
+
+        // Close other open menus
+        document.querySelectorAll(".menu-options.active").forEach(m => {
+          if (m !== options) m.classList.remove("active");
+        });
+
+        options.classList.toggle("active");
       });
-    }, 50); // ⏳ Small delay avoids ghosting/blur
+    });
+
+    // Close menus when clicking elsewhere
+    document.addEventListener("click", () => {
+      document.querySelectorAll(".menu-options.active").forEach(m => m.classList.remove("active"));
+    });
+
+    // ✏️ EDIT MEMBER
+    document.querySelectorAll(".btn-edit").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentEditId = btn.dataset.id;
+        editName.value = btn.dataset.name;
+        editEmail.value = btn.dataset.email;
+        editRole.value = btn.dataset.role;
+        editModal.style.display = "flex";
+      });
+    });
+
+    // 🗑️ DELETE MEMBER
+    document.querySelectorAll(".btn-delete").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentDeleteId = btn.dataset.id;
+        deleteName.textContent = btn.dataset.name;
+        deleteModal.style.display = "flex";
+      });
+    });
+
+    // 📧 EMAIL MEMBER
+    document.querySelectorAll(".email-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const email = btn.dataset.email;
+        const name = btn.dataset.name;
+        if (!email) return alert("⚠️ No email found.");
+        const subject = encodeURIComponent("LitterLens Admin");
+        const body = encodeURIComponent(`Hello ${name},\n\nI’d like to discuss...`);
+        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`, "_blank");
+      });
+    });
+
+    // 📞 CALL MEMBER
+    document.querySelectorAll(".call-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const phone = btn.dataset.phone?.trim();
+        const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+        if (!phone) return showTooltip(btn, "⚠️ No phone number available.");
+        if (!isMobile) return showTooltip(btn, `📞 Use manually: ${phone}`);
+        window.location.href = `tel:${phone}`;
+      });
+    });
   }
 
-  // 🧠 Search Input Logic
-  searchInput.addEventListener("input", () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      const query = searchInput.value.trim().toLowerCase();
-      let visibleCount = 0;
+  // ==============================
+  // 💬 TOOLTIP HELPERS
+  // ==============================
+  function showTooltip(button, message) {
+    const existing = button.parentElement.querySelector(".call-tooltip");
+    if (existing) existing.remove();
 
-      // 🩶 If search is empty → show all cards cleanly
-      if (query === "") {
-        cards.forEach((card, i) => {
-          const existingTimer = hideTimers.get(card);
-          if (existingTimer) clearTimeout(existingTimer);
+    const tooltip = document.createElement("div");
+    tooltip.className = "call-tooltip";
+    tooltip.textContent = message;
+    button.parentElement.appendChild(tooltip);
 
-          card.style.display = "block";
-          card.classList.remove("hide");
-          card.classList.add("show");
-          card.style.animationDelay = `${i * 0.05}s`;
-        });
+    requestAnimationFrame(() => tooltip.classList.add("visible"));
+    const hideTimer = setTimeout(() => removeTooltip(tooltip), 3000);
 
-        noResults.style.opacity = "0";
-        setTimeout(() => (noResults.style.display = "none"), 300);
-        flipAnimate();
-        return;
-      }
+    const hideOnLeave = () => {
+      removeTooltip(tooltip);
+      clearTimeout(hideTimer);
+      button.removeEventListener("mouseleave", hideOnLeave);
+    };
 
-      // 🎯 Otherwise → Filter normally
-      cards.forEach((card) => {
-        const name = card.querySelector("h3")?.textContent.toLowerCase() || "";
-        const email = card.querySelector("p")?.textContent.toLowerCase() || "";
-        const role = card.querySelector(".role")?.textContent.toLowerCase() || "";
-        const matches = name.includes(query) || email.includes(query) || role.includes(query);
+    button.addEventListener("mouseleave", hideOnLeave);
+  }
 
-        const existingTimer = hideTimers.get(card);
-        if (existingTimer) clearTimeout(existingTimer);
+  function removeTooltip(tooltip) {
+    tooltip.classList.remove("visible");
+    setTimeout(() => tooltip.remove(), 250);
+  }
 
-        if (matches) {
-          visibleCount++;
-          card.style.display = "block";
-          card.classList.remove("hide");
-          card.classList.add("show");
-        } else {
-          card.classList.remove("show");
-          card.classList.add("hide");
+  // ==============================
+  // 🧩 MODALS
+  // ==============================
+  document.getElementById("cancelEditBtn").onclick = () => (editModal.style.display = "none");
+  document.getElementById("cancelDeleteBtn").onclick = () => (deleteModal.style.display = "none");
 
-          const timer = setTimeout(() => {
-            card.style.display = "none";
-            hideTimers.delete(card);
-          }, 500);
-          hideTimers.set(card, timer);
-        }
+  // ==============================
+  // 💾 SAVE EDIT
+  // ==============================
+  document.getElementById("saveEditBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("saveEditBtn");
+    const originalText = btn.innerHTML;
+
+    btn.innerHTML = `<span class="loading-spinner"></span> Saving...`;
+    btn.disabled = true;
+
+    const payload = {
+      admin_id: currentEditId,
+      name: editName.value.trim(),
+      email: editEmail.value.trim(),
+      role: editRole.value.trim(),
+    };
+
+    try {
+      const res = await fetch("/LitterLensThesis2/root/system_backend/php/system_admin_data.php?ajax=edit_member", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
       });
 
-      // 🌀 Smoothly animate to new layout
-      flipAnimate();
+      const data = await res.json();
 
-      // 🧾 Handle No Results
-      if (visibleCount === 0) {
-        noResults.style.display = "block";
-        setTimeout(() => (noResults.style.opacity = "1"), 50);
+      if (data.success) {
+        btn.innerHTML = "✅ Updated!";
+        editModal.classList.add("modal-fade-out");
+        setTimeout(() => {
+          editModal.style.display = "none";
+          editModal.classList.remove("modal-fade-out");
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }, 400);
+        await reloadTeamData();
       } else {
-        noResults.style.opacity = "0";
-        setTimeout(() => (noResults.style.display = "none"), 400);
+        alert("Failed to update: " + (data.error || "Unknown"));
+        btn.innerHTML = originalText;
+        btn.disabled = false;
       }
-    }, 150);
+    } catch (err) {
+      console.error(err);
+      alert("Server error.");
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
   });
+
+  // ==============================
+  // 🗑️ DELETE MEMBER
+  // ==============================
+  document.getElementById("confirmDeleteBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("confirmDeleteBtn");
+    const originalText = btn.innerHTML;
+
+    btn.innerHTML = `<span class="loading-spinner red"></span> Deleting...`;
+    btn.disabled = true;
+
+    try {
+      const res = await fetch("/LitterLensThesis2/root/system_backend/php/system_admin_data.php?ajax=delete_member", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ admin_id: currentDeleteId }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        btn.innerHTML = "🗑️ Deleted!";
+        deleteModal.classList.add("modal-fade-out");
+        setTimeout(() => {
+          deleteModal.style.display = "none";
+          deleteModal.classList.remove("modal-fade-out");
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }, 400);
+        await reloadTeamData();
+      } else {
+        alert("Failed: " + (data.error || "Unknown"));
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server error.");
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  });
+
+  // ==============================
+  // 🔁 RELOAD TEAM LIST
+  // ==============================
+  async function reloadTeamData() {
+    teamContainer.style.opacity = "0.5";
+    teamContainer.innerHTML = `<p style="text-align:center;margin-top:20px;font-weight:600;">Updating...</p>`;
+
+    try {
+      const res = await fetch("/LitterLensThesis2/root/system_backend/php/system_admin_data.php?ajax=fetch_admins", {
+        credentials: "include",
+      });
+
+      const html = await res.text();
+      teamContainer.innerHTML = html;
+      teamContainer.style.opacity = "1";
+      initTeamFunctions(); // Rebind all interactions
+    } catch (err) {
+      console.error(err);
+      teamContainer.innerHTML = `<p style="text-align:center;color:red;">⚠️ Failed to reload team.</p>`;
+    }
+  }
+
+  // 🏁 INITIALIZE
+  initTeamFunctions();
 });

@@ -18,6 +18,11 @@
             }
         }
     }
+
+    
+    // If not logged in, leave session empty (guest)
+    $admin_id = $_SESSION['admin_id'] ?? null;
+    $admin_name = $_SESSION['admin_name'] ?? null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -195,7 +200,38 @@
       <script>
         const imagePaths = <?php echo json_encode($files); ?>;
         const uploadedFolder = "<?php echo $folderName; ?>";
-      </script>
+     
+        document.addEventListener("DOMContentLoaded", () => {
+          const goBackBtn = document.getElementById("go-back-btn");
+
+          if (goBackBtn) {
+            goBackBtn.addEventListener("click", () => {
+              const detectionSource = localStorage.getItem("detectionSource");
+
+              // 🟢 If this result came from the Admin side
+              if (detectionSource === "admin") {
+                // Remove temp data
+                localStorage.removeItem("detectionResult");
+                localStorage.removeItem("detectionSource");
+                // ✅ Redirect back to the Admin Panel
+                window.location.href = "http://localhost/LitterLensThesis2/root/system_frontend/php/admin.php";
+              } 
+              // 🟣 Otherwise (User side)
+              else {
+                localStorage.removeItem("detectionResult");
+                localStorage.removeItem("detectionSource");
+                // ✅ Redirect back to User Home
+                window.location.href = "index.php";
+              }
+            });
+          }
+        });
+</script>
+
+<script>
+  const currentAdminId = "<?php echo $admin_id ?? ''; ?>";
+  const currentAdminName = "<?php echo $admin_name ?? ''; ?>";
+</script>
 
       <!-- 📦 Main Result Page Logic -->
       <script src="../js/gallery.js"></script>

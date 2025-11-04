@@ -16,41 +16,94 @@ import threading
 from collections import deque
 import math
 import numpy as np
+import requests
 
-# =====================================================
-# ⚙️ FLASK CONFIGURATION
-# =====================================================
+
+
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": ["http://localhost", "http://127.0.0.1:5000"]}})
 
 # =====================================================
-# 🧠 MODEL LOADING — MANUAL ENSEMBLE (3 MODELS) + RUNS_DIR PRESERVED
+# 🧠 MODEL LOADING — DYNAMIC (from Supabase)
 # =====================================================
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 RUNS_DIR = os.path.join(SCRIPT_DIR, "runs")
 os.makedirs(RUNS_DIR, exist_ok=True)
 
-MODEL_PATHS = [
-    os.path.join(SCRIPT_DIR, "best.pt"),
-    os.path.join(SCRIPT_DIR, "last.pt"),
-    os.path.join(SCRIPT_DIR, "my_model.pt")
-]
+# 🔗 Supabase REST API credentials
+SUPABASE_URL = "https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/models"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzYmdkZ3FwZG94YWJkZWZqc2luIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTAzMjUxOSwiZXhwIjoyMDc2NjA4NTE5fQ.WAai4nbsqgbe-7PgOw8bktVjk0V9Cm8sdEct_vlQCcY"
 
-print("\n🔍 Checking model paths...")
+# =====================================================
+# 🧩 STEP 1: Fetch Model Paths from Supabase
+# =====================================================
+def fetch_model_paths():
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    try:
+        response = requests.get(f"{SUPABASE_URL}?select=model_name,bucket_url,status", headers=headers)
+        response.raise_for_status()
+        data = response.json()
+
+        # Filter out inactive or invalid rows
+        active_models = [
+            m for m in data if m.get("status", "").lower() == "active" and m.get("bucket_url")
+        ]
+
+        if not active_models:
+            print("⚠️ No active models found in Supabase.")
+            return []
+
+        # Split multiple files stored in 'bucket_url' field
+        model_files = []
+        for m in active_models:
+            files = [f.strip() for f in m["bucket_url"].split(",") if f.strip()]
+            model_files.extend(files)
+
+        # Convert each to absolute local path
+        model_paths = [os.path.join(SCRIPT_DIR, f) for f in model_files]
+        return model_paths
+
+    except Exception as e:
+        print(f"❌ Error fetching model data from Supabase: {e}")
+        return []
+
+
+# =====================================================
+# 🧩 STEP 2: Load Models
+# =====================================================
+print("\n🔍 Checking for models in Supabase...")
+MODEL_PATHS = fetch_model_paths()
+
+if not MODEL_PATHS:
+    print("⚠️ No valid models found in Supabase — using local fallback models.")
+    MODEL_PATHS = [
+        os.path.join(SCRIPT_DIR, "best.pt"),
+        os.path.join(SCRIPT_DIR, "last.pt"),
+        os.path.join(SCRIPT_DIR, "my_model.pt"),
+    ]
+
+print("\n📂 Model Paths Detected:")
 for p in MODEL_PATHS:
     print(f"  - {p} {'✅ FOUND' if os.path.exists(p) else '❌ MISSING'}")
 
+# Filter existing models
 valid_models = [p for p in MODEL_PATHS if os.path.exists(p)]
 
 if not valid_models:
-    raise FileNotFoundError(f"❌ No YOLO models found in: {MODEL_PATHS}")
+    raise FileNotFoundError(f"❌ No YOLO model files found in: {MODEL_PATHS}")
 
 # Load all YOLO models individually
 models = [YOLO(p) for p in valid_models]
 print(f"✅ Loaded {len(models)} YOLO model(s) successfully.\n")
 
-# Keep a reference "model" to the first model so code using model.names still works
+# Keep a reference for backward compatibility
 model = models[0]
+
 
 # =====================================================
 # 🔮 ENSEMBLE INFERENCE FUNCTION (with optional basic NMS merge)
@@ -682,6 +735,107 @@ def analyze_image():
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/admin_analyze', methods=['POST'])
+def admin_analyze():
+    file = request.files.get('file')
+    admin_id = request.form.get('admin_id', '1')  # default fallback
+    admin_name = request.form.get('admin_name', 'System')
+
+    print(f"🧠 Received upload: {file.filename if file else 'No file'}")
+    print(f"👤 Uploaded by Admin ID: {admin_id} ({admin_name})")
+
+    try:
+        threshold = float(request.form.get('threshold', 0.10))
+        label_mode = request.form.get('label_mode', 'confidence')
+        opacity_raw = request.form.get('opacity', '1.00')
+        box_opacity = _parse_opacity(opacity_raw, default=1.0)
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        run_folder = os.path.join(RUNS_DIR, f"admin_{timestamp}")
+        os.makedirs(run_folder, exist_ok=True)
+
+        detection_results = []
+        total_object_summary = {}
+
+        for idx, file_key in enumerate(request.files):
+            file = request.files[file_key]
+            if file.filename == '':
+                continue
+
+            orig_filename = f"{timestamp}_orig_{idx+1}.jpg"
+            result_filename = f"{timestamp}_result_{idx+1}.jpg"
+            dets_filename = f"{timestamp}_dets_{idx+1}.json"
+
+            orig_path = os.path.join(run_folder, orig_filename)
+            result_path = os.path.join(run_folder, result_filename)
+            dets_path = os.path.join(run_folder, dets_filename)
+
+            file.save(orig_path)
+
+            # Run YOLO detection
+            results = ensemble_predict(orig_path, conf=threshold)
+            dets = _serialize_dets(results)
+
+            # Save detection JSON
+            with open(dets_path, "w") as f:
+                json.dump(dets, f)
+
+            # Render result image
+            render_from_dets(orig_path, dets, result_path, label_mode, box_opacity)
+            summary, total_items = _summary_from_dets(dets)
+            image_accuracy = calculate_image_accuracy(dets)
+
+            # Merge totals
+            for k, v in summary.items():
+                total_object_summary[k] = total_object_summary.get(k, 0) + v
+
+            detection_results.append({
+                'original_image': f"runs/admin_{timestamp}/{orig_filename}",
+                'result_image': f"runs/admin_{timestamp}/{result_filename}",
+                'dets_json': f"runs/admin_{timestamp}/{dets_filename}",
+                'summary': summary,
+                'total_items': total_items,
+                'accuracy': image_accuracy
+            })
+
+        mean_accuracy = round(sum([r['accuracy'] for r in detection_results]) / len(detection_results), 2) if detection_results else 0.0
+
+        # ✅ Updated — store admin_id (integer FK) instead of name
+        image_record = {
+            "imagefile_name": result_filename,
+            "uploaded_by": int(admin_id),  # Now FK → admin table
+            "latitude": 0.0,
+            "longitude": 0.0
+        }
+
+        result_data = {
+            'message': '✅ Admin detection successful',
+            'results': detection_results,
+            'total_summary': total_object_summary,
+            'folder': f"admin_{timestamp}",
+            'accuracy': mean_accuracy,
+            'label_mode': label_mode,
+            'uploaded_by': admin_id,   # FK stored
+            'admin_name': admin_name   # For logs / display only
+        }
+
+        result_path = os.path.join(run_folder, "result_data.json")
+        with open(result_path, "w") as f:
+            json.dump(result_data, f, indent=2)
+
+        return jsonify({
+            'status': 'success',
+            'redirect': f"http://localhost/LitterLensThesis2/root/system_frontend/php/index_result.php?folder=admin_{timestamp}",
+            'data': result_data
+        })
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
 
 
 @app.route('/redetect', methods=['POST'])
@@ -822,6 +976,49 @@ def cleanup():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/reload_model', methods=['POST'])
+def reload_model():
+    global models, model
+    print("♻️ Reloading active models...")
+    new_paths = fetch_model_paths()
+    valid = [p for p in new_paths if os.path.exists(p)]
+    models = [YOLO(p) for p in valid]
+    model = models[0] if models else None
+    return {"success": True, "count": len(models)}
+
+@app.route('/reverse_geocode')
+def reverse_geocode():
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+
+    if not lat or not lon:
+        return jsonify({'error': 'Missing coordinates'}), 400
+
+    try:
+        # 🌍 Use OpenStreetMap (Nominatim) Reverse Geocoding API
+        url = f"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={lat}&lon={lon}"
+        response = requests.get(url, headers={"User-Agent": "LitterLens/1.0"})
+        data = response.json()
+
+        # 🏘️ Extract barangay, city, province, etc.
+        address = data.get("address", {})
+        barangay = address.get("neighbourhood") or address.get("suburb") or address.get("village") or address.get("hamlet") or address.get("quarter")
+        city = address.get("city") or address.get("town") or address.get("municipality") or address.get("county")
+        province = address.get("state") or address.get("region")
+        country = address.get("country")
+
+        # 🧩 Clean label string
+        location_label = ", ".join(filter(None, [barangay, city, province, country]))
+
+        return jsonify({
+            "barangay": barangay or "Unknown Barangay",
+            "city": city or "Unknown City",
+            "province": province or "Unknown Province",
+            "country": country or "Philippines",
+            "display_name": location_label or data.get("display_name", "Unknown Area")
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # =====================================================
 # 🏁 RUN APP

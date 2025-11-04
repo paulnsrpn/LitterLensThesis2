@@ -891,23 +891,75 @@ body {
 .pagination span:hover {
   color: #1b563f;
 }
+/* ==========================================
+   🔵 REALTIME DETECTION STATUS (isolated)
+   ========================================== */
+.realtime-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #a1a1aa; /* gray for idle */
+}
+
+.realtime-status.idle i {
+  color: #a1a1aa;
+}
+.realtime-status.active i {
+  color: #4ade80; /* green */
+}
+.realtime-status.loading i {
+  color: #60a5fa; /* blue */
+}
+.realtime-status.uploading i {
+  color: #facc15; /* yellow */
+}
+.realtime-status.error i {
+  color: #f87171; /* red */
+}
+.realtime-status.refreshing i {
+  color: #3b82f6;
+}
+
 
 /* =========================================================
-   SETTINGS SECTION
+   SETTINGS SECTION (GENERAL)
 ========================================================= */
+#settings {
+  margin-left: 270px;
+  margin-top: 30px;
+  padding: 40px 50px;
+  background: #f9fafb;
+  min-height: 100%;
+}
 
+.s-title {
+  font-size: 50px;
+  padding: 0;
+  margin: 0;
+}
+
+/* =========================================================
+   BUTTON CONTAINERS — REUSABLE FOR BOTH CARDS
+========================================================= */
 .settings-btn-container {
-  position: absolute;
-  bottom: 20px;
-  right: 40px;
   display: flex;
+  justify-content: flex-end;
+  align-items: center;
   gap: 12px;
+  margin-top: 25px;
+  margin-right: 20px;
+  position: relative;
 }
 
 /* Shared button styles */
 .settings-save-btn,
 .edit-profile-btn,
-.cancel-profile-btn {
+.cancel-profile-btn,
+.model-edit-btn,
+.model-save-btn,
+.model-cancel-btn,
+.model-upload-btn {
   border: none;
   border-radius: 25px;
   padding: 10px 25px;
@@ -917,7 +969,7 @@ body {
   transition: all 0.2s ease;
 }
 
-/* Distinct colors */
+/* Profile Buttons */
 .edit-profile-btn {
   background-color: #215a36;
   color: #fff;
@@ -933,6 +985,7 @@ body {
   color: #fff;
 }
 
+/* Hover effects */
 .settings-save-btn:hover {
   background-color: #141e46;
   transform: scale(1.03);
@@ -948,77 +1001,28 @@ body {
   transform: scale(1.03);
 }
 
-/* Disabled inputs (darker) */
-input:disabled {
-  background-color: #dcdcdc;
-  color: #555;
-  border-color: #888;
-  cursor: not-allowed;
-  opacity: 0.9;
+/* =========================================================
+   PROFILE SETTINGS CARD
+========================================================= */
+.settings-card1,
+.settings-card2 {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 30px 40px;
+  margin-top: 24px;
 }
 
-#settings {
-  margin-left: 270px;
-  margin-top: 30px;
-  padding: 40px 50px;
-  background: #f9fafb;
-  min-height: 100%;
-}
-
-.s-title {
-  font-size: 50px;
-  padding: 0;
-  margin: 0;
-}
-
-/* Search bar */
-.settings-search {
-  position: absolute;
-  display: inline-block;
-  right: 30px;
-}
-
-.settings-search input {
-  width: 230px;
-  padding: 8px 35px 8px 15px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  outline: none;
-  transition: all 0.3s ease;
-  font-size: 14px;
-}
-
-.settings-search input:focus {
-  border-color: #215A36;
-  box-shadow: 0 0 5px rgba(33, 90, 54, 0.3);
-}
-
-.settings-search i {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-}
-
-/* Profile settings card */
-.settings-card1 {
-  position: relative;
-  width: 100%;
-  height: 630px;
-  margin-top: 50px;
-  background-color: transparent;
-  border: 1px solid #444444;
-  justify-content: center;
-  align-items: center;
-}
-
-.settings-card1 h3 {
-  padding: 20px 20px 0 30px;
+.settings-card1 h3,
+.settings-card2 h3 {
   font-size: 24px;
+  color: #18392b;
+  margin-bottom: 20px;
 }
 
-/* Profile picture */
+/* =========================================================
+   PROFILE PICTURE FIX — Clean Overlay Without File Bar
+========================================================= */
 .profile-pic-container {
   position: relative;
   width: 130px;
@@ -1030,6 +1034,7 @@ input:disabled {
   margin-bottom: 30px;
 }
 
+/* Actual image */
 .profile-pic {
   width: 100%;
   height: 100%;
@@ -1038,84 +1043,90 @@ input:disabled {
   transition: transform 0.3s ease;
 }
 
+/* Slight zoom on hover */
 .profile-pic-container:hover .profile-pic {
   transform: scale(1.05);
 }
 
-.profile-pic-container .overlay {
+/* =========================================================
+   OVERLAY CAMERA AREA
+========================================================= */
+.overlay {
   position: absolute;
   bottom: 0;
   width: 100%;
   height: 40%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 22px;
-}
-
-
-.profile-pic-container:hover .profile-pic {
-  transform: scale(1.05);
-}
-
-* Overlay for camera icon */
-.profile-pic-container .overlay {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 40%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
+  color: #fff;
   font-size: 22px;
   transition: background 0.3s ease;
+  z-index: 2;
 }
 
-.profile-pic-container .overlay:hover {
+/* Darken on hover */
+.profile-pic-container:hover .overlay {
   background: rgba(0, 0, 0, 0.7);
 }
 
-/* 🔒 Hide native file input (fix Choose File issue) */
-.profile-pic-container .overlay input[type="file"] {
+/* =========================================================
+   FILE INPUT — Fully Hidden (All Browsers)
+========================================================= */
+.overlay input[type="file"] {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0;        /* Makes it invisible */
-  cursor: pointer;   /* Still clickable */
-  z-index: 2;        /* Ensures click detection */
+  opacity: 0; /* Fully transparent */
+  cursor: pointer;
+  z-index: 3;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 0;
 }
 
-.overlay input {
-  position: absolute;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
+/* ✅ Hide browser default file input buttons */
+.overlay input[type="file"]::-webkit-file-upload-button {
+  visibility: hidden;
+  display: none;
+}
+.overlay input[type="file"]::file-selector-button {
+  visibility: hidden;
+  display: none;
+}
+
+/* Prevent fallback text like “No file chosen” */
+.overlay input[type="file"] {
+  color: transparent !important;
 }
 
 /* =========================================================
-   PROFILE FORM LAYOUT — PERFECT TWO-COLUMN ALIGNMENT
+   CAMERA ICON HOVER EFFECT
+========================================================= */
+.overlay i {
+  transition: transform 0.25s ease;
+}
+
+.profile-pic-container:hover .overlay i {
+  transform: scale(1.2);
+}
+
+
+/* =========================================================
+   PROFILE FORM LAYOUT
 ========================================================= */
 .detail-columns {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  column-gap: 60px;      /* even space between left/right */
-  row-gap: 25px;         /* vertical space between rows */
+  column-gap: 60px;
+  row-gap: 25px;
   margin: 30px 40px;
   align-items: start;
-}
-
-.details1,
-.details2 {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 }
 
 .dt-group {
@@ -1124,7 +1135,6 @@ input:disabled {
   width: 100%;
 }
 
-/* Labels */
 label {
   font-size: 16px;
   color: #222;
@@ -1132,10 +1142,8 @@ label {
   margin-bottom: 6px;
 }
 
-/* Input boxes */
 input {
-  width: 100%; /* ✅ ensures both sides equal width */
-  max-width: 100%;
+  width: 100%;
   border: 1px solid #999;
   border-radius: 6px;
   padding: 10px 14px;
@@ -1145,13 +1153,11 @@ input {
   box-sizing: border-box;
 }
 
-/* Focus effect */
 input:focus {
   border-color: #215a36;
   box-shadow: 0 0 4px rgba(33, 90, 54, 0.3);
 }
 
-/* Disabled (gray look) */
 input:disabled {
   background-color: #dcdcdc;
   color: #555;
@@ -1160,41 +1166,19 @@ input:disabled {
   opacity: 0.9;
 }
 
-/* Contact description alignment */
-.contact-description {
-  font-size: 13px;
-  color: #555;
-  margin-top: 4px;
-  font-style: italic;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-
-/* Model configuration */
+/* =========================================================
+   MODEL MANAGEMENT CARD
+========================================================= */
 .settings-card2 {
   position: relative;
-  width: 100%;
   min-height: 630px;
-  margin-top: 50px;
-  background-color: transparent;
-  border: 1px solid #444444;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 80px;
-}
-
-.settings-card2 h3 {
-  padding: 20px 20px 0 30px;
-  font-size: 24px;
+  padding-bottom: 90px;
+  border: 1px solid #ccc;
 }
 
 .model-section {
-  margin-bottom: 30px;
-  margin: 10px 70px;
-  justify-content: center;
-  align-items: center;
+  margin-bottom: 25px;
+  margin-left: 50px;
 }
 
 .section-title {
@@ -1207,15 +1191,14 @@ input:disabled {
 
 .model-input,
 .file-input {
-  width: 900px;
-  margin-left: 50px;
-  padding: 7px;
+  width: 85%;
+  max-width: 900px;
+  padding: 8px 12px;
   border: 1px solid #666;
   border-radius: 6px;
   font-size: 15px;
   outline: none;
   transition: all 0.2s ease;
-  justify-content: center;
 }
 
 .model-input:focus,
@@ -1229,54 +1212,44 @@ input:disabled {
   color: #444;
   margin-top: 4px;
   font-style: italic;
-  margin-left: 50px;
 }
 
+/* =========================================================
+   MODEL TABLE
+========================================================= */
 .table-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  margin-top: 20px;
 }
 
-.table-container th:first-child,
-.table-container td:first-child {
-  width: 35px;
-  text-align: center;
-  padding: 5px 0;
-}
-
-.table-container input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  margin: 0 auto;
-  display: block;
-  accent-color: #2d6a4f;
-}
-
-/* Model table */
 .model-table {
-  align-self: center;
-  align-items: center;
-  width: 95%;
+  width: 85%;
+  max-width: 1100px;
   border-collapse: collapse;
-  border: 1px solid #000;
-  border-radius: 6px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
   overflow: hidden;
-  font-family: "Afacad", sans-serif;
+  background: #fff;
+  text-align: center;
   font-size: 15px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  margin: 0 auto;
 }
 
 .model-table th,
 .model-table td {
-  border: 1px solid #ccc;
-  padding: 10px 14px;
-  text-align: left;
+  padding: 14px 20px;
+  border: 1px solid #ddd;
+  vertical-align: middle;
 }
 
 .model-table th {
-  background-color: #f9f9f9;
+  background-color: #f4f8f4;
   color: #2d6a4f;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 16px;
 }
 
@@ -1285,8 +1258,8 @@ input:disabled {
 }
 
 .model-table tbody tr:hover {
-  background-color: #f1f5f2;
-  transition: 0.2s;
+  background-color: #eef6ef;
+  transition: 0.25s ease;
 }
 
 .status.active {
@@ -1299,24 +1272,55 @@ input:disabled {
   font-weight: 500;
 }
 
-.model-save-btn {
+/* =========================================================
+   MODEL BUTTONS FIXED AT BOTTOM
+========================================================= */
+.settings-card2 .settings-btn-container {
   position: absolute;
   bottom: 20px;
-  left: 85%;
-  background-color: #346347;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  padding: 10px 25px;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
+  right: 40px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
-.model-save-btn:hover {
-  background-color: #141E46;
+.model-edit-btn {
+  background-color: #215a36;
+  color: #fff;
+}
+
+.model-save-btn {
+  background-color: #346347;
+  color: white;
+}
+
+.model-cancel-btn {
+  background-color: #b4b4b4;
+  color: white;
+}
+
+.model-upload-btn {
+  background-color: #2d6a4f;
+  color: white;
+  margin-left: 50px;
+  margin-top: 10px;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 600;
+}
+
+.model-upload-btn:hover,
+.model-save-btn:hover,
+.model-edit-btn:hover {
+  background-color: #173f27;
   transform: scale(1.03);
 }
+
+.model-cancel-btn:hover {
+  background-color: #7a7a7a;
+  transform: scale(1.03);
+}
+
 
 /* =========================================================
    IMAGE & DETECTION SECTION (UPLOAD + HISTORY + RESULTS)
@@ -1750,76 +1754,114 @@ input:disabled {
   }
 }
 
-/* =========================================================
-   SCROLLABLE TABLE BODIES (HISTORY + REALTIME)
-========================================================= */
-.history-box .table-container,
-.imgdet-table-container {
-  max-height: 400px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  border: 1px solid #eee;
-  border-radius: 8px;
+/* General Layout */
+#image {
+  padding: 20px;
+  background-color: #fafafa;
+}
+
+/* Upload Section */
+.upload-box {
   background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
 }
 
-.imgdet-table-container {
-  max-height: 420px;
-  min-height: 350px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-bottom: 5px;
+.upload-box h3 {
+  margin-bottom: 8px;
 }
 
-.history-box .table-container table,
-.imgdet-table-container table {
+.upload-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-upload-label {
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-analyze {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-analyze:hover {
+  background-color: #218838;
+}
+
+/* Detection History */
+.history-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #b02a37;
+}
+
+/* Table Styling */
+.table-container {
+  overflow-x: auto;
+}
+
+.table-container table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
-  font-size: 15px;
+  font-size: 14px;
 }
 
-.history-box .table-container th,
-.imgdet-table-container th,
-.history-box .table-container td,
-.imgdet-table-container td {
-  padding: 10px 12px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-  white-space: nowrap;
+.table-container th,
+.table-container td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
 }
 
-.history-box .table-container th,
-.imgdet-table-container th {
-  position: sticky;
-  top: 0;
-  background: #f8f8f8;
-  color: #1b4332;
-  font-weight: 600;
+.table-container th {
+  background-color: #f2f2f2;
+}
+
+.table-container img {
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+/* Fix overlap/z-index */
+.upload-box,
+.history-box {
+  position: relative;
   z-index: 2;
 }
 
-.history-box .table-container tr:hover,
-.imgdet-table-container tr:hover {
-  background: #f9f9f9;
-}
-
-/* Scrollbar styling */
-.history-box .table-container::-webkit-scrollbar,
-.imgdet-table-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.history-box .table-container::-webkit-scrollbar-thumb,
-.imgdet-table-container::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 10px;
-}
-
-.history-box .table-container::-webkit-scrollbar-thumb:hover,
-.imgdet-table-container::-webkit-scrollbar-thumb:hover {
-  background: #999;
-}
 
 /* =========================================================
    MODAL / IMAGE CROPPING
@@ -1843,7 +1885,26 @@ input:disabled {
   border-radius: 12px;
   max-width: 400px;
   width: 90%;
-  text-align: center;
+
+}
+
+/* ===============================
+   🎬 Modal Fade Out Animation
+=============================== */
+.modal-fade-out {
+  animation: fadeOutModal 0.4s ease forwards;
+}
+
+@keyframes fadeOutModal {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+  }
 }
 
 .crop-container {
@@ -1872,7 +1933,30 @@ input:disabled {
   background-color: #173f27;
 }
 
-/* Upload DB button */
+#editModelBtn[disabled]::after {
+  content: "Restricted - Only Local Admin can edit";
+  position: absolute;
+  top: -35px;
+  right: 0;
+  background: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+#editModelBtn[disabled]:hover::after {
+  opacity: 1;
+}
+
+
+
+/* =========================================================
+   UPLOAD DB BUTTON
+========================================================= */
 #uploadDb-btn {
   background-color: #007bff;
   color: white;
@@ -1893,13 +1977,16 @@ input:disabled {
 ========================================================= */
 #users {
   font-family: "Afacad", serif;
-  margin-left: 250px;
-  padding: 40px 50px;
-  margin-top: 50px;
-  min-height: 100%;
+  margin-left: 250px;              /* keeps space for sidebar */
+  padding: 70px 50px;              /* balanced top/bottom spacing */
+  margin-top: 0;                   /* remove extra push-down */
+  min-height: calc(100vh - 80px);  /* full height minus header if exists */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Header and controls */
@@ -1927,6 +2014,7 @@ input:disabled {
   flex-wrap: wrap;
 }
 
+/* Add Member Button */
 .add-member-btn {
   display: inline-flex;
   align-items: center;
@@ -2019,64 +2107,50 @@ input:disabled {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 25px 20px;
   text-align: center;
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.25, 1, 0.5, 1),
-    max-height 0.6s ease,
-    margin 0.6s ease,
-    padding 0.6s ease;
   opacity: 1;
-  transform: translateY(0) translateX(0) scale(1);
+  transform: translateY(0) scale(1);
   max-height: 450px;
-  overflow: hidden;
+  overflow: visible !important;
   position: relative;
   width: 100%;
   justify-self: start;
-  will-change: transform, opacity;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Show / hide animations */
+.user-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Smooth appearance */
 .user-card.show {
-  opacity: 1;
-  transform: translateY(0) translateX(0) scale(1);
-  animation: fadeInSoft 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  animation: fadeInSoft 0.7s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @keyframes fadeInSoft {
   0% {
     opacity: 0;
-    transform: translateY(25px) translateX(-10px) scale(0.92);
-  }
-  50% {
-    opacity: 0.7;
-    transform: translateY(8px) translateX(-4px) scale(1.03);
+    transform: translateY(25px) scale(0.94);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) translateX(0) scale(1);
+    transform: translateY(0) scale(1);
   }
 }
 
 .user-card.hide {
   opacity: 0;
-  transform: translateY(20px) translateX(-15px) scale(0.95);
+  transform: translateY(20px) scale(0.95);
   pointer-events: none;
   max-height: 0;
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden;
-  transition:
-    transform 0.6s cubic-bezier(0.55, 0.06, 0.68, 0.19),
-    opacity 0.5s ease,
-    max-height 0.6s ease,
-    margin 0.6s ease,
-    padding 0.6s ease;
-}
-
-.user-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: all 0.5s ease;
 }
 
 /* Avatar and info */
@@ -2086,13 +2160,14 @@ input:disabled {
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 15px;
-  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.4s ease;
 }
 
 .user-card:hover .user-avatar {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
+/* Text styling */
 .user-card h3 {
   font-size: 18px;
   font-weight: 600;
@@ -2121,14 +2196,16 @@ input:disabled {
   position: absolute;
   top: 10px;
   right: 10px;
+  z-index: 999;
 }
 
 .menu-btn {
-  background: none;
+  background: transparent;
   border: none;
   font-size: 20px;
   cursor: pointer;
   color: #333;
+  position: relative;
 }
 
 .menu-options {
@@ -2144,9 +2221,108 @@ input:disabled {
   overflow: hidden;
 }
 
-.menu-options.show {
+/* 🧩 Fix: ensure dropdown menu displays above cards */
+.user-card {
+  position: relative;
+  z-index: auto; /* prevent transform from creating new stacking issue */
+  transform: none; /* reset transform on idle */
+}
+
+.user-card:hover {
+  transform: translateY(-4px);
+  z-index: 50; /* lift hovered card above others */
+}
+
+.user-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000; /* ensures menu stays above everything inside the card */
+}
+
+.menu-options {
+  display: none;
+  position: absolute;
+  top: 25px;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 2000; /* ensure dropdown sits above all cards */
+}
+
+.menu-options.active {
+  display: flex;
+  animation: fadeSlide 0.25s ease forwards;
+}
+
+.menu-options.active {
   display: flex;
   animation: fadeSlide 0.3s ease forwards;
+}
+
+/* =========================================================
+   ✏️ EDIT & 🗑️ DELETE BUTTONS (Dropdown Menu)
+========================================================= */
+.btn-edit,
+.btn-delete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Afacad", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  width: 100%;
+  padding: 8px 14px;
+  border: none;
+  border-left: 3px solid transparent;
+  background: none;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+
+/* ✏️ EDIT button */
+.btn-edit {
+  color: #1b4332;
+}
+
+.btn-edit:hover {
+  background-color: #edf7ed;
+  border-left-color: #28a745;
+  color: #14532d;
+  transform: translateX(3px);
+}
+
+/* 🗑️ DELETE button (danger) */
+.btn-delete.danger {
+  color: #c0392b;
+}
+
+.btn-delete.danger:hover {
+  background-color: #ffe6e6;
+  border-left-color: #e74c3c;
+  color: #a83228;
+  transform: translateX(3px);
+}
+
+/* Disabled (no access) style for consistency */
+.menu-options button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: none !important;
+  border-left-color: transparent !important;
+  color: #777 !important;
+  transform: none !important;
+}
+
+/* Optional subtle icon support (if you add icons later) */
+.btn-edit i,
+.btn-delete i {
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 @keyframes fadeSlide {
@@ -2157,6 +2333,75 @@ input:disabled {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Tooltip for non-admins */
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.no-access-tooltip {
+  position: absolute;
+  top: -45px;
+  right: -15px;
+  background: #212121f0;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.95);
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+  z-index: 99999;
+}
+
+.no-access-tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  right: 18px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #212121f0 transparent transparent transparent;
+}
+
+.tooltip-wrapper:hover .no-access-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* Spinner */
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #2d6a4f;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.loading-spinner.red {
+  border-top-color: #e74c3c;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 
@@ -2203,7 +2448,6 @@ input:disabled {
 .user-card.disabled-admin {
   opacity: 0.55;
   pointer-events: none;
-  position: relative;
   background: #eaeaea;
   filter: grayscale(100%);
   transform: scale(0.98);
@@ -2227,8 +2471,54 @@ input:disabled {
   font-family: "Afacad", sans-serif;
 }
 
+/* ======================================================
+   📞 Tooltip for Call Button (matches No Access style)
+====================================================== */
+.call-tooltip {
+  position: absolute;
+  bottom: 110%; /* slightly above the button */
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  background: rgba(30, 30, 30, 0.9);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 99999999 !important;
+}
+
+.call-tooltip.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* small arrow */
+.call-tooltip::after {
+  z-index: 99999999 !important;
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: rgba(30, 30, 30, 0.9) transparent transparent transparent;
+}
+
+
+
+
+
 /* =========================================================
-   RESPONSIVE ADJUSTMENTS FOR USERS
+   RESPONSIVE ADJUSTMENTS
 ========================================================= */
 @media (max-width: 1200px) {
   .user-grid {
@@ -2258,6 +2548,10 @@ input:disabled {
     justify-content: space-between;
   }
 }
+
+
+
+
 
 /* =========================================================
    NO RESULTS MESSAGE
@@ -2414,4 +2708,288 @@ canvas#lineChart {
 
 .loader-text {
   color: #1B4332;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 350px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+ 
+}
+.modal-input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+.btn-primary, .btn-secondary, .btn-danger {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-primary { background: #007bff; color: #fff; }
+.btn-secondary { background: #ccc; color: #000; }
+.btn-danger { background: #e74c3c; color: #fff; }
+
+
+/* ===============================
+   🔄 Button Spinner
+=============================== */
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* 🌀 FIXED EXPORT OVERLAY (always on top) */
+#exportLoading {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 999999 !important; /* 🟩 Force above all elements */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#exportLoading.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+#exportLoading .export-spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #28a745;
+  border-radius: 50%;
+  width: 65px;
+  height: 65px;
+  animation: spin 1s linear infinite;
+}
+
+#exportLoading .export-message {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-top: 12px;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ✅ Make normal file inputs visible */
+input[type="file"] {
+  opacity: 1 !important;
+  display: inline-block !important;
+  cursor: pointer !important;
+}
+
+
+.btn-download {
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+.btn-download:hover {
+  background: #1b5e20;
+}
+.btn-spinner {
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* ============================
+   🟩 Upload Section Styles
+   ============================ */
+.upload-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 20px 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+.upload-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.upload-card h3 {
+  font-family: "Afacad", sans-serif;
+  font-weight: 600;
+  color: #083d2c;
+  margin-bottom: 6px;
+}
+
+.upload-card p {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+/* File input wrapper */
+.file-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Hide the default file input */
+#admin-upload-input {
+  display: none;
+}
+
+/* Choose Files button */
+#admin-upload-btn {
+  background-color: #0f5132;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: "Afacad", sans-serif;
+  transition: all 0.2s ease-in-out;
+}
+
+#admin-upload-btn:hover {
+  background-color: #146c43;
+  transform: translateY(-1px);
+}
+
+/* Display selected filename text */
+.file-name-display {
+  font-size: 14px;
+  color: #333;
+  max-width: 60%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Analyze button */
+#analyze-btn {
+  background-color: #115e36;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: "Afacad", sans-serif;
+  transition: all 0.2s ease-in-out;
+}
+
+#analyze-btn:hover {
+  background-color: #198754;
+  transform: translateY(-1px);
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .file-input-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .file-name-display {
+    max-width: 100%;
+  }
+}
+
+
+
+.upload-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.btn-upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.25s ease;
+}
+.btn-upload-label:hover {
+  background-color: #0069d9;
+}
+
+.btn-analyze {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.25s ease;
+}
+.btn-analyze:hover {
+  background-color: #218838;
+}
+.btn-analyze:disabled {
+  background-color: #a8d5b8;
+  cursor: not-allowed;
 }

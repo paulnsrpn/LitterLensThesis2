@@ -1,8 +1,11 @@
 // ============================================================
-// 📘 ADMIN_ACTIVITYLOGS.JS — Local Logs Filter + Pagination
+// 📘 ADMIN_ACTIVITYLOGS.JS — Local Logs Filter + Pagination + Export (FINAL CLEAN VERSION)
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  // ===============================
+  // 🔗 ELEMENT REFERENCES
+  // ===============================
   const tbody = document.getElementById("logsBody");
   const allRows = Array.from(tbody.querySelectorAll("tr"));
   const searchInput = document.getElementById("logSearchInput");
@@ -12,9 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextBtn = document.getElementById("nextPage");
   const pageInfo = document.getElementById("pageInfo");
   const dateRangeInput = document.querySelector('input[name="daterange"]');
+  const exportBtn = document.getElementById("exportExcelBtn");
 
   // ===============================
-  // ⚙️ Variables
+  // ⚙️ VARIABLES
   // ===============================
   let filteredRows = [...allRows];
   let selectedAction = "all";
@@ -32,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         autoUpdateInput: true,
         locale: { format: "MM/DD/YYYY" },
       },
-      function (start, end) {
+      (start, end) => {
         dateRange = { start: start.toDate(), end: end.toDate() };
         applyFilters();
       }
@@ -50,13 +54,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   dropdownMenu.querySelectorAll("li").forEach((item) => {
     item.addEventListener("click", () => {
-      selectedAction = item.dataset.value || "all";
+      selectedAction = (item.dataset.value || "all").toLowerCase().trim();
       dropdownBtn.innerHTML = `${item.textContent} <i class="fa-solid fa-chevron-down"></i>`;
       dropdownMenu.style.display = "none";
       applyFilters();
     });
   });
 
+  // Close dropdown when clicking outside
   document.addEventListener("click", (e) => {
     if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
       dropdownMenu.style.display = "none";
@@ -67,9 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔍 SEARCH BAR FILTER
   // ===============================
   if (searchInput) {
-    searchInput.addEventListener("input", () => {
-      applyFilters();
-    });
+    searchInput.addEventListener("input", () => applyFilters());
   }
 
   // ===============================
@@ -82,10 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Hide all rows
     allRows.forEach((r) => (r.style.display = "none"));
 
-    // Show only rows for this page
+    // Show only rows for current page
     const start = (currentPage - 1) * itemsPerPage;
-    const visible = filteredRows.slice(start, start + itemsPerPage);
-    visible.forEach((r) => (r.style.display = ""));
+    const visibleRows = filteredRows.slice(start, start + itemsPerPage);
+    visibleRows.forEach((r) => (r.style.display = ""));
 
     // Update pagination info
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
@@ -113,28 +116,41 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ===============================
-  // 🧩 APPLY FILTERS
+  // 🧩 APPLY FILTERS — FINAL
   // ===============================
   function applyFilters() {
     const term = searchInput.value.toLowerCase().trim();
 
     filteredRows = allRows.filter((row) => {
       const cells = Array.from(row.querySelectorAll("td")).map((td) =>
-        td.textContent.toLowerCase()
+        td.textContent.toLowerCase().trim()
       );
 
-      const actionCell = (cells[2] || "").toLowerCase();
+      const actionCell = cells[2] || ""; // “Added”, “Updated”, etc.
       const dateText = row.children[0]?.textContent.trim();
       const dateObj = new Date(dateText);
 
+      // 🔍 Search text match
       const textMatch = cells.some((text) => text.includes(term));
-      const actionMatch =
-        selectedAction === "all" || actionCell === selectedAction;
 
+      // 🔽 Action match
+      let actionMatch = true;
+      if (selectedAction !== "all") {
+        const selected = selectedAction.toLowerCase().trim();
+        const normalizedAction = actionCell
+          .toLowerCase()
+          .replace(/ed$/, "")
+          .replace(/\s+/g, "");
+
+        actionMatch =
+          actionCell.includes(selected) ||
+          normalizedAction.includes(selected.replace(/ed$/, ""));
+      }
+
+      // 🗓️ Date range match
       let dateMatch = true;
       if (dateRange && !isNaN(dateObj)) {
-        dateMatch =
-          dateObj >= dateRange.start && dateObj <= dateRange.end;
+        dateMatch = dateObj >= dateRange.start && dateObj <= dateRange.end;
       }
 
       return textMatch && actionMatch && dateMatch;
@@ -142,6 +158,92 @@ document.addEventListener("DOMContentLoaded", () => {
 
     currentPage = 1;
     renderTable();
+
+    // ⚠️ Handle empty state
+    const existingNoData = tbody.querySelector(".no-logs-row");
+    if (filteredRows.length === 0) {
+      if (!existingNoData) {
+        const noDataRow = document.createElement("tr");
+        noDataRow.className = "no-logs-row";
+        noDataRow.innerHTML = `
+          <td colspan="6" style="text-align:center;color:#999;">
+            No matching logs found
+          </td>`;
+        tbody.appendChild(noDataRow);
+      }
+    } else if (existingNoData) {
+      existingNoData.remove();
+    }
+  }
+
+  // ===============================
+  // 📤 EXPORT FILTERED LOGS TO CSV
+  // ===============================
+  if (exportBtn) {
+    exportBtn.addEventListener("click", async () => {
+      if (!filteredRows || filteredRows.length === 0) {
+        alert("⚠️ No logs to export. Try adjusting your filters first.");
+        return;
+      }
+
+      const originalHTML = exportBtn.innerHTML;
+      exportBtn.disabled = true;
+      exportBtn.innerHTML = `<span class="btn-spinner"></span> Exporting...`;
+
+      try {
+        // Collect filtered logs
+        const logs = filteredRows.map((row) => {
+          const cells = Array.from(row.querySelectorAll("td")).map((td) =>
+            td.textContent.trim()
+          );
+          return {
+            date: cells[0] || "",
+            admin: cells[1] || "",
+            action: cells[2] || "",
+            affected_record: cells[3] || "",
+            description: cells[4] || "",
+            status: cells[5] || "",
+          };
+        });
+
+        // Send logs to backend
+        const response = await fetch(
+          "/LitterLensThesis2/root/system_backend/php/system_admin_data.php?ajax=export_logs_csv",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ logs }),
+          }
+        );
+
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+        // Download the CSV
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Activity_Logs_${new Date()
+          .toISOString()
+          .slice(0, 10)}.csv`;
+        a.click();
+        a.remove();
+
+        // ✅ Success feedback
+        exportBtn.innerHTML = "✅ Exported!";
+        setTimeout(() => {
+          exportBtn.innerHTML = originalHTML;
+          exportBtn.disabled = false;
+        }, 1000);
+
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error(error);
+        alert("❌ Export failed. Please try again.");
+        exportBtn.innerHTML = originalHTML;
+        exportBtn.disabled = false;
+      }
+    });
   }
 
   // ===============================
@@ -149,3 +251,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===============================
   renderTable();
 });
+ 

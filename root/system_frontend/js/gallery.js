@@ -1,267 +1,409 @@
-// ================================================
-// 🧠 RESULT PAGE SCRIPT — Detection Review, Redetect, Upload & Export
-// ================================================
-document.addEventListener("DOMContentLoaded", () => {
-  // ================================================
-  // 🧩 ELEMENT REFERENCES
-  // ================================================
-  const imgElement = document.querySelector(".main-img");
-  const prevBtn = document.querySelector(".prev-btn");
-  const nextBtn = document.querySelector(".next-btn");
-  const fileNameElement = document.getElementById("file-name-display");
-  const thresholdDropdown = document.querySelector(".threshold-dropdown");
-  const opacityDropdown = document.getElementById("opacityDropdown");
-  const switchInput = document.querySelector(".switch input");
-  const goBackBtn = document.getElementById("go-back-btn");
-  const imgContainer = document.querySelector(".img-container");
-  const labelModeDropdown = document.querySelector(".label-mode-dropdown");
-  const uploadBtn = document.getElementById("upload-btn");
-  const pdfButton = document.getElementById("download-pdf");
+// gallery.js
+// ================================
+// LitterLens — gallery / results page logic
+// ================================
+// Features:
+// - Debug console
+// - Role/session handling (admin vs guest)
+// - Go back redirect (admin -> admin.php, guest -> index.php)
+// - Redetect / Rerender via Flask endpoints
+// - Upload to Supabase (uses admin id when available, avoids duplicates)
+// - PDF export (jsPDF)
+// - Zoom & pan
+// - Image gallery navigation
+// - Spinner overlay
+// - Defensive checks
+// ================================
 
-  // ================================================
-  // ⚙️ SUPABASE CONFIGURATION
-  // ================================================
+document.addEventListener("DOMContentLoaded", () => {
+  // ----------------------------
+  // Config
+  // ----------------------------
+  const FLASK_BASE = "http://127.0.0.1:5000";
+  const ADMIN_REDIRECT = "http://localhost/LitterLensThesis2/root/system_frontend/php/admin.php";
+  const USER_REDIRECT = "index.php";
+
   const SUPABASE_URL = "https://ksbgdgqpdoxabdefjsin.supabase.co";
-  const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzYmdkZ3FwZG94YWJkZWZqc2luIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTAzMjUxOSwiZXhwIjoyMDc2NjA4NTE5fQ.WAai4nbsqgbe-7PgOw8bktVjk0V9Cm8sdEct_vlQCcY";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzYmdkZ3FwZG94YWJkZWZqc2luIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTAzMjUxOSwiZXhwIjoyMDc2NjA4NTE5fQ.WAai4nbsqgbe-7PgOw8bktVjk0V9Cm8sdEct_vlQCcY";
   const SUPABASE_REST_URL = `${SUPABASE_URL}/rest/v1`;
   const SUPABASE_STORAGE_URL = `${SUPABASE_URL}/storage/v1/object`;
 
-  // ================================================
-  // 🐞 DEBUGGER PANEL
-  // ================================================
-  const debuggerPanel = document.createElement("div");
-  Object.assign(debuggerPanel.style, {
+  // ----------------------------
+  // Utility
+  // ----------------------------
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+  // ----------------------------
+  // 🪲 Debug Console
+  // ----------------------------
+  const debugPanel = document.createElement("div");
+  Object.assign(debugPanel.style, {
     position: "fixed",
-    bottom: "10px",
-    right: "10px",
-    width: "350px",
-    height: "200px",
-    background: "#1e1e1e",
-    color: "#eee",
+    bottom: "12px",
+    right: "12px",
+    width: "420px",
+    height: "240px",
+    background: "#0b0b0b",
+    color: "#e6eef4",
     fontFamily: "monospace",
     fontSize: "12px",
     padding: "8px",
     borderRadius: "8px",
     overflowY: "auto",
-    zIndex: "9999",
-    boxShadow: "0 0 8px rgba(0,0,0,0.4)"
+    zIndex: "99999",
+    boxShadow: "0 8px 30px rgba(0,0,0,0.6)",
+    border: "1px solid rgba(255,255,255,0.04)"
   });
-  debuggerPanel.innerHTML = "<strong>🐞 Debugger Panel</strong><hr>";
-  document.body.appendChild(debuggerPanel);
+  debugPanel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;">
+    <strong style="color:#4ade80">🧠 LitterLens Debug Console</strong>
+    <button id="dbg-clear-btn" style="background:#222;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer">Clear</button>
+  </div><hr style="border-color:#222;margin:6px 0 8px 0">`;
+  document.body.appendChild(debugPanel);
+
+  const dbgClearBtn = document.getElementById("dbg-clear-btn");
+  dbgClearBtn?.addEventListener("click", () => {
+    Array.from(debugPanel.children).slice(1).forEach(n => n.remove());
+  });
 
   function debugLog(message, type = "info") {
-    const el = document.createElement("div");
     const time = new Date().toLocaleTimeString();
-    el.innerHTML = `[${time}] ${message}`;
-    if (type === "success") el.style.color = "#4ade80";
-    if (type === "error") el.style.color = "#f87171";
-    debuggerPanel.appendChild(el);
-    debuggerPanel.scrollTop = debuggerPanel.scrollHeight;
-    console.log(`[DEBUG:${type.toUpperCase()}]`, message);
+    const line = document.createElement("div");
+    line.style.marginBottom = "6px";
+    line.innerText = `[${time}] ${message}`;
+    if (type === "success") line.style.color = "#4ade80";
+    if (type === "error") line.style.color = "#f87171";
+    if (type === "warn") line.style.color = "#facc15";
+    debugPanel.appendChild(line);
+    debugPanel.scrollTop = debugPanel.scrollHeight;
+    if (type === "error") console.error(message);
+    else if (type === "warn") console.warn(message);
+    else console.log(message);
+  }
+  debugLog("✅ gallery.js loaded", "success");
+
+  // ----------------------------
+  // DOM Elements
+  // ----------------------------
+  const imgElement = $(".main-img");
+  const prevBtn = $(".prev-btn");
+  const nextBtn = $(".next-btn");
+  const fileNameElement = $("#file-name-display");
+  const thresholdDropdown = $(".threshold-dropdown");
+  const opacityDropdown = $("#opacityDropdown");
+  const switchInput = $(".switch input");
+  const goBackBtn = $("#go-back-btn");
+  const imgContainer = $(".img-container");
+  const labelModeDropdown = $(".label-mode-dropdown");
+  const uploadBtn = $("#upload-btn");
+  const pdfButton = $("#download-pdf");
+  const zoomInBtn = $("#zoom-in");
+  const zoomOutBtn = $("#zoom-out");
+  const zoomResetBtn = $("#zoom-reset");
+  const zoomLevelDisplay = $("#zoom-level");
+
+  if (!imgElement) {
+    debugLog("🚨 .main-img element not found — script will exit.", "error");
+    return;
   }
 
-  debugLog("✅ Script loaded and debugger initialized", "success");
+// ----------------------------
+// Session / Role detection (smart guest fallback)
+// ----------------------------
 
-  // ================================================
-  // 🔄 INITIAL STATE
-  // ================================================
+// Check if this page load is a hard refresh (not navigation or redirect)
+const navEntry = performance.getEntriesByType("navigation")[0];
+const isHardReload =
+  (performance.navigation && performance.navigation.type === performance.navigation.TYPE_RELOAD) ||
+  (navEntry && navEntry.type === "reload");
+
+// ✅ Only clear admin session if user *manually refreshes the page*
+if (isHardReload) {
+  console.warn("🔄 Page refreshed manually — forcing guest session.");
+  localStorage.removeItem("admin_id");
+  localStorage.removeItem("admin_name");
+}
+
+const adminId = window.currentAdminId || localStorage.getItem("admin_id") || null;
+const adminName = window.currentAdminName || localStorage.getItem("admin_name") || null;
+const isLoggedIn = adminId && adminName && adminId !== "null" && adminId !== "undefined";
+
+if (!isLoggedIn) {
+  localStorage.removeItem("admin_id");
+  localStorage.removeItem("admin_name");
+  debugLog("Guest mode (no active session)", "warn");
+} else {
+  debugLog(`Admin: ${adminName} (ID: ${adminId})`);
+}
+
+debugLog(`Session: ${isLoggedIn ? "Admin logged in" : "Guest (normal navigation)"}`);
+if (isLoggedIn) debugLog(`Admin: ${adminName} (ID: ${adminId})`);
+
+
+  // ----------------------------
+  // State
+  // ----------------------------
   let currentLabelMode = localStorage.getItem("labelMode") || "confidence";
-  localStorage.removeItem("boxOpacity");
-  let currentOpacity = "1.00";
+  let currentOpacity = localStorage.getItem("boxOpacity") || "1.00";
   localStorage.setItem("boxOpacity", currentOpacity);
 
-  let detectionResult = JSON.parse(localStorage.getItem("detectionResult"));
+  let detectionResult = JSON.parse(localStorage.getItem("detectionResult") || "null");
   let currentIndex = 0;
   let showingResult = true;
 
-  // ================================================
-  // ⏳ SPINNER OVERLAY
-  // ================================================
+  // ----------------------------
+  // Spinner
+  // ----------------------------
   const spinnerOverlay = document.createElement("div");
   spinnerOverlay.classList.add("spinner-overlay");
-  spinnerOverlay.innerHTML = `<div class="spinner"></div><p class="spinner-text">Updating...</p>`;
-  imgContainer.appendChild(spinnerOverlay);
+  Object.assign(spinnerOverlay.style, {
+    position: "absolute",
+    inset: "0",
+    display: "none",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "rgba(0,0,0,0.45)",
+    color: "#fff",
+    zIndex: 9998
+  });
+  spinnerOverlay.innerHTML = `<div style="text-align:center">
+    <div class="spinner" style="width:36px;height:36px;border:4px solid rgba(255,255,255,0.08);border-top-color:#4ade80;border-radius:50%;margin:0 auto 8px auto;animation:spin 1s linear infinite"></div>
+    <div class="spinner-text" style="font-size:13px">Updating...</div>
+  </div>`;
+  if (imgContainer) imgContainer.style.position = imgContainer.style.position || "relative";
+  imgContainer?.appendChild(spinnerOverlay);
   const spinnerText = spinnerOverlay.querySelector(".spinner-text");
   const showSpinner = (text = "Updating...") => {
-    spinnerText.textContent = text;
-    spinnerOverlay.classList.add("active");
+    if (spinnerText) spinnerText.textContent = text;
+    spinnerOverlay.style.display = "flex";
   };
-  const hideSpinner = () => spinnerOverlay.classList.remove("active");
+  const hideSpinner = () => (spinnerOverlay.style.display = "none");
 
-  // ================================================
-  // 🖼️ IMAGE + TABLE + ACCURACY UI
-  // ================================================
+  const styleEl = document.createElement("style");
+  styleEl.innerHTML = `@keyframes spin{to{transform:rotate(360deg)}} .accuracy-good{color:#16a34a} .accuracy-medium{color:#f59e0b} .accuracy-low{color:#ef4444}`;
+  document.head.appendChild(styleEl);
+
+  // ----------------------------
+  // UI helpers
+  // ----------------------------
   function updateImageDisplay(src) {
+    if (!imgElement) return;
     imgElement.src = src + `?t=${Date.now()}`;
-    const filename = src.split("/").pop();
-    fileNameElement.textContent =
-      filename.length > 15 ? filename.substring(0, 15) + "..." : filename;
+    if (fileNameElement) {
+      const filename = src.split("/").pop();
+      fileNameElement.textContent = filename.length > 20 ? filename.substring(0, 20) + "..." : filename;
+    }
   }
 
-  function updateTable(summary, total) {
+  function updateTable(summary = {}, total = 0) {
     const table = document.querySelector(".receipt table");
     const title = document.querySelector(".receipt-card h2");
     if (!table || !title) return;
     title.textContent = `${total || 0} Items detected`;
-    table.querySelectorAll("tr:not(:first-child)").forEach(tr => tr.remove());
-    Object.entries(summary || {}).forEach(([label, count]) => {
+    table.querySelectorAll("tr:not(:first-child)").forEach((tr) => tr.remove());
+    if (!summary || Object.keys(summary).length === 0) {
       const row = document.createElement("tr");
-      row.innerHTML = `<td>${label}</td><td>${count}</td>`;
+      row.innerHTML = `<td>No items</td><td>0</td>`;
       table.appendChild(row);
-    });
+    } else {
+      Object.entries(summary).forEach(([label, count]) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${label}</td><td>${count}</td>`;
+        table.appendChild(row);
+      });
+    }
   }
 
   function updateAccuracy(accuracy) {
-    const accuracyElement = document.querySelector(".accuracy");
-    if (!accuracyElement) return;
-    const value = Number(accuracy) || 0;
-    accuracyElement.textContent = `Detection Accuracy: ${value}%`;
-    accuracyElement.classList.remove("accuracy-good", "accuracy-medium", "accuracy-low");
-    if (value >= 80) accuracyElement.classList.add("accuracy-good");
-    else if (value >= 50) accuracyElement.classList.add("accuracy-medium");
-    else accuracyElement.classList.add("accuracy-low");
+    const el = document.querySelector(".accuracy");
+    if (!el) return;
+    const value = Number(accuracy || 0);
+    el.textContent = `Detection Accuracy: ${value}%`;
+    el.classList.remove("accuracy-good", "accuracy-medium", "accuracy-low");
+    if (value >= 80) el.classList.add("accuracy-good");
+    else if (value >= 50) el.classList.add("accuracy-medium");
+    else el.classList.add("accuracy-low");
   }
 
   function showImage(index) {
     if (!detectionResult?.results?.length) return;
-    const imgData = detectionResult.results[index];
+    if (index < 0) index = 0;
+    if (index >= detectionResult.results.length) index = detectionResult.results.length - 1;
+    currentIndex = index;
+    const imgData = detectionResult.results[currentIndex];
     const src = showingResult
-      ? `http://127.0.0.1:5000/${imgData.result_image}`
-      : `http://127.0.0.1:5000/${imgData.original_image}`;
+      ? `${FLASK_BASE}/${imgData.result_image}`
+      : `${FLASK_BASE}/${imgData.original_image}`;
     updateImageDisplay(src);
-    updateTable(imgData.summary, imgData.total_items);
+    updateTable(imgData.summary || {}, imgData.total_items || 0);
     updateAccuracy(imgData.accuracy ?? detectionResult.accuracy);
-    debugLog(`🖼️ Displaying image ${index + 1}/${detectionResult.results.length}`);
   }
 
-  // ================================================
-  // ⚙️ DETECTION CONTROL FUNCTIONS
-  // ================================================
-  function redetect(newThreshold, labelMode = currentLabelMode, opacity = currentOpacity) {
+  // Initialize
+  if (detectionResult?.results?.length > 0) {
+    if (labelModeDropdown) labelModeDropdown.value = detectionResult.label_mode || currentLabelMode;
+    if (opacityDropdown) opacityDropdown.value = currentOpacity;
+    showImage(currentIndex);
+  }
+
+  // ----------------------------
+  // Networking
+  // ----------------------------
+  async function postJson(url, payload) {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    return res.json();
+  }
+
+  // ----------------------------
+  // Redetect / Rerender
+  // ----------------------------
+  async function redetect(newThreshold, labelMode = currentLabelMode, opacity = currentOpacity) {
     if (!detectionResult?.folder) return;
     showSpinner("Re-running detection...");
-    fetch("http://127.0.0.1:5000/redetect", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ folder: detectionResult.folder, threshold: newThreshold, label_mode: labelMode, opacity })
-    })
-      .then(res => res.json())
-      .then(data => {
-        hideSpinner();
-        if (data.error) return debugLog(`❌ Redetect error: ${data.error}`, "error");
-        detectionResult = { ...detectionResult, ...data };
-        localStorage.setItem("detectionResult", JSON.stringify(detectionResult));
-        showImage(currentIndex);
-      })
-      .catch(err => {
-        hideSpinner();
-        debugLog(`❌ Redetect fetch failed: ${err}`, "error");
+    try {
+      const data = await postJson(`${FLASK_BASE}/redetect`, {
+        folder: detectionResult.folder,
+        threshold: newThreshold,
+        label_mode: labelMode,
+        opacity
       });
+      hideSpinner();
+      detectionResult = { ...detectionResult, ...data };
+      localStorage.setItem("detectionResult", JSON.stringify(detectionResult));
+      showImage(currentIndex);
+      debugLog("Redetect complete", "success");
+    } catch (err) {
+      hideSpinner();
+      debugLog("Redetect failed: " + err.message, "error");
+    }
   }
 
-  function rerender(labelMode = currentLabelMode, opacity = currentOpacity) {
+  async function rerender(labelMode = currentLabelMode, opacity = currentOpacity) {
     if (!detectionResult?.folder) return;
     showSpinner("Redrawing boxes...");
-    fetch("http://127.0.0.1:5000/rerender", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ folder: detectionResult.folder, label_mode: labelMode, opacity })
-    })
-      .then(res => res.json())
-      .then(data => {
-        hideSpinner();
-        if (data.error) return debugLog(`❌ Rerender error: ${data.error}`, "error");
-        detectionResult = { ...detectionResult, ...data };
-        localStorage.setItem("detectionResult", JSON.stringify(detectionResult));
-        showImage(currentIndex);
-      })
-      .catch(err => {
-        hideSpinner();
-        debugLog(`❌ Rerender fetch failed: ${err}`, "error");
+    try {
+      const data = await postJson(`${FLASK_BASE}/rerender`, {
+        folder: detectionResult.folder,
+        label_mode: labelMode,
+        opacity
       });
+      hideSpinner();
+      detectionResult = { ...detectionResult, ...data };
+      localStorage.setItem("detectionResult", JSON.stringify(detectionResult));
+      showImage(currentIndex);
+    } catch (err) {
+      hideSpinner();
+      debugLog("Rerender failed: " + err.message, "error");
+    }
   }
 
-  // ================================================
-  // 🎚️ EVENT HANDLERS
-  // ================================================
-  thresholdDropdown.addEventListener("change", () => {
-  const newThreshold = parseFloat(thresholdDropdown.value);
-  debugLog(`🧠 Threshold changed to ${newThreshold}`, "info");
+  // ----------------------------
+  // Dropdowns
+  // ----------------------------
+  thresholdDropdown?.addEventListener("change", async () => {
+    const newThreshold = parseFloat(thresholdDropdown.value);
+    try {
+      const res = await postJson(`${FLASK_BASE}/set_threshold`, { threshold: newThreshold });
+      debugLog(`Backend threshold set to ${res.threshold}`, "success");
+      await redetect(newThreshold);
+    } catch (err) {
+      debugLog("Failed to set threshold: " + err.message, "error");
+    }
+  });
 
-  // Update backend global threshold first
-  fetch("http://127.0.0.1:5000/set_threshold", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ threshold: newThreshold })
-  })
-    .then(res => res.json())
-    .then(data => {
-      debugLog(`✅ Backend threshold set to ${data.threshold}`, "success");
-      // Then re-run detection using that new threshold
-      redetect(newThreshold);
-    })
-    .catch(err => debugLog(`❌ Threshold update failed: ${err}`, "error"));
-});
-
-
-  opacityDropdown.addEventListener("change", () => {
+  opacityDropdown?.addEventListener("change", () => {
     currentOpacity = opacityDropdown.value;
+    localStorage.setItem("boxOpacity", currentOpacity);
     rerender(currentLabelMode, currentOpacity);
   });
-  labelModeDropdown.addEventListener("change", () => {
+
+  labelModeDropdown?.addEventListener("change", () => {
     currentLabelMode = labelModeDropdown.value;
     localStorage.setItem("labelMode", currentLabelMode);
     rerender(currentLabelMode, currentOpacity);
   });
 
-  prevBtn.addEventListener("click", () => {
+  // ----------------------------
+  // Prev / Next
+  // ----------------------------
+  prevBtn?.addEventListener("click", () => {
+    if (!detectionResult?.results?.length) return;
     currentIndex = (currentIndex - 1 + detectionResult.results.length) % detectionResult.results.length;
     showImage(currentIndex);
   });
 
-  nextBtn.addEventListener("click", () => {
+  nextBtn?.addEventListener("click", () => {
+    if (!detectionResult?.results?.length) return;
     currentIndex = (currentIndex + 1) % detectionResult.results.length;
     showImage(currentIndex);
   });
 
-  switchInput.addEventListener("change", e => {
-    showingResult = e.target.checked;
-    showImage(currentIndex);
-  });
+  // ----------------------------
+  // Before/After
+  // ----------------------------
+  if (switchInput) {
+    switchInput.checked = true;
+    switchInput.addEventListener("change", (e) => {
+      showingResult = e.target.checked;
+      showImage(currentIndex);
+    });
+  }
 
-  // ================================================
-  // 🔙 GO BACK BUTTON
-  // ================================================
-  goBackBtn.addEventListener("click", () => {
-    localStorage.removeItem("boxOpacity");
+  // ----------------------------
+  // Go Back
+  // ----------------------------
+  goBackBtn?.addEventListener("click", async () => {
+    const detectionSource = localStorage.getItem("detectionSource");
+    const shouldAdminRedirect = detectionSource === "admin" || isLoggedIn;
+    const target = shouldAdminRedirect ? ADMIN_REDIRECT : USER_REDIRECT;
     if (detectionResult?.folder) {
-      fetch("http://127.0.0.1:5000/cleanup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ folder: detectionResult.folder })
-      })
-        .finally(() => {
-          localStorage.removeItem("detectionResult");
-          window.location.href = "index.php";
+      try {
+        await fetch(`${FLASK_BASE}/cleanup`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ folder: detectionResult.folder })
         });
-    } else {
-      localStorage.removeItem("detectionResult");
-      window.location.href = "index.php";
+      } catch {}
     }
+    localStorage.removeItem("detectionResult");
+    localStorage.removeItem("detectionSource");
+    window.location.href = target;
   });
 
-  // ================================================
-  // 🧰 SUPABASE UPLOAD FUNCTIONS (Images + Detection Data)
-  // ================================================
+  // ----------------------------
+  // Supabase Upload (with duplicate protection)
+  // ----------------------------
+  async function findImageRecordByName(fileName) {
+    const q = `${SUPABASE_REST_URL}/images?imagefile_name=eq.${encodeURIComponent(fileName)}`;
+    const res = await fetch(q, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+    const rows = await res.json();
+    return rows.length > 0 ? rows[0] : null;
+  }
+
   async function uploadAllImagesToBucket(results) {
     const uploadedImages = [];
     for (const imgData of results) {
       try {
-        const imageUrl = `http://127.0.0.1:5000/${imgData.result_image}`;
+        const path = imgData.result_image || imgData.original_image || "";
+        const fileName = path.split("/").pop();
+        let existingRecord = await findImageRecordByName(fileName);
+        if (existingRecord) {
+          uploadedImages.push({
+            fileName,
+            publicUrl: `${SUPABASE_URL}/storage/v1/object/public/images/${fileName}`,
+            existingImageRecord: existingRecord
+          });
+          continue;
+        }
+        const imageUrl = `${FLASK_BASE}/${path}`;
         const response = await fetch(imageUrl);
         const blob = await response.blob();
-        const fileName = `detection_result_${Date.now()}_${Math.floor(Math.random() * 10000)}.jpg`;
         const uploadUrl = `${SUPABASE_STORAGE_URL}/images/${fileName}`;
         const uploadRes = await fetch(uploadUrl, {
           method: "POST",
@@ -276,9 +418,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!uploadRes.ok) throw new Error(`Upload failed for ${fileName}`);
         const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/images/${fileName}`;
         uploadedImages.push({ fileName, publicUrl });
-        debugLog(`🟢 Uploaded: ${fileName}`, "success");
       } catch (err) {
-        debugLog(`❌ Upload failed: ${err.message}`, "error");
+        debugLog("Upload failed: " + err.message, "error");
       }
     }
     return uploadedImages;
@@ -301,19 +442,21 @@ document.addEventListener("DOMContentLoaded", () => {
       body: JSON.stringify({ littertype_name: name })
     });
     const newType = await postRes.json();
-    debugLog(`🆕 Created litter type: ${name}`, "success");
     return newType[0].littertype_id;
   }
 
   async function storeDetectionToSupabase(detectionResult) {
     try {
-      debugLog("🚀 Starting Supabase storage for multiple images...", "info");
+      const folderKey = detectionResult?.folder || "defaultFolder";
+      if (localStorage.getItem(`uploaded_${folderKey}`)) {
+        debugLog("Already uploaded previously.", "warn");
+        alert("Already uploaded previously.");
+        return;
+      }
+
       const lat = localStorage.getItem("user_latitude");
       const lng = localStorage.getItem("user_longitude");
-
       const uploads = await uploadAllImagesToBucket(detectionResult.results);
-      if (uploads.length === 0) throw new Error("No images uploaded.");
-
       const now = new Date();
       const dateStr = now.toISOString().split("T")[0];
       const timeStr = now.toTimeString().split(" ")[0];
@@ -321,28 +464,37 @@ document.addEventListener("DOMContentLoaded", () => {
       for (let i = 0; i < uploads.length; i++) {
         const imgUpload = uploads[i];
         const imgData = detectionResult.results[i];
-        const imgPayload = {
-          imagefile_name: imgUpload.fileName,
-          uploaded_by: "System",
-          latitude: parseFloat(lat),
-          longitude: parseFloat(lng)
-        };
-        const imgRes = await fetch(`${SUPABASE_REST_URL}/images`, {
-          method: "POST",
-          headers: {
-            apikey: SUPABASE_KEY,
-            Authorization: `Bearer ${SUPABASE_KEY}`,
-            "Content-Type": "application/json",
-            Prefer: "return=representation"
-          },
-          body: JSON.stringify(imgPayload)
-        });
-        const imgJson = await imgRes.json();
-        const imageId = imgJson[0]?.image_id;
-        if (!imageId) throw new Error("Failed to save image record.");
+        let imageId = imgUpload.existingImageRecord?.image_id || null;
+        if (!imageId) {
+          const imgPayload = {
+            imagefile_name: imgUpload.fileName,
+            uploaded_by: isLoggedIn ? parseInt(adminId) : null,
+            latitude: parseFloat(lat) || null,
+            longitude: parseFloat(lng) || null
+          };
+          const imgRes = await fetch(`${SUPABASE_REST_URL}/images`, {
+            method: "POST",
+            headers: {
+              apikey: SUPABASE_KEY,
+              Authorization: `Bearer ${SUPABASE_KEY}`,
+              "Content-Type": "application/json",
+              Prefer: "return=representation"
+            },
+            body: JSON.stringify(imgPayload)
+          });
+          const imgJson = await imgRes.json();
+          imageId = imgJson[0]?.image_id;
+        }
 
         for (const [typeName, qty] of Object.entries(imgData.summary || {})) {
           const typeId = await getLitterTypeId(typeName);
+          const detCheck = await fetch(
+            `${SUPABASE_REST_URL}/detections?image_id=eq.${imageId}&littertype_id=eq.${typeId}&date=eq.${dateStr}`,
+            { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+          );
+          const exist = await detCheck.json();
+          if (exist.length > 0) continue;
+
           const detPayload = {
             image_id: imageId,
             littertype_id: typeId,
@@ -361,204 +513,85 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             body: JSON.stringify(detPayload)
           });
-          debugLog(`✅ Detection inserted: ${typeName} (${qty}) for image ${i + 1}`, "success");
         }
       }
-      debugLog("🎯 All images and detections saved to Supabase successfully.", "success");
+
+      localStorage.setItem(`uploaded_${folderKey}`, "1");
+      debugLog("All detections saved to Supabase.", "success");
+      alert("Upload complete.");
     } catch (err) {
-      debugLog(`❌ Supabase insertion failed: ${err.message}`, "error");
+      debugLog("Upload failed: " + err.message, "error");
+      alert("Upload failed: " + err.message);
     }
   }
 
-  uploadBtn?.addEventListener("click", () => {
-    if (!detectionResult) return debugLog("❌ No detection data to upload.", "error");
-    debugLog("🚀 Uploading detection data to Supabase...", "info");
-    storeDetectionToSupabase(detectionResult);
+  uploadBtn?.addEventListener("click", async () => {
+    const dr = JSON.parse(localStorage.getItem("detectionResult") || "null");
+    if (!dr) {
+      alert("No detection results available.");
+      return;
+    }
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = "Uploading...";
+    await storeDetectionToSupabase(dr);
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = "Upload to Database";
   });
 
-  // ================================================
-  // 🔍 ZOOM & PAN CONTROLS
-  // ================================================
-  const zoomInBtn = document.getElementById("zoom-in");
-  const zoomOutBtn = document.getElementById("zoom-out");
-  const zoomResetBtn = document.getElementById("zoom-reset");
-  const zoomLevelDisplay = document.getElementById("zoom-level");
-
+  // ----------------------------
+  // Zoom & Pan
+  // ----------------------------
   let currentZoom = 1;
   let isDragging = false;
-  let startX, startY, currentX = 0, currentY = 0;
-
+  let startX = 0,
+    startY = 0,
+    currentX = 0,
+    currentY = 0;
   function updateZoom() {
     imgElement.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentZoom})`;
-    zoomLevelDisplay.textContent = `${Math.round(currentZoom * 100)}%`;
+    if (zoomLevelDisplay) zoomLevelDisplay.textContent = `${Math.round(currentZoom * 100)}%`;
   }
-
-  zoomInBtn.addEventListener("click", () => {
+  zoomInBtn?.addEventListener("click", () => {
     currentZoom = Math.min(currentZoom + 0.1, 3);
     updateZoom();
   });
-  zoomOutBtn.addEventListener("click", () => {
+  zoomOutBtn?.addEventListener("click", () => {
     currentZoom = Math.max(currentZoom - 0.1, 1);
-    if (currentZoom === 1) { currentX = 0; currentY = 0; }
+    if (currentZoom === 1) {
+      currentX = 0;
+      currentY = 0;
+    }
     updateZoom();
   });
-  zoomResetBtn.addEventListener("click", () => {
-    currentZoom = 1; currentX = 0; currentY = 0; updateZoom();
+  zoomResetBtn?.addEventListener("click", () => {
+    currentZoom = 1;
+    currentX = 0;
+    currentY = 0;
+    updateZoom();
   });
-  imgElement.addEventListener("mousedown", e => {
+
+  imgElement.addEventListener("mousedown", (e) => {
     if (currentZoom <= 1) return;
     isDragging = true;
     startX = e.clientX - currentX;
     startY = e.clientY - currentY;
-    imgElement.style.cursor = "grabbing";
   });
-  window.addEventListener("mouseup", () => { isDragging = false; imgElement.style.cursor = "grab"; });
-  window.addEventListener("mousemove", e => {
+  window.addEventListener("mouseup", () => {
+    isDragging = false;
+  });
+  window.addEventListener("mousemove", (e) => {
     if (!isDragging) return;
     e.preventDefault();
     const newX = e.clientX - startX;
     const newY = e.clientY - startY;
-    const containerRect = imgContainer.getBoundingClientRect();
-    const imageRect = imgElement.getBoundingClientRect();
-    const maxX = (imageRect.width - containerRect.width) / 2;
-    const maxY = (imageRect.height - containerRect.height) / 2;
-    currentX = Math.max(-maxX, Math.min(maxX, newX));
-    currentY = Math.max(-maxY, Math.min(maxY, newY));
+    currentX = newX;
+    currentY = newY;
     updateZoom();
   });
 
-  // ================================================
-  // 📍 LOCATION DISPLAY
-  // ================================================
-  const latitude = localStorage.getItem("user_latitude");
-  const longitude = localStorage.getItem("user_longitude");
-  if (latitude && longitude) {
-    const latElement = document.getElementById("lat-value");
-    const lngElement = document.getElementById("lng-value");
-    const locationLink = document.getElementById("location-link");
-    const formattedLat = parseFloat(latitude).toFixed(6);
-    const formattedLng = parseFloat(longitude).toFixed(6);
-    if (latElement) latElement.textContent = formattedLat;
-    if (lngElement) lngElement.textContent = formattedLng;
-    if (locationLink) locationLink.href = `https://www.google.com/maps?q=${formattedLat},${formattedLng}`;
-  }
-
-  // ================================================
-  // 📄 PDF EXPORT (jsPDF)
-  // ================================================
-  pdfButton.addEventListener("click", async () => {
-    if (!detectionResult?.results?.length) {
-      debugLog("❌ No detection data found to export.", "error");
-      return;
-    }
-
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
-    let y = 20;
-
-    // 🟢 COVER PAGE
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(20);
-    pdf.text("Litter Detection Report", 105, y, { align: "center" });
-    y += 15;
-
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(12);
-    pdf.text(`Generated: ${new Date().toLocaleString()}`, 20, y);
-    y += 10;
-
-    const lat = localStorage.getItem("user_latitude") || "N/A";
-    const lng = localStorage.getItem("user_longitude") || "N/A";
-    pdf.text(`Location: Latitude ${lat}, Longitude ${lng}`, 20, y);
-    y += 10;
-
-    pdf.text(`Total Images: ${detectionResult.results.length}`, 20, y);
-    y += 10;
-
-    pdf.text(`Average Accuracy: ${detectionResult.accuracy || 0}%`, 20, y);
-    y += 20;
-
-    pdf.setFont("helvetica", "bold");
-    pdf.text("Overall Detected Items", 20, y);
-    y += 10;
-
-    const totalSummary = detectionResult.total_summary || {};
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(11);
-
-    if (Object.keys(totalSummary).length === 0) {
-      pdf.text("No objects detected.", 20, y);
-    } else {
-      pdf.text("Type", 20, y);
-      pdf.text("Quantity", 150, y);
-      y += 7;
-
-      Object.entries(totalSummary).forEach(([label, count]) => {
-        pdf.text(label, 20, y);
-        pdf.text(String(count), 150, y);
-        y += 7;
-      });
-    }
-
-    // 🆕 New page for images
-    pdf.addPage();
-
-    for (let i = 0; i < detectionResult.results.length; i++) {
-      let imgData = detectionResult.results[i];
-      let imgUrl = `http://127.0.0.1:5000/${imgData.result_image}`;
-
-      y = 20;
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(14);
-      pdf.text(`Image ${i + 1}`, 20, y);
-      y += 8;
-      pdf.setFont("helvetica", "normal");
-      pdf.setFontSize(12);
-      pdf.text(`Detected Objects: ${imgData.total_items}`, 20, y);
-      pdf.text(`Accuracy: ${imgData.accuracy || 0}%`, 150, y);
-      y += 10;
-
-      try {
-        const base64Img = await convertImageToBase64(imgUrl);
-        const imgProps = pdf.getImageProperties(base64Img);
-        const pdfWidth = 180;
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        if (y + pdfHeight > 270) {
-          pdf.addPage();
-          y = 20;
-        }
-        pdf.addImage(base64Img, "JPEG", 15, y, pdfWidth, pdfHeight);
-        y += pdfHeight + 10;
-      } catch (err) {
-        debugLog(`❌ Image ${i + 1} failed to load: ${err.message}`, "error");
-      }
-
-      const summary = imgData.summary || {};
-      if (Object.keys(summary).length > 0) {
-        pdf.setFont("helvetica", "bold");
-        pdf.text("Detected Litter Types", 20, y);
-        y += 8;
-        pdf.setFont("helvetica", "normal");
-
-        Object.entries(summary).forEach(([label, count]) => {
-          if (y > 270) {
-            pdf.addPage();
-            y = 20;
-          }
-          pdf.text(label, 20, y);
-          pdf.text(String(count), 150, y);
-          y += 7;
-        });
-      }
-
-      if (i < detectionResult.results.length - 1) pdf.addPage();
-    }
-
-    const fileName = `Litter_Report_${new Date().toISOString().split("T")[0]}.pdf`;
-    pdf.save(fileName);
-    debugLog(`📄 PDF downloaded: ${fileName}`, "success");
-  });
-
+  // ----------------------------
+  // PDF Export
+  // ----------------------------
   async function convertImageToBase64(url) {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -570,23 +603,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ================================================
-  // 🚀 INITIALIZATION
-  // ================================================
-  imgElement.style.transition = "transform 0.2s ease";
-  switchInput.checked = true;
-  showingResult = true;
-  showImage(currentIndex);
-  updateZoom();
+  pdfButton?.addEventListener("click", async () => {
+    const dr = JSON.parse(localStorage.getItem("detectionResult") || "null");
+    if (!dr?.results?.length) return;
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
+    let y = 20;
+    pdf.setFontSize(20);
+    pdf.text("Litter Detection Report", 105, y, { align: "center" });
+    y += 10;
+    pdf.setFontSize(12);
+    pdf.text(`Generated: ${new Date().toLocaleString()}`, 20, y);
+    y += 8;
+    for (let i = 0; i < dr.results.length; i++) {
+      const imgData = dr.results[i];
+      const imgUrl = `${FLASK_BASE}/${imgData.result_image}`;
+      pdf.addPage();
+      const base64 = await convertImageToBase64(imgUrl);
+      const props = pdf.getImageProperties(base64);
+      const pdfWidth = 180;
+      const pdfHeight = (props.height * pdfWidth) / props.width;
+      pdf.addImage(base64, "JPEG", 15, 20, pdfWidth, pdfHeight);
+    }
+    pdf.save(`Litter_Report_${Date.now()}.pdf`);
+  });
 
-    // 🧩 Reset backend confidence threshold to default (0.10) on page load
-  fetch("http://127.0.0.1:5000/set_threshold", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ threshold: 0.10 })
-  })
-    .then(res => res.json())
-    .then(data => debugLog(`🟢 Default confidence set to ${data.threshold}`, "success"))
-    .catch(err => debugLog(`⚠️ Could not reset confidence on load: ${err}`, "error"));
-    
+  // ----------------------------
+  // Default threshold reset
+  // ----------------------------
+  (async () => {
+    try {
+      await fetch(`${FLASK_BASE}/set_threshold`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ threshold: 0.1 })
+      });
+    } catch {}
+  })();
 });

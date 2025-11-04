@@ -2,12 +2,20 @@
 // =======================================================
 // ✅ LOGIN CHECK & INITIALIZATION
 // =======================================================
-ob_clean();
-error_reporting(0);
 require_once __DIR__ . '/system_config.php';
 
+// =======================================================
+// ✅ GLOBAL SESSION INIT (Only Once)
+// =======================================================
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+}
+
+// 🧠 Helper for future use
+function ensureSession() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 }
 
 // Redirect if admin not logged in
@@ -444,9 +452,68 @@ function getLitterLineChartData(&$logs, $filter)
 }
 
 // =======================================================
+// 📊 REALTIME LITTER TREND (BY DAY / MONTH / YEAR)
+// =======================================================
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'realtime_trend') {
+    header('Content-Type: application/json');
+    $filter = $_GET['filter'] ?? 'day';
+
+    $response = supabaseRequest(
+        'GET',
+        'realtime_detections',
+        null,
+        'select=top_detected_litter,total_detections,date'
+    );
+
+    if (!is_array($response) || empty($response)) {
+        echo json_encode(['labels' => [], 'datasets' => []]);
+        exit;
+    }
+
+    $trend = [];
+
+    foreach ($response as $row) {
+        $type = $row['top_detected_litter'] ?? 'Unknown';
+        $count = (int)($row['total_detections'] ?? 0);
+        $date = strtotime($row['date']);
+
+        switch ($filter) {
+            case 'year': $key = date('Y', $date); break;
+            case 'month': $key = date('M Y', $date); break;
+            default: $key = date('M d, Y', $date); break;
+        }
+
+        $trend[$type][$key] = ($trend[$type][$key] ?? 0) + $count;
+    }
+
+    // Sort by date keys
+    $allDates = [];
+    foreach ($trend as $arr) $allDates = array_merge($allDates, array_keys($arr));
+    $labels = array_values(array_unique($allDates));
+    sort($labels);
+
+    $datasets = [];
+    foreach ($trend as $type => $data) {
+        $points = [];
+        foreach ($labels as $lbl) $points[] = $data[$lbl] ?? 0;
+        $datasets[] = [
+            'label' => $type,
+            'data' => $points
+        ];
+    }
+
+    echo json_encode([
+        'labels' => $labels,
+        'datasets' => $datasets
+    ]);
+    exit;
+}
+
+
+
+// =======================================================
 // 🚀 EXECUTION: DASHBOARD DATA GENERATION
 // =======================================================
-
 
 
 // Litter trends
@@ -455,9 +522,7 @@ $litter_trends = getLitterTrendsDataFiltered($debug_logs, $trendFilter);
 // =======================================================
 // 📊 LOG DASHBOARD VIEW ONLY ONCE PER SESSION (NO DUPLICATE)
 // =======================================================
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+ensureSession();
 
 // Make sure session persists properly
 if (empty($_SESSION['dashboard_view_logged']) || $_SESSION['dashboard_view_logged'] !== $admin_id) {
@@ -537,48 +602,6 @@ foreach ($litter_linechart as $type => $months) {
 }
 $trend_data_json = json_encode($trend_data);
 
-// =======================================================
-// 👨‍💻 FETCH DETECTIONS UPLOADED BY ADMINS
-// =======================================================
-
-// Fetch admin list (map names to IDs)
-$adminResp = supabaseRequest('GET', 'admin', null, 'select=admin_id,admin_name');
-$adminMap = [];
-
-if (is_array($adminResp)) {
-    foreach ($adminResp as $adm) {
-        $adminMap[strtolower(trim($adm['admin_name']))] = $adm['admin_id'];
-    }
-}
-
-// Fetch detections joined with litter type and uploader
-$detectionsResp = supabaseRequest(
-    'GET',
-    'detections',
-    null,
-    'select=detection_id,date,confidence_lvl,image_id,litter_types:littertype_id(littertype_name),images:image_id(imagefile_name,uploaded_by)&order=date.desc'
-);
-
-$admin_detections = [];
-
-if (is_array($detectionsResp)) {
-    foreach ($detectionsResp as $row) {
-        $uploader = strtolower(trim($row['images']['uploaded_by'] ?? ''));
-
-        if (isset($adminMap[$uploader])) {
-            $admin_detections[] = [
-                'detection_id'   => $row['detection_id'],
-                'admin_id'       => $adminMap[$uploader],
-                'uploaded_by'    => $row['images']['uploaded_by'],
-                'imagefile_name' => $row['images']['imagefile_name'],
-                'image_url'      => getImageUrl($row['images']['imagefile_name']),
-                'litter_name'    => trim($row['litter_types']['littertype_name'] ?? 'Unknown'),
-                'confidence_lvl' => (float)$row['confidence_lvl'],
-                'date'           => $row['date']
-            ];
-        }
-    }
-}
 
 // =======================================================
 // 📡 FETCH REAL-TIME DETECTIONS (JOIN ADMIN INFO)
@@ -654,7 +677,7 @@ try {
         'GET',
         'admin',
         null,
-        'select=admin_id,admin_name,email,role,profile_pic'
+        'select=admin_id,admin_name,email,role,profile_pic,contact_number'
     );
 
     if (is_array($admins_response)) {
@@ -664,6 +687,7 @@ try {
                 'name'        => $adm['admin_name'],
                 'email'       => $adm['email'],
                 'role'        => $adm['role'],
+                'contact_number' => $adm['contact_number'] ?? '',
                 'profile_pic' => getAdminImageUrl($adm['profile_pic'] ?? null)
             ];
         }
@@ -734,6 +758,7 @@ try {
             'name'        => $data['admin_name'],
             'email'       => $data['email'],
             'role'        => $data['role'],
+            'contact_number' => $data['contact_number'] ?? '',
             // 🟢 show empty placeholder instead of hash
             'password'    => '',
             'profile_pic' => getAdminImageUrl($data['profile_pic'])
@@ -745,6 +770,7 @@ try {
             'email'       => '',
             'role'        => '',
             'password'    => '',
+            'contact_number' => '',
             'profile_pic' => '../imgs/default-avatar.png'
         ];
     }
@@ -756,6 +782,7 @@ try {
         'email'       => '',
         'role'        => '',
         'password'    => '',
+        'contact_number' => '',
         'profile_pic' => '../imgs/default-avatar.png'
     ];
 }
@@ -908,6 +935,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'recent_activity') {
     exit;
 }
 
+
 // =======================================================
 // 🧾 AJAX: UPDATE ADMIN PROFILE (All fields + image)
 // =======================================================
@@ -924,6 +952,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'update_profile_all') {
         echo json_encode(['error' => 'Missing admin ID']);
         exit;
     }
+    
 
     // 🟢 Fetch current admin data
     $oldData = supabaseRequest('GET', 'admin', null, 'select=admin_name,email,role,contact_number,password,profile_pic&admin_id=eq.' . $admin_id);
@@ -944,6 +973,8 @@ $update = [
     'role'           => $input['role'] ?: $old['role'],
     'contact_number' => $input['contact_number'] ?: $old['contact_number']
 ];
+
+
 
 // Hash password if provided
 if (!empty($input['password'])) {
@@ -993,5 +1024,408 @@ if (!empty($input['password'])) {
     exit;
 }
 
+// =====// =======================================================
+// ✏️ AJAX: EDIT MEMBER (Only Admin 1 or 'admin')
+// =======================================================
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'edit_member') {
+    ob_clean();
+    header('Content-Type: application/json');
 
-?>
+    ensureSession();
+
+    $session_role = strtolower($_SESSION['role'] ?? ''); // prevent undefined warning
+
+    // ✅ Permission check
+    if ($_SESSION['admin_id'] != 1 && $session_role !== 'admin') {
+        echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        exit;
+    }
+
+    // ✅ Read input
+    $input = json_decode(file_get_contents('php://input'), true);
+    $admin_id = $input['admin_id'] ?? '';
+    if (!$admin_id) {
+        echo json_encode(['success' => false, 'error' => 'Missing admin_id']);
+        exit;
+    }
+
+    $update = [
+        'admin_name' => $input['name'] ?? '',
+        'email'      => $input['email'] ?? '',
+        'role'       => $input['role'] ?? ''
+    ];
+
+    // ✅ Update Supabase
+    $response = supabaseRequest('PATCH', 'admin', json_encode($update), 'admin_id=eq.' . $admin_id);
+
+    if (isset($response['error'])) {
+        echo json_encode(['success' => false, 'error' => $response['error']['message'] ?? 'Update failed']);
+    } else {
+        logActivity($_SESSION['admin_id'], $_SESSION['admin_name'] ?? 'Unknown', 'Edit', 'admin', "Edited member ID $admin_id");
+        echo json_encode(['success' => true]);
+    }
+
+    exit;
+}
+
+
+// =======================================================
+// 🗑️ AJAX: DELETE MEMBER (Only Admin 1 or 'admin')
+// =======================================================
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'delete_member') {
+    header('Content-Type: application/json');
+    ensureSession();
+
+    if ($_SESSION['admin_id'] != 1 && strtolower($_SESSION['role']) !== 'admin') {
+        echo json_encode(['error' => 'Unauthorized']);
+        exit;
+    }
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    $admin_id = $input['admin_id'] ?? '';
+
+    if (!$admin_id) {
+        echo json_encode(['error' => 'Missing admin_id']);
+        exit;
+    }
+
+    if ($admin_id == $_SESSION['admin_id']) {
+        echo json_encode(['error' => 'You cannot delete your own account.']);
+        exit;
+    }
+
+    $response = supabaseRequest('DELETE', 'admin', null, 'admin_id=eq.' . $admin_id);
+    if (isset($response['error'])) {
+        echo json_encode(['error' => $response['error']['message']]);
+    } else {
+        logActivity($_SESSION['admin_id'], $_SESSION['admin_name'], 'Delete', 'admin', "Deleted member ID $admin_id");
+        echo json_encode(['success' => true]);
+    }
+    exit;
+}
+
+
+
+
+// =======================================================
+// 🔄 AJAX: FETCH UPDATED ADMIN LIST (for Team Tab refresh)
+// =======================================================
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'fetch_admins') {
+    header('Content-Type: text/html; charset=UTF-8');
+    ensureSession();
+
+    // Same logic as your initial $admins_list fetch
+    $admins_list = [];
+
+    try {
+        $admins_response = supabaseRequest(
+            'GET',
+            'admin',
+            null,
+            'select=admin_id,admin_name,email,role,profile_pic,contact_number'
+        );
+
+        if (is_array($admins_response)) {
+            foreach ($admins_response as $adm) {
+                $admins_list[] = [
+                    'admin_id'        => $adm['admin_id'],
+                    'name'            => $adm['admin_name'],
+                    'email'           => $adm['email'],
+                    'role'            => $adm['role'],
+                    'contact_number'  => $adm['contact_number'] ?? '',
+                    'profile_pic'     => getAdminImageUrl($adm['profile_pic'] ?? null)
+                ];
+            }
+        }
+    } catch (Exception $e) {
+        echo "<p style='text-align:center;color:red;'>Error loading admins: {$e->getMessage()}</p>";
+        exit;
+    }
+
+    // ✅ Return refreshed HTML (same structure as your original user-grid)
+    if (!empty($admins_list)) {
+        foreach ($admins_list as $user) {
+            $isCurrentAdmin = ($user['admin_id'] == $_SESSION['admin_id']);
+            $isSuperAdmin = ($_SESSION['admin_id'] == 1 || strtolower($_SESSION['role']) === 'admin');
+
+            echo "<div class='user-card " . ($isCurrentAdmin ? 'disabled-admin' : '') . "'>";
+            
+            // ⋮ Menu
+            echo "<div class='user-menu'>
+                    <div class='tooltip-wrapper'>
+                      <button class='menu-btn' " . (!$isSuperAdmin ? 'disabled' : '') . ">⋮</button>";
+            if (!$isSuperAdmin) echo "<span class='no-access-tooltip'>No access</span>";
+            echo "  </div>
+                    <div class='menu-options'>
+                      <button class='btn-edit'
+                        data-id='{$user['admin_id']}'
+                        data-name='" . htmlspecialchars($user['name']) . "'
+                        data-email='" . htmlspecialchars($user['email']) . "'
+                        data-role='" . htmlspecialchars($user['role']) . "'
+                        " . (!$isSuperAdmin ? 'disabled' : '') . ">Edit</button>
+                      <button class='btn-delete danger'
+                        data-id='{$user['admin_id']}'
+                        data-name='" . htmlspecialchars($user['name']) . "'
+                        " . ((!$isSuperAdmin || $isCurrentAdmin) ? 'disabled' : '') . ">Delete</button>
+                    </div>
+                  </div>";
+
+            // Avatar + Info
+            echo "<img src='" . htmlspecialchars($user['profile_pic']) . "' alt='User Avatar' class='user-avatar'>
+                  <h3>" . htmlspecialchars($user['name']) . "</h3>
+                  <p>" . htmlspecialchars($user['email']) . "</p>
+                  <span class='role'>" . htmlspecialchars($user['role']) . "</span>";
+
+            // Email + Call Buttons
+            echo "<div class='user-contact'>
+                    <button class='contact-btn email-btn'
+                      data-email='" . htmlspecialchars($user['email']) . "'
+                      data-name='" . htmlspecialchars($user['name']) . "'
+                      " . (empty($user['email']) ? 'disabled' : '') . ">
+                      <i class='fa-solid fa-envelope'></i> Email
+                    </button>
+                    <div class='tooltip-wrapper'>
+                      <button class='contact-btn call-btn'
+                        data-phone='" . htmlspecialchars($user['contact_number'] ?? '') . "'
+                        " . (empty($user['contact_number']) ? 'disabled' : '') . ">
+                        <i class='fa-solid fa-phone'></i> Call
+                      </button>";
+            if (empty($user['contact_number'])) {
+                echo "<span class='no-access-tooltip'>No contact number</span>";
+            }
+            echo "    </div>
+                  </div>";
+
+            if ($isCurrentAdmin) echo "<div class='self-label'>You</div>";
+            echo "</div>"; // user-card
+        }
+    } else {
+        echo "<p style='text-align:center; width:100%; margin-top: 20px;'>No users found.</p>";
+    }
+
+    exit;
+}
+
+// =======================================================
+// 📤 AJAX: EXPORT ACTIVITY LOGS TO CSV (Excel-Compatible)
+// =======================================================
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'export_logs_csv') {
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="Activity_Logs.csv"');
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    $logs = $input['logs'] ?? [];
+
+    // Open output buffer for direct download
+    $output = fopen('php://output', 'w');
+
+    // CSV Header
+    fputcsv($output, ['Date', 'Admin', 'Action', 'Affected Record', 'Description', 'Status']);
+
+    // CSV Rows
+    foreach ($logs as $log) {
+        fputcsv($output, [
+            $log['date'],
+            $log['admin'],
+            ucfirst($log['action']),
+            $log['affected_record'],
+            $log['description'],
+            ucfirst($log['status'])
+        ]);
+    }
+
+    fclose($output);
+    exit;
+
+}
+
+
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'update_profile_secure') {
+    ob_clean();
+    header('Content-Type: application/json');
+    ensureSession();
+
+    if (!isset($_SESSION['admin_id'])) {
+        echo json_encode(['error' => 'Unauthorized']);
+        exit;
+    }
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    $admin_id = $_SESSION['admin_id'];
+    $session_role = strtolower($_SESSION['role'] ?? '');
+
+    // Fetch old data
+    $oldData = supabaseRequest('GET', 'admin', null, 'select=admin_name,email,role,contact_number,password,profile_pic&admin_id=eq.' . $admin_id);
+    if (!is_array($oldData) || empty($oldData[0])) {
+        echo json_encode(['error' => 'Admin not found']);
+        exit;
+    }
+    $old = $oldData[0];
+
+    // Build update payload
+    $update = [
+        'admin_name'     => $input['name'] ?: $old['admin_name'],
+        'email'          => $input['email'] ?: $old['email'],
+        'contact_number' => $input['contact_number'] ?: $old['contact_number']
+    ];
+
+    // Only Admin 1 or 'admin' can update role
+    if ($_SESSION['admin_id'] == 1 || $session_role === 'admin') {
+        if (!empty($input['role'])) $update['role'] = $input['role'];
+    } else {
+        logActivity($_SESSION['admin_id'], $_SESSION['admin_name'], 'Unauthorized Attempt', 'admin', 'Tried to change role');
+    }
+
+    // Handle password
+    if (!empty($input['password'])) {
+        $update['password'] = password_hash($input['password'], PASSWORD_BCRYPT);
+    } else {
+        $update['password'] = $old['password'];
+    }
+
+    // Handle image upload
+    $newProfileUrl = null;
+    if (!empty($input['profile_pic'])) {
+        $decoded = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $input['profile_pic']));
+        $fileName = 'admin_' . $admin_id . '_' . time() . '.png';
+        $filePath = sys_get_temp_dir() . '/' . $fileName;
+        file_put_contents($filePath, $decoded);
+
+        $upload = supabaseUploadFile('admin', $fileName, $filePath, 'image/png');
+        if (!isset($upload['error'])) {
+            $update['profile_pic'] = $fileName;
+            $newProfileUrl = 'https://ksbgdgqpdoxabdefjsin.storage.supabase.co/storage/v1/object/public/admin/' . rawurlencode($fileName);
+        }
+    }
+
+    // Save to Supabase
+    $response = supabaseRequest('PATCH', 'admin', json_encode($update), 'admin_id=eq.' . $admin_id);
+    if (isset($response['error'])) {
+        echo json_encode(['error' => 'Update failed', 'details' => $response]);
+        exit;
+    }
+
+    logActivity($admin_id, $_SESSION['admin_name'], 'Update', 'admin', 'Updated profile (secure)');
+
+    echo json_encode(['success' => true, 'new_profile_pic_url' => $newProfileUrl]);
+    exit;
+}
+
+// =======================================================
+// 📦 FETCH DETECTION HISTORY (Admin Uploads Only)
+// =======================================================
+ensureSession();
+
+$admin_detections = [];
+
+try {
+    // 🧩 Get current admin session info
+    $admin_id   = $_SESSION['admin_id'] ?? null;
+    $admin_name = $_SESSION['admin_name'] ?? null;
+
+    if (!$admin_name) {
+        throw new Exception("Admin not logged in.");
+    }
+
+    // 🧾 Supabase view request (ensure `detection_view` exists)
+    $response = supabaseRequest(
+        'GET',
+        'detection_view',
+        null,
+        'select=detection_id,date,imagefile_name,littertype_name,confidence_lvl,uploaded_by&uploaded_by=eq.' . urlencode($admin_name)
+    );
+
+    // 🧩 Parse and build array
+    if (is_array($response) && !empty($response)) {
+        foreach ($response as $det) {
+            $image_url = !empty($det['imagefile_name'])
+                ? "https://ksbgdgqpdoxabdefjsin.storage.supabase.co/storage/v1/object/public/images/" . rawurlencode($det['imagefile_name'])
+                : "../imgs/no-image.png";
+
+            $admin_detections[] = [
+                'detection_id'   => $det['detection_id'] ?? 0,
+                'date'           => $det['date'] ?? 'N/A',
+                'image_url'      => $image_url,
+                'litter_name'    => $det['littertype_name'] ?? 'Unknown',
+                'confidence_lvl' => number_format($det['confidence_lvl'] ?? 0, 2),
+                'uploaded_by'    => $det['uploaded_by'] ?? 'Unknown'
+            ];
+        }
+
+        // 🔄 Show newest detections first
+        $admin_detections = array_reverse($admin_detections);
+    }
+} catch (Throwable $e) {
+    error_log("⚠️ Error fetching admin detections: " . $e->getMessage());
+}
+
+
+
+// =======================================================
+// 🗑️ AJAX: DELETE DETECTIONS (Admin Only, Stable Version)
+// =======================================================
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'delete_detections') {
+    ob_clean();
+    header('Content-Type: application/json');
+    ensureSession();
+
+    // 🔒 Verify admin session
+    if (empty($_SESSION['admin_id'])) {
+        echo json_encode(['error' => 'Unauthorized: Admin not logged in.']);
+        exit;
+    }
+
+    $admin_id   = $_SESSION['admin_id'];
+    $admin_name = $_SESSION['admin_name'] ?? 'Unknown Admin';
+
+    // 🧾 Read incoming JSON body
+    $input = json_decode(file_get_contents('php://input'), true);
+    $ids   = $input['ids'] ?? [];
+
+    if (empty($ids) || !is_array($ids)) {
+        echo json_encode(['error' => 'No valid detection IDs provided.']);
+        exit;
+    }
+
+    $deleted = [];
+    $failed  = [];
+
+    foreach ($ids as $id) {
+        // ✅ Supabase DELETE call (filtered by detection_id)
+        $resp = supabaseRequest(
+            'DELETE',
+            'detections',
+            null,
+            'detection_id=eq.' . intval($id)
+        );
+
+        if (is_array($resp) && !isset($resp['error'])) {
+            $deleted[] = $id;
+        } else {
+            $failed[] = [
+                'id' => $id,
+                'error' => $resp['error']['message'] ?? json_encode($resp)
+            ];
+        }
+    }
+
+    // ✍️ Log activity
+    $actionDesc = count($deleted) > 1
+        ? "Deleted detections: " . implode(', ', $deleted)
+        : "Deleted detection ID " . ($deleted[0] ?? 'N/A');
+
+    $status = empty($failed) ? 'Success' : 'Partial';
+    logActivity($admin_id, $admin_name, 'Delete', 'detections', $actionDesc, $status);
+
+    // 📦 Response JSON
+    echo json_encode([
+        'success' => empty($failed),
+        'deleted' => $deleted,
+        'failed'  => $failed,
+        'message' => empty($failed)
+            ? '✅ All selected detections successfully deleted.'
+            : '⚠️ Some records could not be deleted.'
+    ]);
+    exit;
+}
+

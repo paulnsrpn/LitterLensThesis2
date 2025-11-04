@@ -57,8 +57,35 @@
         date('Y-m-d H:i:s') . " - " . $debugMessage . "\n",
         FILE_APPEND
     );
-?>
+
+    if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+    }
+
+    $isLoggedIn = isset($_SESSION['admin_id']) && !empty($_SESSION['admin_id']);
+    $adminId = $isLoggedIn ? $_SESSION['admin_id'] : null;
+    $adminName = $isLoggedIn ? $_SESSION['admin_name'] : null;
+    ?>
+
+
+
 <script>
+
+  const isLoggedIn = <?php echo $isLoggedIn ? 'true' : 'false'; ?>;
+const adminId = "<?php echo $isLoggedIn ? $adminId : ''; ?>";
+const adminName = "<?php echo $isLoggedIn ? addslashes($adminName) : ''; ?>";
+
+if (isLoggedIn) {
+  console.log(`👑 Admin logged in: ${adminName} (ID: ${adminId})`);
+  localStorage.setItem("admin_id", adminId);
+  localStorage.setItem("admin_name", adminName);
+  localStorage.setItem("detectionSource", "admin");
+} else {
+  console.log("🧍 Guest mode — not logged in");
+  localStorage.removeItem("admin_id");
+  localStorage.removeItem("admin_name");
+  localStorage.removeItem("detectionSource");
+}
     // ================================================
     // 📍 GEOLOCATION CAPTURE
     // ================================================

@@ -2,8 +2,6 @@
 require_once '../../system_backend/php/system_config.php';
 require_once '../../system_backend/php/system_admin_data.php';
 
-
-
 // ✅ LOGIN CHECK
 if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
     redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
@@ -11,14 +9,13 @@ if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
 
 $admin_name = $_SESSION['admin_name'] ?? 'Admin';
 
-
 ?>
 
 
 <!DOCTYPE html>
 <html lang="en">
 
-          <head>
+<head>
             <!-- ==============================================
                           🧭 BASIC META
                           ============================================== -->
@@ -29,19 +26,13 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
             <!-- ==============================================
                           🎨 STYLESHEETS
                           ============================================== -->
-
-                          
             <link rel="stylesheet" href="../css/admin.css">
-            <link rel="stylesheet" href="../css/adminbug.css">
             <link rel="stylesheet" href="../css/camera.css">
             <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-
 
             <!-- ==============================================
                           📊 SCRIPTS & LIBRARIES
@@ -55,7 +46,7 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
             <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
             <link href="https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.css" rel="stylesheet" />
             <script src="https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.js"></script>
-          </head>
+</head>
 
 <body>
             <!-- ==============================================
@@ -94,7 +85,6 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
                 <p><?php echo htmlspecialchars($admin_name); ?></p>
               </span>
             </div>
-
 
             <!-- ==============================================
             📊 DASHBOARD SECTION
@@ -216,11 +206,9 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
               </div> <!-- end .dashboard-container -->
             </div> <!-- end #dashboard -->
 
-
-
             <!-- ==============================================                 
-                          ✅ IMAGE AND DETECTION SECTION 
-                          ============================================== -->
+            ✅ IMAGE AND DETECTION SECTION 
+            ============================================== -->
             <div id="image" class="tab-content image-detection">
 
               <!-- Tabs -->
@@ -231,151 +219,165 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
 
               <!-- 🖼️ Detections Tab -->
               <div id="detections" class="tab-section active">
+
                 <div class="upload-box">
                   <h3>Upload Image</h3>
                   <p>Choose an image to analyze litter presence in the selected photo</p>
+
                   <div class="upload-controls">
-                    <input type="file" id="fileUpload">
-                    <button class="analyze-btn">Analyze</button>
+                    <!-- 🟩 Custom File Button -->
+                    <input type="file" id="admin-upload-input" accept="image/*" hidden multiple>
+
+                    <!-- 🟩 Analyze Button -->
+                    <button id="admin-upload-btn" class="btn-analyze" disabled>
+                      <i class="fa-solid fa-magnifying-glass"></i> Analyze
+                    </button>
                   </div>
                 </div>
 
-                <!-- Detection History -->
+                <!-- ============================== -->
+                <!-- 🔹 Detection History Section -->
+                <!-- ============================== -->
                 <div class="history-box">
-                  <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h3 style="margin:0;">Detection History (Admin Uploads)</h3>
-
-                    <div class="action-buttons" style="display:flex; gap:10px;">
-                      <button class="edit-btn"">
-                        <i class="fa-solid fa-pen"></i> Edit
-                      </button>
-                      <button class="delete-btn" ">
-                        <i class="fa-solid fa-trash"></i> Delete
-                      </button>
-                    </div>
+                  <div class="history-header">
+                    <h3>Detection History (Admin Uploads)</h3>
+                    <button class="delete-btn">
+                      <i class="fa-solid fa-trash"></i> Delete
+                    </button>
                   </div>
 
-                  <div class="table-container" style="margin-top:10px;">
-                      <table>
-                        <thead>
+                  <div class="table-container">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th><input type="checkbox" disabled></th>
+                          <th>Date</th>
+                          <th>Image</th>
+                          <th>Litter Type</th>
+                          <th>Accuracy</th>
+                          <th>Uploaded By</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php if (empty($admin_detections)): ?>
                           <tr>
-                            <th><input type="checkbox" disabled></th>
-                            <th>Date</th>
-                            <th>Image</th>
-                            <th>Litter Type</th>
-                            <th>Accuracy</th>
-                            <th>Uploaded By</th>
-                            <th>Details</th>
+                            <td colspan="6" style="text-align:center;">No detection records found.</td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          <?php if (empty($admin_detections)): ?>
-                            <tr><td colspan="7" style="text-align:center;">No detection records found.</td></tr>
-                          <?php else: ?>
-                            <?php foreach ($admin_detections as $det): ?>
-                              <tr>
-                                <td><input type="checkbox" disabled></td>
-                                <td><?= htmlspecialchars($det['date']) ?></td>
-                                <td>
-                                  <img src="<?= htmlspecialchars($det['image_url']) ?>" 
-                                      width="60" height="60" 
-                                      style="border-radius:8px;object-fit:cover;">
-                                </td>
-                                <td><?= htmlspecialchars($det['litter_name']) ?></td>
-                                <td><?= htmlspecialchars($det['confidence_lvl']) ?>%</td>
-                                <td><?= htmlspecialchars($det['uploaded_by']) ?></td>
-                                <td>
-                                  <a href="analytics.php?detection_id=<?= htmlspecialchars($det['detection_id']) ?>">View</a>
-                                </td>
-                              </tr>
-                            <?php endforeach; ?>
-                          <?php endif; ?>
-                        </tbody>
-                      </table>
-                    </div>
+                        <?php else: ?>
+                          <?php foreach ($admin_detections as $det): ?>
+                            <tr data-detection-id="<?= htmlspecialchars($det['detection_id']) ?>">
+                              <td><input type="checkbox"></td>
+                              <td><?= htmlspecialchars($det['date']) ?></td>
+                              <td>
+                                <img src="<?= htmlspecialchars($det['image_url']) ?>"
+                                    width="70" height="70"
+                                    style="border-radius:8px;object-fit:cover;">
+                              </td>
+                              <td><?= htmlspecialchars($det['litter_name']) ?></td>
+                              <td><?= htmlspecialchars($det['confidence_lvl']) ?>%</td>
+                              <td><?= htmlspecialchars($det['uploaded_by']) ?></td>
+                            </tr>
+                          <?php endforeach; ?>
+                        <?php endif; ?>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
+              </div>
+              <!-- ✅ End of Detections Tab -->
 
-                
-                <!-- 📊 Real-Time Detection Results Tab -->
-                <div id="results" class="tab-section">
-                  <h2 class="imgdet-section-title">Real-Time Detection Results</h2>
-                  <p class="imgdet-section-subtitle">
-                    View and manage all detections captured during live monitoring sessions
-                  </p>
 
-                  <div class="imgdet-realtime-dashboard">
-                    <!-- Left Column -->
-                    <div class="imgdet-left-column">
-                      <div class="imgdet-stats-container">
-                        <div class="imgdet-stat-card">
-                          <h4>Total Detections Recorded</h4>
-                          <p class="stat-value"><?= array_sum(array_column($realtime_detections, 'total_detections')) ?: 0; ?></p>
-                        </div>
-                        <div class="imgdet-stat-card">
-                          <h4>Average Accuracy</h4>
-                          <?php 
-                            $avgAcc = count($realtime_detections) ? 
-                              array_sum(array_column($realtime_detections, 'accuracy')) / count($realtime_detections) : 0;
-                          ?>
-                          <p class="stat-value"><?= number_format($avgAcc, 1) ?>%</p>
-                        </div>
+              <!-- 📊 Real-Time Detection Results Tab -->
+              <div id="results" class="tab-section">
+                <h2 class="imgdet-section-title">Real-Time Detection Results</h2>
+                <p class="imgdet-section-subtitle">
+                  View and manage all detections captured during live monitoring sessions
+                </p>
+
+                <div class="imgdet-realtime-dashboard">
+
+                  <!-- 🧭 Left Column -->
+                  <div class="imgdet-left-column">
+
+                    <!-- 📊 Stats -->
+                    <div class="imgdet-stats-container">
+                      <div class="imgdet-stat-card">
+                        <h4>Total Detections Recorded</h4>
+                        <p class="stat-value">
+                          <?= array_sum(array_column($realtime_detections, 'total_detections')) ?: 0; ?>
+                        </p>
                       </div>
 
-                      <div class="imgdet-table-box">
-                        <div class="imgdet-search-bar">
-                          <label for="date">Search by date</label>
-                          <input type="date" id="date" value="<?= date('Y-m-d'); ?>">
-                        </div>
-
-                        <div class="imgdet-table-container">
-                          <table>
-                            <thead>
-                              <tr>
-                                <th>Date and Time</th>
-                                <th>Status</th>
-                                <th>Camera Location</th>
-                                <th>Accuracy</th>
-                                <th>Details</th>
-                              </tr>
-                            </thead>
-                            <tbody id="realtimeTableBody">
-                              <?php if (empty($realtime_detections)): ?>
-                                <tr><td colspan="5" style="text-align:center;">No real-time detection records found.</td></tr>
-                              <?php else: ?>
-                                <?php foreach ($realtime_detections as $real): ?>
-                                  <tr data-date="<?= date('Y-m-d', strtotime($real['timestamp'])) ?>">
-                                    <td><?= htmlspecialchars(date('d/m/Y H:i', strtotime($real['timestamp']))) ?></td>
-                                    <td><?= htmlspecialchars($real['camera_status']) ?></td>
-                                    <td><?= htmlspecialchars($real['camera_name']) ?></td>
-                                    <td><?= htmlspecialchars(number_format($real['accuracy'], 1)) ?>%</td>
-                                    <td><a href="realtime_view.php?id=<?= htmlspecialchars($real['realtime_id']) ?>">View</a></td>
-                                  </tr>
-                                <?php endforeach; ?>
-                              <?php endif; ?>
-                            </tbody>
-                          </table>
-                        </div>
+                      <div class="imgdet-stat-card">
+                        <h4>Average Accuracy</h4>
+                        <?php 
+                          $avgAcc = count($realtime_detections)
+                            ? array_sum(array_column($realtime_detections, 'accuracy')) / count($realtime_detections)
+                            : 0;
+                        ?>
+                        <p class="stat-value"><?= number_format($avgAcc, 1) ?>%</p>
                       </div>
                     </div>
 
-                   <!-- Right Column -->
+                    <!-- 🗓️ Table -->
+                    <div class="imgdet-table-box">
+                      <div class="imgdet-search-bar">
+                        <label for="date">Search by date</label>
+                        <input type="date" id="date" value="<?= date('Y-m-d'); ?>">
+                      </div>
+
+                      <div class="imgdet-table-container">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Date and Time</th>
+                              <th>Status</th>
+                              <th>Camera Location</th>
+                              <th>Accuracy</th>
+                              <!-- <th>Details</th> -->
+                            </tr>
+                          </thead>
+                          <tbody id="realtimeTableBody">
+                            <?php if (empty($realtime_detections)): ?>
+                              <tr>
+                                <td colspan="5" style="text-align:center;">No real-time detection records found.</td>
+                              </tr>
+                            <?php else: ?>
+                              <?php foreach ($realtime_detections as $real): ?>
+                                <tr data-date="<?= date('Y-m-d', strtotime($real['timestamp'])) ?>">
+                                  <td><?= htmlspecialchars(date('d/m/Y H:i', strtotime($real['timestamp']))) ?></td>
+                                  <td><?= htmlspecialchars($real['camera_status']) ?></td>
+                                  <td><?= htmlspecialchars($real['camera_name']) ?></td>
+                                  <td><?= htmlspecialchars(number_format($real['accuracy'], 1)) ?>%</td>
+                                  <!-- <td><a href="realtime_view.php?id=<?= htmlspecialchars($real['realtime_id']) ?>">View</a></td> -->
+                                </tr>
+                              <?php endforeach; ?>
+                            <?php endif; ?>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- ✅ End Left Column -->
+
+                  <!-- 📈 Right Column -->
                   <div class="imgdet-right-column">
 
-                   <div class="imgdet-chart-card"> 
-                    <div class="imgdet-chart-header"> 
-                      <h4>Litter Distribution</h4> 
-                      <select> 
-                        <option>Monthly</option> 
-                        <option>Weekly</option> 
-                        <option>Yearly</option> 
-                      </select> </div> 
-                      <!-- 🟩 New container for layout --> 
-                       <div class="pie-wrapper"> 
-                        <canvas id="litterDistributionChart">
+                    <!-- 📊 LINE CHART -->
+                    <div class="imgdet-chart-card">
+                      <div class="imgdet-chart-header">
+                        <h4>Litter Type Trends</h4>
+                        <select id="litterTrendFilter" class="a-dropdown">
+                          <option value="day" selected>Daily</option>
+                          <option value="month">Monthly</option>
+                          <option value="year">Yearly</option>
+                        </select>
+                      </div>
 
-                        </canvas> 
-                      </div> 
+                      <div class="chart-container" style="position: relative; height: 300px;">
+                        <div id="litterTrendLoader" class="chart-loader">Loading data...</div>
+                        <canvas id="litterTrendChart" style="display:none;"></canvas>
+                      </div>
                     </div>
 
                     <!-- 🗺️ HEATMAP -->
@@ -387,157 +389,191 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
                         <em>LitterLens AI Model v1</em>
                       </p>
                     </div>
-
                   </div>
+                  <!-- ✅ End Right Column -->
 
-                  </div>
                 </div>
-                <!-- ✅ End of Real-Time Detection Tab -->
+                <!-- ✅ End of imgdet-realtime-dashboard -->
+              </div>
+              <!-- ✅ End of Real-Time Detection Tab -->
 
             </div>
             <!-- ✅ End of IMAGE TAB -->
 
-
             <!-- ==============================================                 
-                  ✅   ANALYTICS SECTION
+            ✅   ANALYTICS SECTION
             ============================================== -->
             <section id="analytics" class="tab-content">
-              <h2 class="a-title">Analytics Overview</h2>
 
-              <!-- KPI Cards -->
-              <div class="a-overview">
-                <div class="a-card">
-                  <h3>Total Detections</h3>
-                  <div class="a-value"><?= number_format($total_detections) ?></div>
-                </div>
-                <div class="a-card">
-                  <h3>Users</h3>
-                  <div class="a-value"><?= number_format($total_users_summary) ?></div>
-                </div>
-                <div class="a-card">
-                  <h3>Reports Today</h3>
-                  <div class="a-value"><?= number_format($reports_today_summary) ?></div>
-                </div>
-                <div class="a-card">
-                  <h3>Accuracy</h3>
-                  <div class="a-value"><?= number_format($accuracy_summary, 2) ?>%</div>
-                </div>
-              </div>
+                <h2 class="a-title">Analytics Overview</h2>
 
-              <!-- Charts Grid -->
-              <div class="a-grid">
-
-                <!-- 🥧 PIE CHART: Detections by Category -->
-                <div class="a-box">
-                  <h3>Detections by Category</h3>
-                  <div class="chart-container">
-                    <canvas id="pieChart"></canvas>
-                  </div>
-                </div>
-
-                <!-- 📍 GEO MAP: Pinpoint Locations -->
-                <div class="a-box">
-                  <h3>Geospatial Mapping</h3>
-                  <div id="a-map" style="width: 100%; height: 350px; border-radius: 10px;"></div>
-                  <p style="text-align: center; font-size: 13px; color: #555; margin-top: 5px;">
-                    Showing uploaded image coordinates
-                  </p>
-                </div>
-
-                <!-- 📈 LINE CHART: Litter Trends -->
-                <div class="a-box" style="grid-column: span 2;">
-                  <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3>Litter Trends</h3>
-                    <select id="trendFilterAnalytics" class="a-dropdown">
-
-                      <option value="day" selected>Daily</option>
-                      <option value="month" >Monthly</option>
-                      <option value="year">Yearly</option>
-                    </select>
-                  </div>
-
-                  <div class="chart-container" style="position: relative; height: 400px;">
-                    <div id="lineChartLoader" class="chart-loader">Loading data...</div>
-                    <canvas id="lineChart" style="display:none;"></canvas>
-                  </div>
-                </div>
-
-              </div>
-            </section>
-
-
-            <!-- ==============================================                 
-                          ✅   TEAM SECTION    
-                          ============================================== -->
-            <div id="users" class="tab-content">
-                <div class="user-header">
-                    <h2>The Team</h2>
-
-                    <div class="user-controls">
-                        <button class="add-member-btn" onclick="window.location.href='../php/index_register.php'">
-                            <i class="fa-solid fa-plus"></i> Add Member
-                        </button>
-
-                        <div class="search-wrapper">
-                            <input type="text" placeholder="Search users..." class="user-search">
-                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                        </div>
+                <!-- KPI Cards -->
+                <div class="a-overview">
+                    <div class="a-card">
+                        <h3>Total Detections</h3>
+                        <div class="a-value"><?= number_format($total_detections) ?></div>
+                    </div>
+                    <div class="a-card">
+                        <h3>Users</h3>
+                        <div class="a-value"><?= number_format($total_users_summary) ?></div>
+                    </div>
+                    <div class="a-card">
+                        <h3>Reports Today</h3>
+                        <div class="a-value"><?= number_format($reports_today_summary) ?></div>
+                    </div>
+                    <div class="a-card">
+                        <h3>Accuracy</h3>
+                        <div class="a-value"><?= number_format($accuracy_summary, 2) ?>%</div>
                     </div>
                 </div>
 
-                <div class="user-grid">
-                  <p id="no-results" style="text-align:center; margin-top:15px; display:none;">No matching users found.</p>
+                <!-- Charts Grid -->
+                <div class="a-grid">
 
-                  
-                  <?php if (!empty($admins_list)): ?>
-                    <?php foreach ($admins_list as $user): 
-                      $isCurrentAdmin = ($user['admin_id'] == $_SESSION['admin_id']);
-                    ?>
-                      <div class="user-card <?= $isCurrentAdmin ? 'disabled-admin' : '' ?>">
-                        <div class="user-menu">
-                          <button class="menu-btn" <?= $isCurrentAdmin ? 'disabled' : '' ?>>⋮</button>
-                          <div class="menu-options">
-                            <button <?= $isCurrentAdmin ? 'disabled' : '' ?>>View</button>
-                            <button <?= $isCurrentAdmin ? 'disabled' : '' ?>>Edit</button>
-                            <button class="danger" <?= $isCurrentAdmin ? 'disabled' : '' ?>>Delete</button>
-                          </div>
+                    <!-- 🥧 PIE CHART: Detections by Category -->
+                    <div class="a-box">
+                        <h3>Detections by Category</h3>
+                        <div class="chart-container">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 📍 GEO MAP: Pinpoint Locations -->
+                    <div class="a-box">
+                        <h3>Geospatial Mapping</h3>
+                        <div id="a-map" style="width: 100%; height: 350px; border-radius: 10px;"></div>
+                        <p style="text-align: center; font-size: 13px; color: #555; margin-top: 5px;">
+                            Showing uploaded image coordinates
+                        </p>
+                    </div>
+
+                    <!-- 📈 LINE CHART: Litter Trends -->
+                    <div class="a-box" style="grid-column: span 2;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3>Litter Trends</h3>
+                            <select id="trendFilterAnalytics" class="a-dropdown">
+                                <option value="day" selected>Daily</option>
+                                <option value="month">Monthly</option>
+                                <option value="year">Yearly</option>
+                            </select>
                         </div>
 
-                        <img src="<?= htmlspecialchars($user['profile_pic']) ?>" alt="User Avatar" class="user-avatar">
+                        <div class="chart-container" style="position: relative; height: 400px;">
+                            <div id="lineChartLoader" class="chart-loader">Loading data...</div>
+                            <canvas id="lineChart" style="display:none;"></canvas>
+                        </div>
+                    </div>
 
-                        <h3><?= htmlspecialchars($user['name']) ?></h3>
-                        <p><?= htmlspecialchars($user['email']) ?></p>
-                        <span class="role"><?= htmlspecialchars($user['role']) ?></span>
+                </div>
+            </section>
 
-                        <div class="user-contact">
-                          <button class="contact-btn email-btn" 
-                            onclick="<?= $isCurrentAdmin ? 'return false;' : "window.location='mailto:" . htmlspecialchars($user['email']) . "'" ?>" 
-                            <?= $isCurrentAdmin ? 'disabled' : '' ?>>
-                            <i class="fa-solid fa-envelope"></i> Email
+            <!-- ==============================================                 
+                        TEAM SECTION    
+                        ============================================== -->
+            <div id="users" class="tab-content">
+
+              <div class="user-header">
+                <h2>The Team</h2>
+
+                <div class="user-controls">
+                  <button class="add-member-btn" onclick="window.location.href='../php/index_register.php'">
+                    <i class="fa-solid fa-plus"></i> Add Member
+                  </button>
+
+                  <div class="search-wrapper">
+                    <input type="text" placeholder="Search users..." class="user-search">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="user-grid">
+                <p id="no-results" style="text-align:center; margin-top:15px; display:none;">
+                  No matching users found.
+                </p>
+
+                <?php if (!empty($admins_list)): ?>
+                  <?php foreach ($admins_list as $user): 
+                    $isCurrentAdmin = ($user['admin_id'] == $_SESSION['admin_id']);
+                    $isSuperAdmin = ($_SESSION['admin_id'] == 1 || strtolower($_SESSION['role']) === 'admin'); 
+                  ?>
+                    <div class="user-card <?= $isCurrentAdmin ? 'disabled-admin' : '' ?>">
+
+                      <!-- ⋮ Menu -->
+                      <div class="user-menu">
+                        <div class="tooltip-wrapper">
+                          <button class="menu-btn" <?= !$isSuperAdmin ? 'disabled' : '' ?>>⋮</button>
+                          <?php if (!$isSuperAdmin): ?>
+                            <span class="no-access-tooltip">No access</span>
+                          <?php endif; ?>
+                        </div>
+
+                        <div class="menu-options">
+                          <button class="btn-edit"
+                                  data-id="<?= $user['admin_id'] ?>"
+                                  data-name="<?= htmlspecialchars($user['name']) ?>"
+                                  data-email="<?= htmlspecialchars($user['email']) ?>"
+                                  data-role="<?= htmlspecialchars($user['role']) ?>"
+                                  <?= !$isSuperAdmin ? 'disabled' : '' ?>>
+                            Edit
                           </button>
-                          <button class="contact-btn call-btn" <?= $isCurrentAdmin ? 'disabled' : '' ?>>
+
+                          <button class="btn-delete danger"
+                                  data-id="<?= $user['admin_id'] ?>"
+                                  data-name="<?= htmlspecialchars($user['name']) ?>"
+                                  <?= (!$isSuperAdmin || $isCurrentAdmin) ? 'disabled' : '' ?>>
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Avatar + Info -->
+                      <img src="<?= htmlspecialchars($user['profile_pic']) ?>" 
+                          alt="User Avatar" 
+                          class="user-avatar">
+
+                      <h3><?= htmlspecialchars($user['name']) ?></h3>
+                      <p><?= htmlspecialchars($user['email']) ?></p>
+                      <span class="role"><?= htmlspecialchars($user['role']) ?></span>
+
+                      <!-- Email + Call buttons -->
+                      <div class="user-contact">
+                        <button class="contact-btn email-btn"
+                                data-email="<?= htmlspecialchars($user['email']) ?>"
+                                data-name="<?= htmlspecialchars($user['name']) ?>"
+                                <?= empty($user['email']) ? 'disabled' : '' ?>>
+                          <i class="fa-solid fa-envelope"></i> Email
+                        </button>
+
+                        <div class="tooltip-wrapper">
+                          <button class="contact-btn call-btn"
+                                  data-phone="<?= htmlspecialchars($user['contact_number'] ?? '') ?>"
+                                  <?= empty($user['contact_number']) ? 'disabled' : '' ?>>
                             <i class="fa-solid fa-phone"></i> Call
                           </button>
+                          <?php if (empty($user['contact_number'])): ?>
+                            <span class="no-access-tooltip">No contact number</span>
+                          <?php endif; ?>
                         </div>
-
-                        <?php if ($isCurrentAdmin): ?>
-                          <div class="self-label">You</div>
-                        <?php endif; ?>
                       </div>
-                    <?php endforeach; ?>
-                  <?php else: ?>
-                    <p style="text-align:center; width:100%; margin-top: 20px;">No users found.</p>
-                  <?php endif; ?>
-                </div>
 
+                      <?php if ($isCurrentAdmin): ?>
+                        <div class="self-label">You</div>
+                      <?php endif; ?>
+                    </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <p style="text-align:center; width:100%; margin-top: 20px;">
+                    No users found.
+                  </p>
+                <?php endif; ?>
+              </div>
 
             </div>
 
-
-
-            <!-- ==============================================                 
-                          ✅   LOGS SECTION    
-                          ============================================== -->
+            <!-- ==============================================
+                    ✅   LOGS SECTION
+                  ============================================== -->
             <div id="logs" class="tab-content">
                 <h2 class="l-title">Activity Logs</h2>
 
@@ -578,17 +614,21 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
                                 <button class="dropdown-btn" id="actionDropdown">
                                     All Actions <i class="fa-solid fa-chevron-down"></i>
                                 </button>
-                                <ul class="dropdown-menu" id="dropdownMenu">
-                                  <li data-value="all">All Actions</li>
-                                  <li data-value="added">Added</li>
-                                  <li data-value="updated">Updated</li>
-                                  <li data-value="deleted">Deleted</li>
-                                  <li data-value="login">Login</li>
-                                </ul>
+                               <ul class="dropdown-menu" id="dropdownMenu">
+                                <li data-value="all">All Actions</li>
+                                <li data-value="Added">Added</li>
+                                <li data-value="Updated">Updated</li>
+                                <li data-value="Deleted">Deleted</li>
+                                <li data-value="Login">Login</li>
+                              </ul>
                             </div>
                         </div>
 
-                        <button class="download-btn">Download Logs (.pdf)</button>
+                       <button class="download-btn" id="exportExcelBtn">
+                        <i class="fa-solid fa-file-excel"></i> Export to Excel
+                       </button>
+
+
                     </div>
 
                     <!-- 📋 LOGS TABLE -->
@@ -612,9 +652,9 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
                                         <td><?= htmlspecialchars(ucfirst($log['action'] ?? '-')) ?></td>
                                         <td><?= htmlspecialchars($log['affected_table'] ?? '-') ?></td>
                                         <td><?= htmlspecialchars($log['description'] ?? '-') ?></td>
-                                        <td class="status <?= strtolower($log['log_status']) === 'success' ? 'success' : 'fail' ?>">
+                                       <td class="log-status <?= strtolower($log['log_status']) === 'success' ? 'success' : 'fail' ?>">
                                             <?= htmlspecialchars($log['log_status'] ?? 'Success') ?>
-                                        </td>
+                                       </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
@@ -636,7 +676,6 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
                 </div>
             </div>
 
-    
             <!-- ==============================================                 
                           ✅ REAL-TIME DETECTION SECTION 
                         ============================================== -->
@@ -691,10 +730,11 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
                     <!-- Detection Status -->
                     <div class="detection-status">
                       <p>Time: <span class="time">0hr 0mins 0s</span></p>
-                      <div class="status idle">
-                        <i class="fa-solid fa-circle-notch"></i> Idle
+                      <div id="realtimeStatus" class="realtime-status idle">
+                        <i class="fa-solid fa-circle"></i> Idle
                       </div>
                     </div>
+
 
                     <!-- Footer -->
                     <p class="realtime-footer">
@@ -760,252 +800,359 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
               </div> <!-- End of Realtime Content -->
             </div> <!-- End of Realtime Section -->
 
-
-
             <!-- ==============================================                 
-                          ✅  SETTINGS SECTION 
-                          ============================================== -->
-          <div id="settings" class="tab-content">
-              <h2 class="s-title">Settings</h2>
-            
+            ✅ SETTINGS SECTION 
+            ============================================== -->
+            <div id="settings" class="tab-content">
 
-<div class="settings-card1">
-  <h3>Profile</h3>
+                <h2 class="s-title">Settings</h2>
 
-  <div class="profile-pic-container">
-    <img src="<?= htmlspecialchars($admin_profile['profile_pic']) ?>" alt="Profile Picture" class="profile-pic" />
-    <div class="overlay">
-      <i class="fa-solid fa-camera"></i>
-      <input type="file" id="upload" accept="image/*" style="opacity: 0;" />
-    </div>
-  </div>
+                <!-- =====================
+                    PROFILE SECTION
+                ====================== -->
+                <div class="settings-card1">
+                    <h3>Profile</h3>
 
-  <!-- Crop Modal -->
-  <div id="cropModal" class="modal">
-    <div class="modal-content">
-      <h3>Adjust your photo</h3>
-      <div class="crop-container">
-        <img id="cropImage" style="max-width: 100%; display: block;" />
-      </div>
-      <div class="modal-actions">
-        <button id="cancelCrop">Cancel</button>
-        <button id="confirmCrop">Confirm Crop</button>
-      </div>
-    </div>
-  </div>
+                    <!-- Profile Image -->
+                    <div class="profile-pic-container">
+                        <img src="<?= htmlspecialchars($admin_profile['profile_pic']) ?>" alt="Profile Picture" class="profile-pic" />
+                        <div class="overlay">
+                            <i class="fa-solid fa-camera"></i>
+                            <input type="file" id="upload" accept="image/*" style="opacity: 0;" />
+                        </div>
+                    </div>
 
-  <div class="detail-columns">
-    <div class="details1">
-      <div class="dt-group">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" value="<?= htmlspecialchars($admin_profile['name']) ?>" />
-      </div>
+                    <!-- Crop Modal -->
+                    <div id="cropModal" class="modal">
+                        <div class="modal-content">
+                            <h3>Adjust your photo</h3>
+                            <div class="crop-container">
+                                <img id="cropImage" style="max-width: 100%; display: block;" />
+                            </div>
+                            <div class="modal-actions">
+                                <button id="cancelCrop">Cancel</button>
+                                <button id="confirmCrop">Confirm Crop</button>
+                            </div>
+                        </div>
+                    </div>
 
-      <div class="dt-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" value="<?= htmlspecialchars($admin_profile['email']) ?>" />
-      </div>
+                    <!-- Profile Fields -->
+                    <div class="detail-columns">
+                        <div class="details1">
+                            <div class="dt-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" value="<?= htmlspecialchars($admin_profile['name']) ?>" />
+                            </div>
 
-      <div class="dt-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" value="" />
-      </div>
-    </div>
+                            <div class="dt-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" value="<?= htmlspecialchars($admin_profile['email']) ?>" />
+                            </div>
 
-    <div class="details2">
-      <div class="dt-group">
-        <label for="contact_number">Contact Number</label>
-        <input type="text" id="contact_number" value="<?= htmlspecialchars($admin_profile['contact_number'] ?? '') ?>" />
-        <p class="contact-description">
-          <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
-          Please add your contact number for administrative verification and important updates.
-        </p>
-      </div>
+                            <div class="dt-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" value="" />
+                            </div>
+                        </div>
 
-      <div class="dt-group">
-        <label for="role">Role</label>
-        <input type="text" id="role" value="<?= htmlspecialchars($admin_profile['role']) ?>" />
-      </div>
+                        <div class="details2">
+                            <div class="dt-group">
+                                <label for="contact_number">Contact Number</label>
+                                <input type="text" id="contact_number" value="<?= htmlspecialchars($admin_profile['contact_number'] ?? '') ?>" />
+                                <p class="contact-description">
+                                    <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
+                                    Please add your contact number for administrative verification and important updates.
+                                </p>
+                            </div>
 
-      <div class="dt-group">
-        <label for="conpassword">Confirm Password</label>
-        <input type="password" id="conpassword" value="" />
-      </div>
-    </div>
-  </div>
+                            <?php
+                                $is_super_admin = ($_SESSION['admin_id'] == 1 || strtolower($_SESSION['role']) === 'admin');
+                                $disabled_attr = $is_super_admin ? '' : 'disabled';
+                            ?>
 
-  <div class="settings-btn-container">
-    <button class="edit-profile-btn">Edit Profile</button>
-    <button class="cancel-profile-btn">Cancel</button>
-    <button class="settings-save-btn">Save Changes</button>
-  </div>
-</div>
+                            <div class="dt-group">
+                                <label for="role">Role</label>
+                                <input type="text" id="role" value="<?= htmlspecialchars($admin_profile['role']) ?>" <?= $disabled_attr ?> />
+                            </div>
+
+                            <div class="dt-group">
+                                <label for="conpassword">Confirm Password</label>
+                                <input type="password" id="conpassword" value="" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Buttons -->
+                    <div class="settings-btn-container">
+                        <button class="edit-profile-btn">Edit Profile</button>
+                        <button class="cancel-profile-btn">Cancel</button>
+                        <button class="settings-save-btn">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- =====================
+                    MODEL MANAGEMENT
+                ====================== -->
+                <div class="settings-card2">
+                    <h3>Model Management</h3>
+
+                    <!-- Active Model -->
+                    <div class="model-section">
+                        <label class="section-title">Active Model</label>
+                        <input type="text" id="activeModel" class="model-input" placeholder="e.g. LitterLens_CNN v1" />
+                        <p class="field-description">Select which model should be used for detection.</p>
+                    </div>
+
+                    <!-- Upload Model -->
+                    <div class="model-section upload-model-section">
+                        <label class="section-title">Upload New Model (.pt)</label>
+                        <div class="upload-inline">
+                            <input type="file" id="modelFile" accept=".pt" class="file-input" />
+                            <button id="uploadModelBtn" class="model-upload-btn">Upload Model</button>
+                        </div>
+                        <p class="field-description">Upload a new trained model file.</p>
+                    </div>
+
+                    <!-- Models Table -->
+                    <div class="table-container">
+                        <table class="model-table" id="modelTable">
+                            <thead>
+                                <tr>
+                                    <th>Model Name</th>
+                                    <th>Version</th>
+                                    <th>Accuracy</th>
+                                    <th>Uploaded on</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="settings-btn-container">
+                        <button id="editModelBtn" class="model-edit-btn">Edit</button>
+                        <button id="saveModelBtn" class="model-save-btn">Save</button>
+                        <button id="cancelModelBtn" class="model-cancel-btn">Cancel</button>
+                    </div>
+                </div>
+
+            </div>
 
 
-
-
-
-
-
-
-
-
-
-              <div class="settings-card2">
-                  <h3> Model Management </h3>
-                  <div class="model-section">
-                      <label class="section-title">Active Model</label>
-                      <input type="text" class="model-input" placeholder="">
-                      <p class="field-description">Select which model should be used for the detection</p>
-                  </div>
-
-
-
-
-
-
-
-
-
-                  <div class="model-section">
-                      <label class="section-title">Upload New Model (.pt)</label>
-                      <input type="file" class="file-input">
-                      <p class="field-description">Upload a new trained model file</p>
-                  </div>
-                  <h3> Model Version Control </h3>
-                  <div class="table-container">
-                      <table class="model-table">
-                          <thead>
-                              <tr>
-                                  <th>Model Name</th>
-                                  <th>Version</th>
-                                  <th>Accuracy</th>
-                                  <th>Uploaded on</th>
-                                  <th>Status</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                                  <td>LitterLens_CNN</td>
-                                  <td>v1</td>
-                                  <td>98%</td>
-                                  <td>August 2025</td>
-                                  <td class="status active">Active</td>
-                              </tr>
-                              <tr>
-                                  <td>Las Vegas Mowdels</td>
-                                  <td>v2</td>
-                                  <td>69%</td>
-                                  <td>June 2025</td>
-                                  <td class="status inactive">Inactive</td>
-                              </tr>
-                          </tbody>
-                      </table>
-                  </div>
-                  <button class="model-save-btn">Save Changes</button>
+                                      
+            <!-- 📝 EDIT MEMBER MODAL -->
+            <div id="editMemberModal" class="modal-overlay" style="display:none;">
+              <div class="modal-content" style="text-align: left;">
+                <h3 style="text-align: center;">Edit Member</h3>
+                <label>Name</label>
+                <input type="text" id="editName" class="modal-input">
+                <label>Email</label>
+                <input type="email" id="editEmail" class="modal-input">
+                <label>Role</label>
+                <input type="text" id="editRole" class="modal-input">
+                <div class="modal-actions">
+                  <button id="saveEditBtn" class="btn-primary">Save Changes</button>
+                  <button id="cancelEditBtn" class="btn-secondary">Cancel</button>
+                </div>
               </div>
-          </div>
+            </div>
+
+            <!-- 🗑️ DELETE CONFIRMATION MODAL -->
+            <div id="deleteConfirmModal" class="modal-overlay" style="display:none;">
+              <div class="modal-content">
+                <h3>Delete Member</h3>
+                <p>Are you sure you want to delete <strong id="deleteName"></strong>?</p>
+                <div class="modal-actions">
+                  <button id="confirmDeleteBtn" class="btn-danger">Yes, Delete</button>
+                  <button id="cancelDeleteBtn" class="btn-secondary">Cancel</button>
+                </div>
+              </div>
+            </div>
 
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // ===============================
-        // 🎛️ ELEMENT SELECTION
-        // ===============================
-        const links = document.querySelectorAll(".tab-link");
-        const contents = document.querySelectorAll(".tab-content");
-        const settingsLink = document.querySelector(".a-menu a[href='#']"); // ⚙️ Settings link (bottom)
+            <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              // ===============================
+              // 🎛️ ELEMENT SELECTION
+              // ===============================
+              const links = document.querySelectorAll(".tab-link");
+              const contents = document.querySelectorAll(".tab-content");
+              const settingsLink = document.querySelector(".a-menu a[href='#']");
+              const dashboard = document.getElementById("dashboard");
+              const imageDetection = document.getElementById("image-detection");
 
-        // ===============================
-        // 🏠 INITIAL LOAD
-        // ===============================
-        // Hide all sections, show Dashboard by default
-        contents.forEach(content => content.style.display = "none");
-        const dashboard = document.getElementById("dashboard");
-        if (dashboard) dashboard.style.display = "block";
+              // ===============================
+              // ⚙️ FUNCTION REGISTRY
+              // ===============================
+              const tabActions = {
+                dashboard: {
+                  onEnter: () => {
+                    console.log("📊 Dashboard initialized");
+                    if (window.initDashboard) window.initDashboard(); // Optional hook
+                  },
+                  onExit: () => console.log("📊 Dashboard stopped"),
+                },
+                realtime: {
+                  onEnter: () => {
+                    console.log("🎥 Starting Realtime Detection...");
+                    if (window.startRealtime) window.startRealtime();
+                  },
+                  onExit: () => {
+                    console.log("🛑 Stopping Realtime Detection...");
+                    if (window.stopRealtime) window.stopRealtime();
+                  },
+                },
+                "image-detection": {
+                  onEnter: () => {
+                    console.log("🖼️ Image & Detection initialized");
+                    if (window.initImageDetection) window.initImageDetection();
+                  },
+                  onExit: () => {
+                    console.log("🖼️ Image & Detection kept active (not stopped)");
+                    // intentionally not stopping
+                  },
+                },
+                analytics: {
+                  onEnter: () => console.log("📈 Analytics loaded"),
+                  onExit: () => console.log("📈 Analytics closed"),
+                },
+                settings: {
+                  onEnter: () => console.log("⚙️ Settings opened"),
+                  onExit: () => console.log("⚙️ Settings closed"),
+                },
+              };
 
-        // ===============================
-        // 🧭 SIDEBAR TAB HANDLING
-        // ===============================
-        links.forEach(link => {
-          link.addEventListener("click", () => {
-            // Remove all active classes
-            links.forEach(l => l.classList.remove("active"));
-            contents.forEach(c => c.style.display = "none");
+              // ===============================
+              // 🏠 INITIAL LOAD → DASHBOARD DEFAULT
+              // ===============================
+              contents.forEach(content => (content.style.display = "none"));
 
-            // Activate clicked link
-            link.classList.add("active");
+              if (dashboard) {
+                dashboard.style.display = "block"; // ✅ Show Dashboard first
+                if (tabActions.dashboard?.onEnter) tabActions.dashboard.onEnter();
+              }
 
-            // Show the matching tab content
-            const targetId = link.getAttribute("data-tab");
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) targetSection.style.display = "block";
-          });
-        });
+              let activeTab = "dashboard"; // ✅ Default active tab
 
-        // ===============================
-        // ⚙️ SETTINGS LINK HANDLING
-        // ===============================
-        if (settingsLink) {
-          settingsLink.addEventListener("click", e => {
-            e.preventDefault();
+              // ===============================
+              // 🧭 SIDEBAR TAB HANDLING
+              // ===============================
+              links.forEach(link => {
+                link.addEventListener("click", () => {
+                  const targetId = link.getAttribute("data-tab");
+                  if (targetId === activeTab) return; // avoid redundant reload
 
-            // Reset active states
-            links.forEach(l => l.classList.remove("active"));
-            contents.forEach(c => c.style.display = "none");
+                  // Run exit function of current tab
+                  if (tabActions[activeTab]?.onExit) tabActions[activeTab].onExit();
 
-            // Show settings page
-            const settingsSection = document.getElementById("settings");
-            if (settingsSection) settingsSection.style.display = "block";
-          });
-        }
-      });
+                  // Reset visuals
+                  links.forEach(l => l.classList.remove("active"));
+                  contents.forEach(c => (c.style.display = "none"));
 
-    </script>
+                  // Activate clicked tab
+                  link.classList.add("active");
+                  const targetSection = document.getElementById(targetId);
+                  if (targetSection) targetSection.style.display = "block";
 
-    
+                  // Run new tab’s onEnter
+                  if (tabActions[targetId]?.onEnter) tabActions[targetId].onEnter();
+
+                  activeTab = targetId;
+                });
+              });
+
+              // ===============================
+              // ⚙️ SETTINGS LINK HANDLING
+              // ===============================
+              if (settingsLink) {
+                settingsLink.addEventListener("click", e => {
+                  e.preventDefault();
+
+                  // Run exit of previous tab
+                  if (tabActions[activeTab]?.onExit) tabActions[activeTab].onExit();
+
+                  // Reset active visuals
+                  links.forEach(l => l.classList.remove("active"));
+                  contents.forEach(c => (c.style.display = "none"));
+
+                  // Show settings
+                  const settingsSection = document.getElementById("settings");
+                  if (settingsSection) settingsSection.style.display = "block";
+
+                  if (tabActions.settings?.onEnter) tabActions.settings.onEnter();
+                  activeTab = "settings";
+                });
+              }
+            });
+            </script>
+
+
         
-    <script>
-      const detections        = <?= $heatmap_json ?? '[]' ?>;
-      const trendLabels       = <?= $trend_labels ?? '[]' ?>;
-      const trendData         = <?= $trend_data_json ?? '[]' ?>;
-      const realtimePoints    = <?= json_encode($realtime_coords, JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE); ?>;
+            <script>
+              // ===============================
+              // 🧠 GLOBAL ADMIN SESSION DATA
+              // ===============================
+              window.currentAdminId   = <?= json_encode($_SESSION['admin_id'] ?? null) ?>;
+              window.currentAdminName = <?= json_encode($_SESSION['admin_name'] ?? 'Admin') ?>;
+              window.currentAdminRole = <?= json_encode($_SESSION['role'] ?? 'admin') ?>;
 
-      // 🧾 Activity Logs
-      const activityLogs      = <?= $logs_json ?>;
-      const actionsToday      = <?= $actions_today_json ?>;
-      const mostActiveAdmin   = <?= $most_active_admin_json ?>;
+              // ✅ Also sync with localStorage for external JS
+              if (window.currentAdminId) {
+                localStorage.setItem("admin_id", window.currentAdminId);
+                localStorage.setItem("admin_name", window.currentAdminName);
+                localStorage.setItem("role", window.currentAdminRole);
+                console.log(`🔐 Admin session synced: ${window.currentAdminName} (ID: ${window.currentAdminId})`);
+              } else {
+                console.warn("⚠️ No active admin session found.");
+              }
 
-      const litterLabels      = <?= json_encode(json_decode($litter_labels, true), JSON_UNESCAPED_UNICODE); ?>;
-      const litterValues      = <?= json_encode(json_decode($litter_data, true), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE); ?>;
+                
+              const detections        = <?= $heatmap_json ?? '[]' ?>;
+              const trendLabels       = <?= $trend_labels ?? '[]' ?>;
+              const trendData         = <?= $trend_data_json ?? '[]' ?>;
+              const realtimePoints    = <?= json_encode($realtime_coords, JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE); ?>;
 
-      const realtimeLabels    = <?= $realtime_labels ?>;
-      const realtimeValues    = <?= $realtime_data ?>;
+              // 🧾 Activity Logs
+              const activityLogs      = <?= $logs_json ?>;
+              const actionsToday      = <?= $actions_today_json ?>;
+              const mostActiveAdmin   = <?= $most_active_admin_json ?>;
 
-      const imageCoordinates = <?= $heatmap_json ?>; // From PHP
+              const litterLabels      = <?= json_encode(json_decode($litter_labels, true), JSON_UNESCAPED_UNICODE); ?>;
+              const litterValues      = <?= json_encode(json_decode($litter_data, true), JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE); ?>;
 
-      
-      // ✅ Use new names for the line chart data
-      const lineChartLabels = <?= $trend_labels ?? '[]' ?>;
-      const lineChartData = <?= $trend_data_json ?? '[]' ?>;
+              const realtimeLabels    = <?= $realtime_labels ?>;
+              const realtimeValues    = <?= $realtime_data ?>;
 
-      const ADMIN_ID = "<?= htmlspecialchars($admin_profile['admin_id']) ?>";
+              const imageCoordinates = <?= $heatmap_json ?>; // From PHP
+
+              
+              // ✅ Use new names for the line chart data
+              const lineChartLabels = <?= $trend_labels ?? '[]' ?>;
+              const lineChartData = <?= $trend_data_json ?? '[]' ?>;
+              // ✅ Single, correct definition
+              const ADMIN_ID = Number(<?= json_encode($_SESSION['admin_id'] ?? 0) ?>);
+              const ADMIN_ROLE = <?= json_encode(strtolower($_SESSION['role'] ?? '')); ?>;
 
 
-    </script>
+            </script>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    <script src="../js/admin_realtime.js"></script>
-    <script src="../js/admin_Dashboard.js"></script>
-    <script src="../js/admin_IMGandDet.js"></script>
-    <script src="../js/admin_analytics.js"></script>
-    <script src="../js/admin_Team.js"></script>
-    <script src="../js/admin_ActivityLogs.js"></script>
-    <script src="../js/admin_settings.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+            <script src="../js/admin_realtime.js"></script>
+            <script src="../js/admin_Dashboard.js"></script>
+            <script src="../js/admin_IMGandDet.js"></script>
+            <script src="../js/admin_analytics.js"></script>
+            <script src="../js/admin_Team.js"></script>
+            <script src="../js/admin_ActivityLogs.js"></script>
+            <script src="../js/admin_settings.js"></script>
     
-
+            <!-- 🌀 EXPORT LOADING OVERLAY -->
+            <div id="exportLoading">
+              <div class="export-spinner"></div>
+              <div class="export-message">Exporting logs... Please wait</div>
+            </div>
 
 </body>
 
