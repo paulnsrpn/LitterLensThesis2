@@ -1,28 +1,26 @@
 <?php
 // =========================================================
-// ✅ Fetch all model records from Supabase
+// 📦 FETCH MODELS (For Admin Panel)
 // =========================================================
 header('Content-Type: application/json');
 require_once __DIR__ . '/system_config.php';
 
-// Ensure getRecords() helper exists in your system_config.php
 try {
-    // Fetch from the correct Supabase table: public.models
-    $response = getRecords('models', 'order=uploaded_on.desc');
+    $models = getRecords('models', 'order=uploaded_on.desc');
 
-    if (!$response || isset($response['error'])) {
+    if (!$models || isset($models['error'])) {
         echo json_encode([
             'success' => false,
-            'error' => $response['error'] ?? 'No response from Supabase'
+            'error' => $models['error'] ?? 'Failed to fetch model data.'
         ]);
         exit;
     }
 
-    echo json_encode(['success' => true, 'data' => $response]);
+    echo json_encode(['success' => true, 'data' => $models]);
 } catch (Exception $e) {
     echo json_encode([
         'success' => false,
-        'error' => 'Server exception: ' . $e->getMessage()
+        'error' => 'Server error: ' . $e->getMessage()
     ]);
 }
 ?>

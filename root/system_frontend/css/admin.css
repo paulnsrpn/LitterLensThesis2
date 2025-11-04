@@ -2993,3 +2993,86 @@ input[type="file"] {
   background-color: #a8d5b8;
   cursor: not-allowed;
 }
+
+.active-row {
+  background-color: #dfffd8;
+  font-weight: 600;
+}
+
+button.set-active-btn {
+  background: #2d6a4f;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+button.delete-model-btn {
+  background: #b81c1c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.activate-btn,
+.delete-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.activate-btn {
+  background-color: #2d6a4f;
+  color: #fff;
+}
+.activate-btn:hover:not(:disabled) {
+  background-color: #1b4332;
+}
+
+.delete-btn {
+  background-color: #b81c1c;
+  color: #fff;
+}
+.delete-btn:hover:not(:disabled) {
+  background-color: #9a1515;
+}
+
+.activate-btn:disabled,
+.delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #aaa !important;
+  color: #eee !important;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.locked-section {
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
+}
+
+.locked-section::after {
+  content: "🔒 Restricted to Admin 1";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+}

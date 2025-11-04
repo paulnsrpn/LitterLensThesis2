@@ -5767,3 +5767,303 @@ Array
         )
 
 )
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 09998088382
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 01223224244
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 01223224244
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 01223224244
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 01223224244
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 01223224244
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 01223224244
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 01223224244
+        )
+
+)
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 2
+            [admin_name] => Emanuel
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$UrA5bB1iJy8PammehmctJ.Ys62mgOFnVehOdr7AFYHHgJHN9HCdvi
+            [role] => admin
+            [profile_pic] => admin_2_1762257461.png
+            [contact_number] => 09998088372
+        )
+
+    [1] => Array
+        (
+            [admin_id] => 1
+            [admin_name] => local admin
+            [email] => local@localhost
+            [password] => $2a$06$GeSHBNutLdKO.Tw5F.HNDu3pJbre04iYI66sFsnOCuJvMMx/4T6tG
+            [role] => admin
+            [profile_pic] => 
+            [contact_number] => 01223224244
+        )
+
+)

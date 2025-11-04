@@ -1,229 +1,74 @@
+# app.py
 # =====================================================
-# 🚀 LITTERLENS FLASK BACKEND — YOLOv8 Real-Time Detection (FINAL)
+# 🚀 LITTERLENS FLASK BACKEND — YOLOv8 Real-Time Detection (Ensemble Mode)
+# Features:
+# - Fetch active model records from Supabase (status='Active')
+# - Download missing model files into python/models/
+# - Load all available models (1..N) into memory (ensemble)
+# - /reload_model endpoint to refresh models (called by PHP after upload/activate/delete)
+# - /analyze, /admin_analyze, /redetect, /rerender, /live (MJPEG), /live_stats, /set_threshold, /reset_stats, /stop_camera, /check_camera, /cleanup, /reverse_geocode
+# - Thread-safe inference using locks
 # =====================================================
 
-from flask import Flask, request, jsonify, send_from_directory, make_response, Response
+from flask import Flask, request, jsonify, Response, send_from_directory, make_response
 from flask_cors import CORS
 from ultralytics import YOLO
-from datetime import datetime
 import os
+import requests
+import threading
+import time
+import json
 import shutil
 import cv2
-import json
-import io
-import time
-import threading
-from collections import deque
-import math
 import numpy as np
-import requests
+from collections import deque
+from datetime import datetime
 
-
-
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://localhost", "http://127.0.0.1:5000"]}})
-
-# =====================================================
-# 🧠 MODEL LOADING — DYNAMIC (from Supabase)
-# =====================================================
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-RUNS_DIR = os.path.join(SCRIPT_DIR, "runs")
+# ============ CONFIG ============
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.join(APP_DIR, "models")
+RUNS_DIR = os.path.join(APP_DIR, "runs")
+os.makedirs(MODELS_DIR, exist_ok=True)
 os.makedirs(RUNS_DIR, exist_ok=True)
 
-# 🔗 Supabase REST API credentials
-SUPABASE_URL = "https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/models"
+# Supabase REST + Storage settings (update if needed)
+SUPABASE_REST_MODELS = "https://ksbgdgqpdoxabdefjsin.supabase.co/rest/v1/models"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzYmdkZ3FwZG94YWJkZWZqc2luIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTAzMjUxOSwiZXhwIjoyMDc2NjA4NTE5fQ.WAai4nbsqgbe-7PgOw8bktVjk0V9Cm8sdEct_vlQCcY"
+SUPABASE_STORAGE_BASE = "https://ksbgdgqpdoxabdefjsin.supabase.co/storage/v1/object"
+SUPABASE_BUCKET = "model"
+PUBLIC_URL_PREFIX = f"{SUPABASE_STORAGE_BASE}/public/{SUPABASE_BUCKET}/"
 
-# =====================================================
-# 🧩 STEP 1: Fetch Model Paths from Supabase
-# =====================================================
-def fetch_model_paths():
-    headers = {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
-        "Content-Type": "application/json",
-    }
+# Detection defaults
+DETECTION_THRESHOLD = 0.10  # global, adjustable via /set_threshold
+TARGET_FPS = 30.0
 
-    try:
-        response = requests.get(f"{SUPABASE_URL}?select=model_name,bucket_url,status", headers=headers)
-        response.raise_for_status()
-        data = response.json()
+# ============ FLASK APP ============
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": ["http://localhost", "http://127.0.0.1:5000", "*"]}})
 
-        # Filter out inactive or invalid rows
-        active_models = [
-            m for m in data if m.get("status", "").lower() == "active" and m.get("bucket_url")
-        ]
+# ============ GLOBAL STATE ============
+# models_list: list of loaded ultralytics.YOLO objects
+models_list = []
+models_meta = []  # list of dicts {filename, model_name}
+models_lock = threading.Lock()  # protects models_list & models_meta
 
-        if not active_models:
-            print("⚠️ No active models found in Supabase.")
-            return []
+# Current single 'model' backward compatibility (first in list)
+def first_model():
+    return models_list[0] if len(models_list) else None
 
-        # Split multiple files stored in 'bucket_url' field
-        model_files = []
-        for m in active_models:
-            files = [f.strip() for f in m["bucket_url"].split(",") if f.strip()]
-            model_files.extend(files)
+# For live streaming and stats
+current_camera = None
+stream_running = False
+stream_lock = threading.Lock()
+detection_stats_lock = threading.Lock()
+recent_objects = deque(maxlen=200)
+class_totals = {}
+running_total_detections = 0
+running_accuracy_sum = 0.0
+frame_count = 0
+last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
 
-        # Convert each to absolute local path
-        model_paths = [os.path.join(SCRIPT_DIR, f) for f in model_files]
-        return model_paths
-
-    except Exception as e:
-        print(f"❌ Error fetching model data from Supabase: {e}")
-        return []
-
-
-# =====================================================
-# 🧩 STEP 2: Load Models
-# =====================================================
-print("\n🔍 Checking for models in Supabase...")
-MODEL_PATHS = fetch_model_paths()
-
-if not MODEL_PATHS:
-    print("⚠️ No valid models found in Supabase — using local fallback models.")
-    MODEL_PATHS = [
-        os.path.join(SCRIPT_DIR, "best.pt"),
-        os.path.join(SCRIPT_DIR, "last.pt"),
-        os.path.join(SCRIPT_DIR, "my_model.pt"),
-    ]
-
-print("\n📂 Model Paths Detected:")
-for p in MODEL_PATHS:
-    print(f"  - {p} {'✅ FOUND' if os.path.exists(p) else '❌ MISSING'}")
-
-# Filter existing models
-valid_models = [p for p in MODEL_PATHS if os.path.exists(p)]
-
-if not valid_models:
-    raise FileNotFoundError(f"❌ No YOLO model files found in: {MODEL_PATHS}")
-
-# Load all YOLO models individually
-models = [YOLO(p) for p in valid_models]
-print(f"✅ Loaded {len(models)} YOLO model(s) successfully.\n")
-
-# Keep a reference for backward compatibility
-model = models[0]
-
-
-# =====================================================
-# 🔮 ENSEMBLE INFERENCE FUNCTION (with optional basic NMS merge)
-# =====================================================
-def ensemble_predict(image, conf=0.10, iou_thresh=0.5):
-    """
-    Run detection on all models and combine results.
-    Returns an object with .boxes.xyxy (N x 4), .boxes.conf (N,), .boxes.cls (N,)
-    """
-    all_boxes, all_confs, all_classes = [], [], []
-
-    last_results = None
-    for m in models:
-        try:
-            results = m(image, conf=conf, verbose=False)[0]
-            last_results = results
-            # Convert to numpy safely
-            try:
-                boxes_np = results.boxes.xyxy.cpu().numpy()
-                confs_np = results.boxes.conf.cpu().numpy()
-                cls_np = results.boxes.cls.cpu().numpy()
-            except Exception:
-                # Fallback: cast directly (some versions)
-                boxes_np = np.array(results.boxes.xyxy)
-                confs_np = np.array(results.boxes.conf)
-                cls_np = np.array(results.boxes.cls)
-            if boxes_np.size:
-                all_boxes.append(boxes_np)
-                all_confs.append(confs_np)
-                all_classes.append(cls_np)
-        except Exception as e:
-            print(f"⚠️ Model inference error: {e}")
-
-    # Merge all results
-    if all_boxes:
-        all_boxes = np.concatenate(all_boxes, axis=0)
-        all_confs = np.concatenate(all_confs, axis=0)
-        all_classes = np.concatenate(all_classes, axis=0)
-    else:
-        all_boxes = np.empty((0, 4))
-        all_confs = np.empty((0,))
-        all_classes = np.empty((0,))
-
-    # Perform simple class-agnostic NMS to remove duplicates (optional, recommended)
-    # We'll use a basic NMS implementation
-    def simple_nms(boxes, scores, iou_threshold=0.5):
-        if boxes.shape[0] == 0:
-            return np.array([], dtype=int)
-        x1 = boxes[:, 0]
-        y1 = boxes[:, 1]
-        x2 = boxes[:, 2]
-        y2 = boxes[:, 3]
-        areas = (x2 - x1) * (y2 - y1)
-        order = scores.argsort()[::-1]
-        keep = []
-        while order.size > 0:
-            i = order[0]
-            keep.append(i)
-            xx1 = np.maximum(x1[i], x1[order[1:]])
-            yy1 = np.maximum(y1[i], y1[order[1:]])
-            xx2 = np.minimum(x2[i], x2[order[1:]])
-            yy2 = np.minimum(y2[i], y2[order[1:]])
-            w = np.maximum(0.0, xx2 - xx1)
-            h = np.maximum(0.0, yy2 - yy1)
-            inter = w * h
-            union = areas[i] + areas[order[1:]] - inter
-            iou = np.zeros_like(inter)
-            valid = union > 0
-            iou[valid] = inter[valid] / union[valid]
-            inds = np.where(iou <= iou_threshold)[0]
-            order = order[inds + 1]
-        return np.array(keep, dtype=int)
-
-    # You may want class-aware NMS; here we'll do class-aware by running NMS per class
-    kept_indices = []
-    if all_boxes.shape[0] > 0:
-        unique_classes = np.unique(all_classes)
-        for cls in unique_classes:
-            cls_mask = (all_classes == cls)
-            cls_boxes = all_boxes[cls_mask]
-            cls_scores = all_confs[cls_mask]
-            # map back to global indices
-            global_indices = np.where(cls_mask)[0]
-            keep_local = simple_nms(cls_boxes, cls_scores, iou_threshold=iou_thresh)
-            kept_indices.extend(global_indices[keep_local].tolist())
-
-        # sort kept indices by score desc
-        if kept_indices:
-            kept_indices = np.array(kept_indices)
-            order = all_confs[kept_indices].argsort()[::-1]
-            kept_indices = kept_indices[order]
-        else:
-            kept_indices = np.array([], dtype=int)
-
-        final_boxes = all_boxes[kept_indices]
-        final_confs = all_confs[kept_indices]
-        final_classes = all_classes[kept_indices]
-    else:
-        final_boxes = np.empty((0, 4))
-        final_confs = np.empty((0,))
-        final_classes = np.empty((0,))
-
-    # Create a minimal result object resembling Ultralytics' structure enough for downstream funcs
-    class BoxesObj:
-        def __init__(self, xyxy, conf, cls):
-            self.xyxy = xyxy
-            self.conf = conf
-            self.cls = cls
-
-    class CombinedResult:
-        def __init__(self, boxes_obj):
-            self.boxes = boxes_obj
-
-    boxes_obj = BoxesObj(final_boxes, final_confs, final_classes)
-    return CombinedResult(boxes_obj)
-
-
-# =====================================================
-# 🎨 CLASS COLOR MAP (BGR for OpenCV)
-# =====================================================
+# Colors for rendering (BGR)
 CLASS_COLORS = {
     "Biological Debris": (255, 0, 0),
     "Electronic Waste": (0, 165, 255),
@@ -238,88 +83,268 @@ CLASS_COLORS = {
     "Sanitary Waste": (204, 204, 255)
 }
 
-# =====================================================
-# 📈 LIVE DETECTION VARIABLES
-# =====================================================
-detection_threshold = 0.10
-recent_objects = deque(maxlen=200)
-object_lifetime = 2.0
-object_id_counter = 0
-last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
-running_total_detections = 0
-running_accuracy_sum = 0.0
-frame_count = 0
-class_totals = {}
-camera = None
-running = False
-lock = threading.Lock()
-
-# =====================================================
-# 🎥 CAMERA AVAILABILITY CHECK
-# =====================================================
-def open_camera_index(idx, width=1280, height=720, open_wait=0.5):
-    """Helper: open a cv2.VideoCapture safely and set size."""
-    cap = cv2.VideoCapture(int(idx))
-    time.sleep(open_wait)
-    if cap is None or not cap.isOpened():
-        try:
-            cap.release()
-        except:
-            pass
-        return None
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-    return cap
-
-# =====================================================
-# 🎯 /check_camera should also respect camera param
-# =====================================================
-@app.route('/check_camera')
-def check_camera():
+# ============ UTIL: Supabase model listing & download ============
+def supabase_get_active_models():
     """
-    Checks if a camera is connected and accessible.
-    Accepts ?camera=<index>
+    Calls Supabase REST endpoint for `models` table to get active rows.
+    Expected fields: model_name, model_filename, status
+    Returns list of dicts from Supabase.
     """
-    cam_param = request.args.get('camera', default='0')
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
     try:
-        camera_index = int(cam_param)
-        if camera_index < 0:
-            camera_index = 0
-    except:
-        camera_index = 0
-
-    try:
-        cap = cv2.VideoCapture(camera_index)
-        time.sleep(0.3)  # give it a moment
-        if not cap.isOpened():
-            cap.release()
-            print(f"❌ No camera detected at index {camera_index}.")
-            return jsonify({"detected": False}), 200
-
-        ret, frame = cap.read()
-        cap.release()
-        if not ret or frame is None:
-            print(f"⚠️ Camera {camera_index} opened but couldn't read a frame.")
-            return jsonify({"detected": False}), 200
-
-        print(f"✅ Camera {camera_index} detected and working.")
-        return jsonify({"detected": True}), 200
+        res = requests.get(f"{SUPABASE_REST_MODELS}?select=model_name,model_filename,status", headers=headers, timeout=15)
+        res.raise_for_status()
+        data = res.json()
+        # Filter active ones
+        active = [r for r in data if (r.get("status") or "").lower() == "active" and r.get("model_filename")]
+        return active
     except Exception as e:
-        print(f"❌ Camera check error for {camera_index}: {e}")
-        return jsonify({"detected": False}), 500
+        print(f"[Supabase] failed to fetch model rows: {e}")
+        return []
 
-# =====================================================
-# 🧮 HELPER FUNCTIONS
-# =====================================================
+
+def download_model_if_missing(filename):
+    """
+    Downloads filename from Supabase storage public path into MODELS_DIR if missing.
+    Returns local path or None on failure.
+    """
+    local_path = os.path.join(MODELS_DIR, filename)
+    if os.path.exists(local_path):
+        return local_path
+
+    public_url = f"{PUBLIC_URL_PREFIX}{filename}"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+    }
+    try:
+        print(f"[Download] Attempting to download {filename} from Supabase storage...")
+        r = requests.get(public_url, headers=headers, stream=True, timeout=60)
+        if r.status_code not in (200, 201):
+            print(f"[Download] Failed HTTP {r.status_code} for {filename}")
+            return None
+        with open(local_path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+        print(f"[Download] Saved {filename} -> {local_path}")
+        return local_path
+    except Exception as e:
+        print(f"[Download] error downloading {filename}: {e}")
+        if os.path.exists(local_path):
+            try:
+                os.remove(local_path)
+            except:
+                pass
+        return None
+
+# ============ MODEL LOADING / RELOAD ============
+def load_models_from_supabase():
+    """
+    Fetch active model rows, download missing model files, and load present .pt files into models_list.
+    This function replaces the global models_list with the new list (thread-safe).
+    Returns dict summary.
+    """
+    global models_list, models_meta
+    with models_lock:
+        print("[Models] Fetching active models list from Supabase...")
+        rows = supabase_get_active_models()
+        if not rows:
+            print("[Models] No active rows from Supabase — will fallback to local models dir files.")
+            # fallback: load any .pt file in MODELS_DIR
+            local_files = sorted([f for f in os.listdir(MODELS_DIR) if f.lower().endswith('.pt')])
+            if not local_files:
+                print("[Models] No local .pt files found in models dir.")
+                models_list = []
+                models_meta = []
+                return {"loaded": 0, "files": []}
+            rows = [{"model_name": os.path.splitext(f)[0], "model_filename": f, "status": "active"} for f in local_files]
+
+        loaded_models = []
+        loaded_meta = []
+        for r in rows:
+            filename = r.get("model_filename")
+            model_name = r.get("model_name") or os.path.splitext(filename)[0]
+            if not filename:
+                continue
+            local_path = os.path.join(MODELS_DIR, filename)
+            if not os.path.exists(local_path):
+                local_path = download_model_if_missing(filename)
+                if not local_path:
+                    print(f"[Models] Skipping {filename}: download failed or not found.")
+                    continue
+            # load model (YOLO)
+            try:
+                print(f"[Models] Loading model file: {local_path} ...")
+                m = YOLO(local_path)
+                loaded_models.append(m)
+                loaded_meta.append({"model_name": model_name, "filename": filename, "path": local_path})
+                print(f"[Models] Loaded: {filename}")
+            except Exception as e:
+                print(f"[Models] Error loading {local_path}: {e}")
+                # continue loading others
+
+        # If none loaded but there are fallback local files, try loading them
+        if not loaded_models:
+            print("[Models] No models loaded from Supabase rows — scanning local dir for .pt files.")
+            local_files = sorted([f for f in os.listdir(MODELS_DIR) if f.lower().endswith('.pt')])
+            for f in local_files:
+                p = os.path.join(MODELS_DIR, f)
+                try:
+                    print(f"[Models] Loading local fallback {p}")
+                    m = YOLO(p)
+                    loaded_models.append(m)
+                    loaded_meta.append({"model_name": os.path.splitext(f)[0], "filename": f, "path": p})
+                except Exception as e:
+                    print(f"[Models] Failed to load fallback model {p}: {e}")
+
+        models_list = loaded_models
+        models_meta = loaded_meta
+        print(f"[Models] Total models loaded: {len(models_list)}")
+        return {"loaded": len(models_list), "meta": models_meta}
+
+# initial load
+print("[Startup] Loading models...")
+initial_info = load_models_from_supabase()
+print("[Startup] Models load info:", initial_info)
+
+# ============ HELPER: NMS & Ensemble Merging ============
+def simple_nms(boxes, scores, iou_threshold=0.5):
+    """
+    Basic NMS for numpy arrays (boxes Nx4, scores N).
+    Returns indices kept.
+    """
+    if boxes.shape[0] == 0:
+        return np.array([], dtype=int)
+    x1 = boxes[:, 0]
+    y1 = boxes[:, 1]
+    x2 = boxes[:, 2]
+    y2 = boxes[:, 3]
+    areas = (x2 - x1) * (y2 - y1)
+    order = scores.argsort()[::-1]
+    keep = []
+    while order.size > 0:
+        i = order[0]
+        keep.append(i)
+        if order.size == 1:
+            break
+        xx1 = np.maximum(x1[i], x1[order[1:]])
+        yy1 = np.maximum(y1[i], y1[order[1:]])
+        xx2 = np.minimum(x2[i], x2[order[1:]])
+        yy2 = np.minimum(y2[i], y2[order[1:]])
+        w = np.maximum(0.0, xx2 - xx1)
+        h = np.maximum(0.0, yy2 - yy1)
+        inter = w * h
+        union = areas[i] + areas[order[1:]] - inter
+        valid = union > 0
+        iou = np.zeros_like(inter)
+        iou[valid] = inter[valid] / union[valid]
+        inds = np.where(iou <= iou_threshold)[0]
+        order = order[inds + 1]
+    return np.array(keep, dtype=int)
+
+def ensemble_predict(image, conf=0.10, iou_thresh=0.5):
+    """
+    Run inference on all loaded models and merge predictions using class-aware NMS.
+    Accepts an OpenCV image path or numpy array or filepath (YOLO supports both).
+    Returns CombinedResult-like object with .boxes.xyxy, .boxes.conf, .boxes.cls arrays.
+    """
+    # gather boxes, confs, classes
+    all_boxes = []
+    all_confs = []
+    all_classes = []
+
+    with models_lock:
+        if not models_list:
+            # No models loaded
+            return None
+        models_copy = list(models_list)
+
+    for m in models_copy:
+        try:
+            results = m(image, conf=conf, verbose=False)[0]
+            # safe conversions
+            try:
+                boxes_np = results.boxes.xyxy.cpu().numpy()
+                confs_np = results.boxes.conf.cpu().numpy()
+                cls_np = results.boxes.cls.cpu().numpy()
+            except Exception:
+                boxes_np = np.array(results.boxes.xyxy)
+                confs_np = np.array(results.boxes.conf)
+                cls_np = np.array(results.boxes.cls)
+            if boxes_np.size:
+                all_boxes.append(boxes_np)
+                all_confs.append(confs_np)
+                all_classes.append(cls_np)
+        except Exception as e:
+            print(f"[Ensemble] model inference error: {e}")
+            continue
+
+    if all_boxes:
+        all_boxes = np.concatenate(all_boxes, axis=0)
+        all_confs = np.concatenate(all_confs, axis=0)
+        all_classes = np.concatenate(all_classes, axis=0)
+    else:
+        all_boxes = np.empty((0, 4))
+        all_confs = np.empty((0,))
+        all_classes = np.empty((0,))
+
+    # class-aware NMS
+    final_indices = []
+    if all_boxes.shape[0] > 0:
+        unique_classes = np.unique(all_classes)
+        for cls in unique_classes:
+            cls_mask = (all_classes == cls)
+            cls_boxes = all_boxes[cls_mask]
+            cls_scores = all_confs[cls_mask]
+            global_idx = np.where(cls_mask)[0]
+            keep_local = simple_nms(cls_boxes, cls_scores, iou_threshold=iou_thresh)
+            final_indices.extend(global_idx[keep_local].tolist())
+        if final_indices:
+            final_indices = np.array(final_indices)
+            # sort by score desc
+            order = all_confs[final_indices].argsort()[::-1]
+            final_indices = final_indices[order]
+        else:
+            final_indices = np.array([], dtype=int)
+
+        final_boxes = all_boxes[final_indices]
+        final_confs = all_confs[final_indices]
+        final_classes = all_classes[final_indices]
+    else:
+        final_boxes = np.empty((0, 4))
+        final_confs = np.empty((0,))
+        final_classes = np.empty((0,))
+
+    # Create minimal object matching ultralytics' result interface used in _serialize_dets
+    class BoxesObj:
+        def __init__(self, xyxy, conf, cls):
+            self.xyxy = xyxy
+            self.conf = conf
+            self.cls = cls
+
+    class CombinedResult:
+        def __init__(self, boxes_obj):
+            self.boxes = boxes_obj
+
+    boxes_obj = BoxesObj(final_boxes, final_confs, final_classes)
+    return CombinedResult(boxes_obj)
+
+# ============ SERIALIZE helpers ============
 def _serialize_dets(results):
     """
-    Robust serializer: works with Ultralytics result or our CombinedResult.
-    Returns list of dicts: {"x1","y1","x2","y2","conf","cls"}
+    Works for Ultralytics result or our CombinedResult: returns list of dicts.
     """
     dets = []
     try:
+        if results is None:
+            return dets
         boxes = results.boxes
-        # boxes.xyxy might be numpy array or torch tensor
         xy = boxes.xyxy
         try:
             arr = xy.cpu().numpy()
@@ -333,211 +358,256 @@ def _serialize_dets(results):
             classes = boxes.cls.cpu().numpy()
         except Exception:
             classes = np.array(boxes.cls)
-
         for i in range(len(arr)):
-            x1, y1, x2, y2 = map(float, arr[i].tolist() if hasattr(arr[i], "tolist") else arr[i])
+            row = arr[i]
+            x1, y1, x2, y2 = map(float, row.tolist() if hasattr(row, "tolist") else row)
             conf = float(confs[i])
             cls_id = int(classes[i])
             dets.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "conf": conf, "cls": cls_id})
     except Exception as e:
-        # If anything fails, return empty list
-        print(f"⚠️ _serialize_dets error: {e}")
+        print(f"[Serialize] error: {e}")
     return dets
-
-def _summary_from_dets(dets):
-    summary = {}
-    for d in dets:
-        lbl = model.names[d["cls"]]
-        summary[lbl] = summary.get(lbl, 0) + 1
-    return summary, sum(summary.values())
 
 def calculate_image_accuracy(dets):
     if not dets:
         return 0.0
     return round(sum(d['conf'] for d in dets) / len(dets) * 100, 2)
 
+def _summary_from_dets(dets):
+    summary = {}
+    # need mapping model->names; we use first_model().names if present
+    base_model = first_model()
+    if not base_model:
+        return {}, 0
+    names = getattr(base_model, "names", None) or {}
+    for d in dets:
+        label = names.get(d["cls"], str(d["cls"]))
+        summary[label] = summary.get(label, 0) + 1
+    return summary, sum(summary.values())
+
+# ============ STATS / DEDUP LOGIC ============
 def iou(box1, box2):
-    """Compute Intersection-over-Union between two boxes."""
     x1, y1, x2, y2 = box1
     x1b, y1b, x2b, y2b = box2
-
     inter_x1 = max(x1, x1b)
     inter_y1 = max(y1, y1b)
     inter_x2 = min(x2, x2b)
     inter_y2 = min(y2, y2b)
     inter_area = max(0, inter_x2 - inter_x1) * max(0, inter_y2 - inter_y1)
-
-    area1 = (x2 - x1) * (y2 - y1)
-    area2 = (x2b - x1b) * (y2b - y1b)
+    area1 = max(0, (x2 - x1)) * max(0, (y2 - y1))
+    area2 = max(0, (x2b - x1b)) * max(0, (y2b - y1b))
     union = area1 + area2 - inter_area
-
-    if union == 0:
-        return 0
+    if union <= 0:
+        return 0.0
     return inter_area / union
 
-# =====================================================
-# 📊 UPDATE SUMMARY (Non-Duplicating Counting)
-# =====================================================
 def update_summary(dets, speed):
-    global last_summary, running_total_detections, running_accuracy_sum, frame_count, class_totals, recent_objects, object_id_counter
-
-    current_time = time.time()
-    frame_count += 1
-    acc = calculate_image_accuracy(dets)
-
-    # Remove old detections (expired)
-    while recent_objects and current_time - recent_objects[0]['time'] > object_lifetime:
-        recent_objects.popleft()
-
-    new_detections = 0
-
-    # Process current detections
-    for d in dets:
-        label = model.names[d["cls"]]
-        box = (d["x1"], d["y1"], d["x2"], d["y2"])
-        matched = False
-
-        # Check for match with existing object memory
-        for obj in list(recent_objects):
-            if obj['label'] == label and iou(obj['box'], box) > 0.6:
-                # same litter item → just update timestamp, not new
-                obj['box'] = box  # update position
-                obj['time'] = current_time
-                matched = True
-                break
-
-        if not matched:
-            # New litter item (not overlapping with recent ones)
-            object_id_counter += 1
-            recent_objects.append({
-                'id': object_id_counter,
-                'label': label,
-                'box': box,
-                'time': current_time
-            })
-            class_totals[label] = class_totals.get(label, 0) + 1
-            new_detections += 1
-
-    running_total_detections += new_detections
-    running_accuracy_sum += acc
-
-    avg_acc = (running_accuracy_sum / frame_count) if frame_count > 0 else 0.0
-
-    # Update summary for /live_stats
-    last_summary = {
-        "total": running_total_detections,
-        "accuracy": round(avg_acc, 2),
-        "speed": round(speed, 2),
-        "classes": dict(sorted(class_totals.items(), key=lambda x: x[1], reverse=True))
-    }
-
-# =====================================================
-# 🎥 CAMERA STREAM GENERATOR (accepts camera_index)
-# =====================================================
-def generate_frames(camera_index=0):
     """
-    Yield MJPEG frames from the specified camera index.
-    camera_index: int
+    Update running stats while preventing immediate duplicates using spatial + label matching.
     """
-    global camera, running
-    print(f"🎬 Starting camera stream on device {camera_index}...")
-    try:
-        camera = cv2.VideoCapture(int(camera_index))
-    except Exception as e:
-        print("❌ Error opening camera:", e)
-        running = False
-        yield b''
-        return
+    global recent_objects, class_totals, running_total_detections, running_accuracy_sum, frame_count, last_summary
+    with detection_stats_lock:
+        frame_count += 1
+        acc = calculate_image_accuracy(dets)
+        now = time.time()
+        # expire old objects older than 5s
+        exp = 5.0
+        while recent_objects and now - recent_objects[0]['time'] > exp:
+            recent_objects.popleft()
 
-    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-
-    if not camera.isOpened():
-        print(f"❌ Failed to open camera {camera_index}.")
-        running = False
-        if camera is not None:
-            camera.release()
-            camera = None
-        yield b''
-        return
-
-    print(f"✅ Camera {camera_index} opened.")
-    running = True
-
-    while running:
-        ret, frame = camera.read()
-        if not ret or frame is None:
-            print("⚠️ Failed to read frame. Exiting stream loop.")
-            break
-
-        start_time = time.time()
-        try:
-            results = ensemble_predict(frame, conf=detection_threshold)
-            dets = _serialize_dets(results)
-        except Exception as e:
-            print("⚠️ Model detection error:", e)
-            dets = []
-
-        # Update stats and draw boxes
-        speed = time.time() - start_time
-        update_summary(dets, speed)
+        new_detects = 0
+        base_model = first_model()
+        names = getattr(base_model, "names", {}) if base_model else {}
 
         for d in dets:
+            label = names.get(d["cls"], str(d["cls"]))
+            box = (d["x1"], d["y1"], d["x2"], d["y2"])
+            conf = d["conf"]
+            matched = False
+            best_i = None
+            best_iou = 0.0
+            # match existing
+            for i, obj in enumerate(list(recent_objects)):
+                if obj['label'] == label:
+                    score = iou(obj['box'], box)
+                    if score > 0.35 and score > best_iou:
+                        best_iou = score
+                        best_i = i
+            if best_i is not None:
+                # update object
+                recent_objects[best_i]['box'] = box
+                recent_objects[best_i]['time'] = now
+                recent_objects[best_i]['conf'] = conf
+            else:
+                # new
+                recent_objects.append({'id': int(now*1000), 'label': label, 'box': box, 'time': now, 'conf': conf})
+                class_totals[label] = class_totals.get(label, 0) + 1
+                new_detects += 1
+
+        running_total_detections += new_detects
+        running_accuracy_sum += acc
+        avg_acc = (running_accuracy_sum / frame_count) if frame_count > 0 else 0.0
+        last_summary = {
+            "total": running_total_detections,
+            "accuracy": round(avg_acc, 2),
+            "speed": round(speed, 3),
+            "classes": dict(sorted(class_totals.items(), key=lambda x: x[1], reverse=True))
+        }
+
+# ============ CAMERA STREAM ============
+def open_camera(index=0, width=640, height=360):
+    try:
+        cap = cv2.VideoCapture(int(index), cv2.CAP_DSHOW)  # Windows; falls back on others
+    except Exception:
+        cap = cv2.VideoCapture(int(index))
+    time.sleep(0.2)
+    if not cap or not cap.isOpened():
+        try:
+            cap.release()
+        except:
+            pass
+        return None
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+    cap.set(cv2.CAP_PROP_FPS, TARGET_FPS)
+    return cap
+
+def generate_frames(camera_index=0):
+    global current_camera, stream_running
+    cap = open_camera(camera_index, width=640, height=360)
+    if cap is None:
+        print(f"[Stream] Unable to open camera {camera_index}")
+        yield b''
+        return
+
+    current_camera = cap
+    stream_running = True
+    prev = time.time()
+    fps_counter = 0
+    fps_last = time.time()
+    fps = 0.0
+
+    while stream_running:
+        ret, frame = cap.read()
+        if not ret or frame is None:
+            print("[Stream] camera read failed")
+            break
+        # resize for speed
+        frame = cv2.resize(frame, (640, 360))
+        start = time.time()
+        # use ensemble_predict if multiple models loaded else single model
+        try:
+            with models_lock:
+                multi = len(models_list) > 1
+            if multi:
+                results = ensemble_predict(frame, conf=DETECTION_THRESHOLD)
+            else:
+                m = first_model()
+                if not m:
+                    results = None
+                else:
+                    res = m(frame, conf=DETECTION_THRESHOLD, verbose=False)[0]
+                    # wrap to same interface expected by _serialize_dets
+                    results = res
+            dets = _serialize_dets(results)
+        except Exception as e:
+            print("[Stream] detection error:", e)
+            dets = []
+
+        inference_time = time.time() - start
+        update_summary(dets, inference_time)
+
+        # draw boxes
+        overlay = frame.copy()
+        base_model = first_model()
+        names = getattr(base_model, "names", {}) if base_model else {}
+        for d in dets:
             x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
-            label = model.names[d["cls"]]
-            conf = int(d["conf"] * 100)
-            color = CLASS_COLORS.get(label, (255, 255, 255))
-            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
-            cv2.putText(frame, f"{label} {conf}%", (x1, max(0, y1 - 5)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+            label = names.get(d["cls"], str(d["cls"]))
+            conf = d["conf"]
+            color = CLASS_COLORS.get(label, (0, 255, 255))
+            cv2.rectangle(overlay, (x1, y1), (x2, y2), color, 2, cv2.LINE_AA)
+            text = f"{label} {conf*100:.1f}%"
+            (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_DUPLEX, 0.5, 1)
+            y_text = max(0, y1 - th - 6)
+            sub = overlay.copy()
+            cv2.rectangle(sub, (x1, y_text), (x1 + tw + 6, y1), color, -1)
+            cv2.addWeighted(sub, 0.7, overlay, 0.3, 0, overlay)
+            cv2.putText(overlay, text, (x1 + 3, y1 - 5), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+        frame_out = cv2.addWeighted(overlay, 1.0, frame, 0, 0)
 
-        _, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+        # fps calc
+        fps_counter += 1
+        now = time.time()
+        if now - fps_last >= 1.0:
+            fps = fps_counter / (now - fps_last)
+            fps_counter = 0
+            fps_last = now
+        cv2.putText(frame_out, f"FPS: {fps:.1f}", (10, 24), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2, cv2.LINE_AA)
+
+        _, buf = cv2.imencode('.jpg', frame_out, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
+        frame_bytes = buf.tobytes()
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        # pacing to target FPS approx
+        elapsed = time.time() - start
+        target = 1.0 / TARGET_FPS
+        if elapsed < target:
+            time.sleep(target - elapsed)
 
-        time.sleep(0.03)
+    # cleanup
+    try:
+        cap.release()
+    except:
+        pass
+    stream_running = False
+    current_camera = None
+    print("[Stream] camera closed")
 
-    print("🛑 Camera streaming stopped.")
-    if camera is not None:
-        camera.release()
-        camera = None
+# ============ ROUTES ============
 
-@app.route('/live')
-def live_detection():
-    """
-    Start MJPEG stream. Accepts ?camera=<index>
-    """
-    global running, running_total_detections, running_accuracy_sum, frame_count, class_totals, last_summary
+@app.route('/')
+def home():
+    return "✅ LitterLens Flask YOLO Ensemble API running."
 
-    # reset counters for a fresh stream
-    running_total_detections = 0
-    running_accuracy_sum = 0.0
-    frame_count = 0
-    class_totals = {}
-    last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
-
-    # parse camera param
+@app.route('/check_camera')
+def check_camera():
     cam_param = request.args.get('camera', default='0')
     try:
-        camera_index = int(cam_param)
-        if camera_index < 0:
-            camera_index = 0
+        cam_index = int(cam_param)
     except:
-        camera_index = 0
+        cam_index = 0
+    cap = open_camera(cam_index)
+    if not cap:
+        return jsonify({"detected": False}), 200
+    ret, frame = cap.read()
+    try:
+        cap.release()
+    except:
+        pass
+    # 🕒 Add small delay to allow driver release (Windows fix)
+    time.sleep(0.5)
+    return jsonify({"detected": bool(ret)}), 200
 
-    # if a stream is already running, stop it briefly so we can open new device
-    if running:
-        running = False
-        time.sleep(0.5)
-
-    print(f"🌍 /live called for camera {camera_index}")
-    return Response(generate_frames(camera_index), mimetype='multipart/x-mixed-replace; boundary=frame')
+@app.route('/live')
+def live():
+    cam = request.args.get('camera', default='0')
+    try:
+        cam_index = int(cam)
+    except:
+        cam_index = 0
+    # if stream running, stop so we can reopen properly
+    global stream_running
+    if stream_running:
+        stream_running = False
+        time.sleep(0.3)
+    return Response(generate_frames(cam_index), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/stop_camera')
 def stop_camera():
-    global running
-    running = False
-    return "Camera stopped", 200
+    global stream_running
+    stream_running = False
+    return "Stopped", 200
 
 @app.route('/live_stats')
 def live_stats():
@@ -545,483 +615,364 @@ def live_stats():
 
 @app.route('/reset_stats', methods=['POST'])
 def reset_stats():
-    global last_summary, running_total_detections, running_accuracy_sum, frame_count, class_totals
-    last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
-    running_total_detections = 0
-    running_accuracy_sum = 0.0
-    frame_count = 0
-    class_totals = {}
-    print("🔁 Stats reset successful")
-    return {"message": "Stats reset"}, 200
+    global last_summary, running_total_detections, running_accuracy_sum, frame_count, class_totals, recent_objects
+    with detection_stats_lock:
+        last_summary = {"total": 0, "accuracy": 0.0, "speed": 0.0, "classes": {}}
+        running_total_detections = 0
+        running_accuracy_sum = 0.0
+        frame_count = 0
+        class_totals = {}
+        recent_objects.clear()
+    return jsonify({"message": "Stats reset"}), 200
 
 @app.route('/set_threshold', methods=['POST'])
 def set_threshold():
-    global detection_threshold
-    data = request.get_json()
+    global DETECTION_THRESHOLD
+    data = request.get_json() or {}
     try:
-        val = float(data.get("threshold", 0.10))
-        detection_threshold = max(0.0, min(1.0, val))
-        print(f"🛠 Detection threshold set to: {detection_threshold}")
-        return {"message": "Threshold updated", "threshold": detection_threshold}, 200
+        val = float(data.get("threshold", DETECTION_THRESHOLD))
+        DETECTION_THRESHOLD = max(0.0, min(1.0, val))
+        return jsonify({"message": "Threshold set", "threshold": DETECTION_THRESHOLD}), 200
     except Exception as e:
-        return {"error": str(e)}, 400
+        return jsonify({"error": str(e)}), 400
 
-# =====================================================
-# 🧮 HELPER FUNCTIONS (opacity & render)
-# =====================================================
-def _parse_opacity(val, default=1.0):
-    try:
-        f = float(val)
-        return max(0.0, min(1.0, f / 100 if f > 1.0 else f))
-    except:
-        return default
-
-def _summary_from_dets(dets):
-    summary = {}
-    for d in dets:
-        lbl = model.names[d["cls"]]
-        summary[lbl] = summary.get(lbl, 0) + 1
-    return summary, sum(summary.values())
-
-def render_from_dets(orig_path, dets, output_path, mode="confidence", box_opacity=1.0):
-    """
-    Draws bounding boxes with visual cues and writes to output_path
-    """
-    img = cv2.imread(orig_path)
-    if img is None:
-        raise RuntimeError(f"Could not read image: {orig_path}")
-
-    overlay = img.copy()
-    thickness = 3
-
-    for d in dets:
-        x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
-        label_name = model.names[d["cls"]]
-        color = CLASS_COLORS.get(label_name, (255, 255, 255))
-        conf_pct = int(round(d["conf"] * 100))
-
-        sub_overlay = overlay.copy()
-
-        # Confidence-based transparency mapping
-        if conf_pct < 10:
-            alpha = 1.0
-        elif conf_pct < 20:
-            alpha = 0.9
-        elif conf_pct < 30:
-            alpha = 0.8
-        elif conf_pct < 40:
-            alpha = 0.7
-        elif conf_pct < 50:
-            alpha = 0.6
-        elif conf_pct < 60:
-            alpha = 0.5
-        elif conf_pct < 70:
-            alpha = 0.4
-        elif conf_pct < 80:
-            alpha = 0.3
-        elif conf_pct < 90:
-            alpha = 0.2
-        else:
-            alpha = 0.1
-
-        cv2.rectangle(sub_overlay, (x1, y1), (x2, y2), color, -1)
-        cv2.addWeighted(sub_overlay, alpha, overlay, 1 - alpha, 0, overlay)
-        cv2.rectangle(overlay, (x1, y1), (x2, y2), color, thickness)
-
-    img = cv2.addWeighted(overlay, box_opacity, img, 1 - box_opacity, 0)
-
-    for d in dets:
-        x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
-        conf_pct = int(round(d["conf"] * 100))
-        label_name = model.names[d["cls"]]
-        color = CLASS_COLORS.get(label_name, (255, 255, 255))
-
-        text = ""
-        if mode == "confidence":
-            text = f"{conf_pct}%"
-        elif mode == "labels":
-            text = f"{label_name} {conf_pct}%"
-
-        if text:
-            (tw, th), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
-            cv2.rectangle(img, (x1, max(0, y1 - th - 10)), (x1 + tw, y1), color, -1)
-            cv2.putText(img, text, (x1, max(0, y1 - 5)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-
-    cv2.imwrite(output_path, img)
-
-# =====================================================
-# 📦 FILE HANDLING ROUTES
-# =====================================================
-@app.route('/runs/<path:filename>')
-def serve_runs(filename):
-    response = make_response(send_from_directory(RUNS_DIR, filename))
-    response.headers.update({
-        "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "no-cache, no-store, must-revalidate"
-    })
-    return response
-
-@app.route('/')
-def home():
-    return "✅ Flask YOLO detection API is running."
-
-# =====================================================
-# 📸 DETECTION ROUTES — ANALYZE, REDETECT, RERENDER
-# =====================================================
 @app.route('/analyze', methods=['POST'])
-def analyze_image():
+def analyze():
+    """
+    Endpoint for general image analysis (public).
+    Accepts multipart files. Returns result JSON + saved images in runs/.
+    """
     try:
-        threshold = float(request.form.get('threshold', 0.10))
+        threshold = float(request.form.get('threshold', DETECTION_THRESHOLD))
         label_mode = request.form.get('label_mode', 'confidence')
-        opacity_raw = request.form.get('opacity', '1.00')
-        box_opacity = _parse_opacity(opacity_raw, default=1.0)
-
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        run_folder = os.path.join(RUNS_DIR, f"save_{timestamp}")
-        os.makedirs(run_folder, exist_ok=True)
-
-        detection_results = []
-        total_object_summary = {}
-
-        for idx, file_key in enumerate(request.files):
-            file = request.files[file_key]
-            if file.filename == '':
-                continue
-
-            orig_filename = f"{timestamp}_orig_{idx+1}.jpg"
-            result_filename = f"{timestamp}_result_{idx+1}.jpg"
-            dets_filename = f"{timestamp}_dets_{idx+1}.json"
-
-            orig_path = os.path.join(run_folder, orig_filename)
-            result_path = os.path.join(run_folder, result_filename)
-            dets_path = os.path.join(run_folder, dets_filename)
-
-            file.save(orig_path)
-            results = ensemble_predict(orig_path, conf=threshold)
-            dets = _serialize_dets(results)
-
-            with open(dets_path, "w") as f:
-                json.dump(dets, f)
-
-            render_from_dets(orig_path, dets, result_path, label_mode, box_opacity)
-            summary, total_items = _summary_from_dets(dets)
-            image_accuracy = calculate_image_accuracy(dets)
-
-            for k, v in summary.items():
-                total_object_summary[k] = total_object_summary.get(k, 0) + v
-
-            detection_results.append({
-                'original_image': f"runs/save_{timestamp}/{orig_filename}",
-                'result_image': f"runs/save_{timestamp}/{result_filename}",
-                'dets_json': f"runs/save_{timestamp}/{dets_filename}",
-                'summary': summary,
-                'total_items': total_items,
-                'accuracy': image_accuracy
-            })
-
-        mean_accuracy = round(sum([r['accuracy'] for r in detection_results]) / len(detection_results), 2) if detection_results else 0.0
-
-        return jsonify({
-            'message': '✅ Detection successful',
-            'results': detection_results,
-            'total_summary': total_object_summary,
-            'folder': f"save_{timestamp}",
-            'accuracy': mean_accuracy,
-            'label_mode': label_mode
-        })
-
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
-    
-@app.route('/admin_analyze', methods=['POST'])
-def admin_analyze():
-    file = request.files.get('file')
-    admin_id = request.form.get('admin_id', '1')  # default fallback
-    admin_name = request.form.get('admin_name', 'System')
-
-    print(f"🧠 Received upload: {file.filename if file else 'No file'}")
-    print(f"👤 Uploaded by Admin ID: {admin_id} ({admin_name})")
-
-    try:
-        threshold = float(request.form.get('threshold', 0.10))
-        label_mode = request.form.get('label_mode', 'confidence')
-        opacity_raw = request.form.get('opacity', '1.00')
-        box_opacity = _parse_opacity(opacity_raw, default=1.0)
+        opacity_val = request.form.get('opacity', '1.0')
+        box_opacity = float(opacity_val) if opacity_val else 1.0
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         run_folder = os.path.join(RUNS_DIR, f"admin_{timestamp}")
         os.makedirs(run_folder, exist_ok=True)
 
-        detection_results = []
-        total_object_summary = {}
+        results_out = []
+        total_summary = {}
 
-        for idx, file_key in enumerate(request.files):
-            file = request.files[file_key]
-            if file.filename == '':
+        # iterate files
+        for idx, key in enumerate(request.files):
+            f = request.files[key]
+            if not f or f.filename == '':
                 continue
+            orig_name = f"{timestamp}_orig_{idx+1}.jpg"
+            result_name = f"{timestamp}_result_{idx+1}.jpg"
+            dets_name = f"{timestamp}_dets_{idx+1}.json"
+            orig_path = os.path.join(run_folder, orig_name)
+            result_path = os.path.join(run_folder, result_name)
+            dets_path = os.path.join(run_folder, dets_name)
+            f.save(orig_path)
 
-            orig_filename = f"{timestamp}_orig_{idx+1}.jpg"
-            result_filename = f"{timestamp}_result_{idx+1}.jpg"
-            dets_filename = f"{timestamp}_dets_{idx+1}.json"
-
-            orig_path = os.path.join(run_folder, orig_filename)
-            result_path = os.path.join(run_folder, result_filename)
-            dets_path = os.path.join(run_folder, dets_filename)
-
-            file.save(orig_path)
-
-            # Run YOLO detection
-            results = ensemble_predict(orig_path, conf=threshold)
-            dets = _serialize_dets(results)
-
-            # Save detection JSON
-            with open(dets_path, "w") as f:
-                json.dump(dets, f)
-
-            # Render result image
-            render_from_dets(orig_path, dets, result_path, label_mode, box_opacity)
+            # Run detection using ensemble if multiple models loaded else single
+            with models_lock:
+                multi = len(models_list) > 1
+            if multi:
+                res = ensemble_predict(orig_path, conf=threshold)
+            else:
+                m = first_model()
+                if not m:
+                    res = None
+                else:
+                    res = m(orig_path, conf=threshold, verbose=False)[0]
+            dets = _serialize_dets(res)
+            with open(dets_path, "w") as fh:
+                json.dump(dets, fh)
+            # render visual
+            try:
+                render_from_dets(orig_path, dets, result_path, label_mode, float(box_opacity))
+            except Exception as e:
+                print("[Render] error:", e)
+                shutil.copy(orig_path, result_path)
             summary, total_items = _summary_from_dets(dets)
-            image_accuracy = calculate_image_accuracy(dets)
-
-            # Merge totals
             for k, v in summary.items():
-                total_object_summary[k] = total_object_summary.get(k, 0) + v
-
-            detection_results.append({
-                'original_image': f"runs/admin_{timestamp}/{orig_filename}",
-                'result_image': f"runs/admin_{timestamp}/{result_filename}",
-                'dets_json': f"runs/admin_{timestamp}/{dets_filename}",
-                'summary': summary,
-                'total_items': total_items,
-                'accuracy': image_accuracy
+                total_summary[k] = total_summary.get(k, 0) + v
+            results_out.append({
+                "original_image": f"runs/admin_{timestamp}/{orig_name}",
+                "result_image": f"runs/admin_{timestamp}/{result_name}",
+                "dets_json": f"runs/admin_{timestamp}/{dets_name}",
+                "summary": summary,
+                "total_items": total_items,
+                "accuracy": calculate_image_accuracy(dets)
             })
 
-        mean_accuracy = round(sum([r['accuracy'] for r in detection_results]) / len(detection_results), 2) if detection_results else 0.0
+        mean_acc = round(sum(r['accuracy'] for r in results_out) / len(results_out), 2) if results_out else 0.0
+        return jsonify({"message": "success", "results": results_out, "total_summary": total_summary, "folder": f"admin_{timestamp}", "accuracy": mean_acc}), 200
+    
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
 
-        # ✅ Updated — store admin_id (integer FK) instead of name
-        image_record = {
-            "imagefile_name": result_filename,
-            "uploaded_by": int(admin_id),  # Now FK → admin table
-            "latitude": 0.0,
-            "longitude": 0.0
-        }
+@app.route('/admin_analyze', methods=['POST'])
+def admin_analyze():
+    """
+    Similar to /analyze but returns redirect link for admin results page.
+    """
+    try:
+        admin_id = request.form.get('admin_id', '1')
+        admin_name = request.form.get('admin_name', 'Admin')
+        threshold = float(request.form.get('threshold', DETECTION_THRESHOLD))
+        label_mode = request.form.get('label_mode', 'confidence')
+        box_opacity = float(request.form.get('opacity', '1.0'))
 
-        result_data = {
-            'message': '✅ Admin detection successful',
-            'results': detection_results,
-            'total_summary': total_object_summary,
-            'folder': f"admin_{timestamp}",
-            'accuracy': mean_accuracy,
-            'label_mode': label_mode,
-            'uploaded_by': admin_id,   # FK stored
-            'admin_name': admin_name   # For logs / display only
-        }
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        run_folder = os.path.join(RUNS_DIR, f"admin_{timestamp}")
+        os.makedirs(run_folder, exist_ok=True)
 
-        result_path = os.path.join(run_folder, "result_data.json")
-        with open(result_path, "w") as f:
-            json.dump(result_data, f, indent=2)
+        results_out = []
+        total_summary = {}
 
-        return jsonify({
-            'status': 'success',
-            'redirect': f"http://localhost/LitterLensThesis2/root/system_frontend/php/index_result.php?folder=admin_{timestamp}",
-            'data': result_data
-        })
+        for idx, key in enumerate(request.files):
+            f = request.files[key]
+            if not f or f.filename == '':
+                continue
+            orig_name = f"{timestamp}_orig_{idx+1}.jpg"
+            result_name = f"{timestamp}_result_{idx+1}.jpg"
+            dets_name = f"{timestamp}_dets_{idx+1}.json"
+            orig_path = os.path.join(run_folder, orig_name)
+            result_path = os.path.join(run_folder, result_name)
+            dets_path = os.path.join(run_folder, dets_name)
+            f.save(orig_path)
+
+            with models_lock:
+                multi = len(models_list) > 1
+            if multi:
+                res = ensemble_predict(orig_path, conf=threshold)
+            else:
+                m = first_model()
+                if not m:
+                    res = None
+                else:
+                    res = m(orig_path, conf=threshold, verbose=False)[0]
+            dets = _serialize_dets(res)
+            with open(dets_path, "w") as fh:
+                json.dump(dets, fh)
+            try:
+                render_from_dets(orig_path, dets, result_path, label_mode, float(box_opacity))
+            except Exception as e:
+                print("[Render] admin error:", e)
+                shutil.copy(orig_path, result_path)
+            summary, total_items = _summary_from_dets(dets)
+            for k, v in summary.items():
+                total_summary[k] = total_summary.get(k, 0) + v
+            results_out.append({
+                "original_image": f"runs/admin_{timestamp}/{orig_name}",
+                "result_image": f"runs/admin_{timestamp}/{result_name}",
+                "dets_json": f"runs/admin_{timestamp}/{dets_name}",
+                "summary": summary,
+                "total_items": total_items,
+                "accuracy": calculate_image_accuracy(dets)
+            })
+
+        mean_acc = round(sum(r['accuracy'] for r in results_out) / len(results_out), 2) if results_out else 0.0
+
+        # Save a JSON summary for admin UI use
+        result_payload = {"message": "success", "results": results_out, "total_summary": total_summary, "folder": f"admin_{timestamp}", "accuracy": mean_acc, "admin_id": admin_id, "admin_name": admin_name}
+        with open(os.path.join(run_folder, "result_data.json"), "w") as fh:
+            json.dump(result_payload, fh, indent=2)
+
+        redirect_url = f"http://localhost/LitterLensThesis2/root/system_frontend/php/index_result.php?folder=admin_{timestamp}"
+        return jsonify({"status": "success", "redirect": redirect_url, "data": result_payload}), 200
 
     except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
-
-
-
+        import traceback; traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/redetect', methods=['POST'])
 def redetect():
     try:
-        data = request.get_json()
+        data = request.get_json() or {}
         folder = data.get('folder')
-        threshold = float(data.get('threshold', 0.10))
+        threshold = float(data.get('threshold', DETECTION_THRESHOLD))
         label_mode = data.get('label_mode', 'confidence')
-        opacity_raw = data.get('opacity', '1.00')
-        box_opacity = _parse_opacity(opacity_raw, default=1.0)
-
+        opacity = float(data.get('opacity', '1.0'))
         run_folder = os.path.join(RUNS_DIR, folder)
         if not os.path.exists(run_folder):
-            return jsonify({'error': 'Folder not found'}), 404
+            return jsonify({"error": "folder not found"}), 404
 
-        detection_results = []
-        total_object_summary = {}
-
-        orig_images = sorted([f for f in os.listdir(run_folder) if "_orig" in f])
-        for orig_img in orig_images:
-            dets_img = f"{orig_img.replace('_orig_', '_dets_').rsplit('.', 1)[0]}.json"
-            result_img = orig_img.replace("_orig", "_result")
-            orig_path = os.path.join(run_folder, orig_img)
-            result_path = os.path.join(run_folder, result_img)
-            dets_path = os.path.join(run_folder, dets_img)
-
+        origs = sorted([f for f in os.listdir(run_folder) if "_orig_" in f])
+        results_out = []
+        total_summary = {}
+        for orig in origs:
+            orig_path = os.path.join(run_folder, orig)
+            dets_path = os.path.join(run_folder, orig.replace("_orig_", "_dets_").rsplit('.',1)[0] + ".json")
+            result_path = os.path.join(run_folder, orig.replace("_orig", "_result"))
+            # delete previous result if exists
             if os.path.exists(result_path):
-                os.remove(result_path)
+                try:
+                    os.remove(result_path)
+                except:
+                    pass
 
-            # Use ensemble for redetection
-            results = ensemble_predict(orig_path, conf=threshold)
-            dets = _serialize_dets(results)
-            with open(dets_path, "w") as f:
-                json.dump(dets, f)
-
-            render_from_dets(orig_path, dets, result_path, label_mode, box_opacity)
+            with models_lock:
+                multi = len(models_list) > 1
+            if multi:
+                res = ensemble_predict(orig_path, conf=threshold)
+            else:
+                m = first_model()
+                res = m(orig_path, conf=threshold, verbose=False)[0] if m else None
+            dets = _serialize_dets(res)
+            with open(dets_path, "w") as fh:
+                json.dump(dets, fh)
+            try:
+                render_from_dets(orig_path, dets, result_path, label_mode, opacity)
+            except Exception as e:
+                print("[Redetect] render error", e)
+                shutil.copy(orig_path, result_path)
             summary, total_items = _summary_from_dets(dets)
-            image_accuracy = calculate_image_accuracy(dets)
-
-            for k, v in summary.items():
-                total_object_summary[k] = total_object_summary.get(k, 0) + v
-
-            detection_results.append({
-                'original_image': f"runs/{folder}/{orig_img}",
-                'result_image': f"runs/{folder}/{result_img}",
-                'dets_json': f"runs/{folder}/{dets_img}",
-                'summary': summary,
-                'total_items': total_items,
-                'accuracy': image_accuracy
-            })
-
-        mean_accuracy = round(sum([r['accuracy'] for r in detection_results]) / len(detection_results), 2)
-
-        return jsonify({
-            'message': '✅ Redetection complete',
-            'results': detection_results,
-            'total_summary': total_object_summary,
-            'accuracy': mean_accuracy,
-            'label_mode': label_mode
-        })
-
+            for k,v in summary.items():
+                total_summary[k] = total_summary.get(k,0) + v
+            results_out.append({"original_image": f"runs/{folder}/{orig}", "result_image": f"runs/{folder}/{os.path.basename(result_path)}", "summary": summary, "total_items": total_items, "accuracy": calculate_image_accuracy(dets)})
+        mean_acc = round(sum(r['accuracy'] for r in results_out) / len(results_out), 2) if results_out else 0.0
+        return jsonify({"message":"redetect complete", "results": results_out, "total_summary": total_summary, "accuracy": mean_acc}), 200
     except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
-
+        import traceback; traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/rerender', methods=['POST'])
 def rerender():
     try:
-        data = request.get_json()
+        data = request.get_json() or {}
         folder = data.get('folder')
         label_mode = data.get('label_mode', 'confidence')
-        opacity_raw = data.get('opacity', '1.00')
-        box_opacity = _parse_opacity(opacity_raw, default=1.0)
-
+        opacity = float(data.get('opacity', '1.0'))
         run_folder = os.path.join(RUNS_DIR, folder)
         if not os.path.exists(run_folder):
-            return jsonify({'error': 'Folder not found'}), 404
+            return jsonify({"error":"folder not found"}), 404
 
-        detection_results = []
-        total_object_summary = {}
-
-        orig_images = sorted([f for f in os.listdir(run_folder) if "_orig" in f])
-        for orig_img in orig_images:
-            dets_img = f"{orig_img.replace('_orig_', '_dets_').rsplit('.', 1)[0]}.json"
-            result_img = orig_img.replace("_orig", "_result")
-            orig_path = os.path.join(run_folder, orig_img)
-            result_path = os.path.join(run_folder, result_img)
-            dets_path = os.path.join(run_folder, dets_img)
-
-            with open(dets_path, "r") as f:
-                dets = json.load(f)
-
-            render_from_dets(orig_path, dets, result_path, label_mode, box_opacity)
+        origs = sorted([f for f in os.listdir(run_folder) if "_orig_" in f])
+        results_out = []
+        total_summary = {}
+        for orig in origs:
+            orig_path = os.path.join(run_folder, orig)
+            dets_path = os.path.join(run_folder, orig.replace("_orig_", "_dets_").rsplit('.',1)[0] + ".json")
+            result_path = os.path.join(run_folder, orig.replace("_orig", "_result"))
+            if not os.path.exists(dets_path):
+                continue
+            with open(dets_path, "r") as fh:
+                dets = json.load(fh)
+            try:
+                render_from_dets(orig_path, dets, result_path, label_mode, opacity)
+            except Exception as e:
+                print("[Rerender] error:", e)
+                shutil.copy(orig_path, result_path)
             summary, total_items = _summary_from_dets(dets)
-            image_accuracy = calculate_image_accuracy(dets)
-
-            for k, v in summary.items():
-                total_object_summary[k] = total_object_summary.get(k, 0) + v
-
-            detection_results.append({
-                'original_image': f"runs/{folder}/{orig_img}",
-                'result_image': f"runs/{folder}/{result_img}",
-                'dets_json': f"runs/{folder}/{dets_img}",
-                'summary': summary,
-                'total_items': total_items,
-                'accuracy': image_accuracy
-            })
-
-        return jsonify({
-            'message': '✅ Rerender complete',
-            'results': detection_results,
-            'total_summary': total_object_summary,
-            'label_mode': label_mode
-        })
-
+            for k,v in summary.items():
+                total_summary[k] = total_summary.get(k,0) + v
+            results_out.append({"original_image": f"runs/{folder}/{orig}", "result_image": f"runs/{folder}/{os.path.basename(result_path)}", "summary": summary, "accuracy": calculate_image_accuracy(dets)})
+        return jsonify({"message":"rerender complete","results": results_out,"total_summary": total_summary}), 200
     except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
+        import traceback; traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
 
-
-# =====================================================
-# 🧹 CLEANUP ROUTE
-# =====================================================
 @app.route('/cleanup', methods=['POST'])
 def cleanup():
     try:
-        data = request.get_json()
+        data = request.get_json() or {}
         folder = data.get('folder')
-        target_path = os.path.join(RUNS_DIR, folder)
-        if os.path.exists(target_path):
-            shutil.rmtree(target_path)
-            print(f"🧹 Cleaned folder: {target_path}")
-        return jsonify({'message': 'Folder cleaned'})
+        target = os.path.join(RUNS_DIR, folder)
+        if os.path.exists(target):
+            shutil.rmtree(target)
+        return jsonify({"message":"cleaned"}), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/reload_model', methods=['POST'])
-def reload_model():
-    global models, model
-    print("♻️ Reloading active models...")
-    new_paths = fetch_model_paths()
-    valid = [p for p in new_paths if os.path.exists(p)]
-    models = [YOLO(p) for p in valid]
-    model = models[0] if models else None
-    return {"success": True, "count": len(models)}
+def reload_model_route():
+    """
+    Called by PHP after model upload/activate/delete.
+    Downloads and reloads all active models from Supabase.
+    """
+    try:
+        info = load_models_from_supabase()
+        return jsonify({"success": True, "info": info}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route('/reverse_geocode')
 def reverse_geocode():
     lat = request.args.get('lat')
     lon = request.args.get('lon')
-
     if not lat or not lon:
-        return jsonify({'error': 'Missing coordinates'}), 400
-
+        return jsonify({"error":"missing coords"}), 400
     try:
-        # 🌍 Use OpenStreetMap (Nominatim) Reverse Geocoding API
         url = f"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={lat}&lon={lon}"
-        response = requests.get(url, headers={"User-Agent": "LitterLens/1.0"})
-        data = response.json()
-
-        # 🏘️ Extract barangay, city, province, etc.
+        r = requests.get(url, headers={"User-Agent": "LitterLens/1.0"}, timeout=10)
+        r.raise_for_status()
+        data = r.json()
         address = data.get("address", {})
-        barangay = address.get("neighbourhood") or address.get("suburb") or address.get("village") or address.get("hamlet") or address.get("quarter")
+        barangay = address.get("neighbourhood") or address.get("suburb") or address.get("village") or address.get("hamlet")
         city = address.get("city") or address.get("town") or address.get("municipality") or address.get("county")
         province = address.get("state") or address.get("region")
         country = address.get("country")
-
-        # 🧩 Clean label string
-        location_label = ", ".join(filter(None, [barangay, city, province, country]))
-
-        return jsonify({
-            "barangay": barangay or "Unknown Barangay",
-            "city": city or "Unknown City",
-            "province": province or "Unknown Province",
-            "country": country or "Philippines",
-            "display_name": location_label or data.get("display_name", "Unknown Area")
-        })
+        label = ", ".join(filter(None, [barangay, city, province, country]))
+        return jsonify({"barangay": barangay or "Unknown", "city": city or "Unknown", "province": province or "Unknown", "country": country or "Philippines", "display_name": label or data.get("display_name","")})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# =====================================================
-# 🏁 RUN APP
-# =====================================================
+@app.route('/models_list')
+def models_list_route():
+    """
+    Return the currently loaded models (meta info).
+    """
+    with models_lock:
+        return jsonify({"count": len(models_meta), "models": models_meta}), 200
+
+@app.route('/models/downloaded/<filename>')
+def serve_model_file(filename):
+    # allow serving downloaded model files for debugging if needed
+    return send_from_directory(MODELS_DIR, filename, as_attachment=True)
+
+# ============ RENDER UTIL ============
+def render_from_dets(orig_path, dets, output_path, mode="confidence", box_opacity=1.0):
+    """
+    Draw bounding boxes (det dicts) on orig image and save to output_path.
+    dets: list of dicts {x1,y1,x2,y2,conf,cls}
+    mode: "confidence" or "labels"
+    """
+    img = cv2.imread(orig_path)
+    if img is None:
+        raise RuntimeError(f"cannot read {orig_path}")
+    overlay = img.copy()
+    base_model = first_model()
+    names = getattr(base_model, "names", {}) if base_model else {}
+    for d in dets:
+        x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
+        label = names.get(d["cls"], str(d["cls"]))
+        conf_pct = int(round(d["conf"] * 100))
+        color = CLASS_COLORS.get(label, (255,255,255))
+        # fill with alpha based on confidence
+        alpha = 0.6
+        sub = overlay.copy()
+        cv2.rectangle(sub, (x1, y1), (x2, y2), color, -1)
+        cv2.addWeighted(sub, alpha, overlay, 1 - alpha, 0, overlay)
+        cv2.rectangle(overlay, (x1, y1), (x2, y2), color, 2)
+    img = cv2.addWeighted(overlay, box_opacity, img, 1 - box_opacity, 0)
+    for d in dets:
+        x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
+        conf_pct = int(round(d["conf"] * 100))
+        label = names.get(d["cls"], str(d["cls"]))
+        color = CLASS_COLORS.get(label, (255,255,255))
+        text = f"{conf_pct}%" if mode == "confidence" else f"{label} {conf_pct}%"
+        (tw, th), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+        py = max(0, y1 - th - 6)
+        cv2.rectangle(img, (x1, py), (x1 + tw + 6, y1), color, -1)
+        cv2.putText(img, text, (x1 + 3, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2)
+    cv2.imwrite(output_path, img)
+
+# ============================================================
+# 🖼️ STATIC FILE SERVE — allow gallery.js to access /runs/*
+# ============================================================
+@app.route('/runs/<path:filename>')
+def serve_runs(filename):
+    runs_path = os.path.join(RUNS_DIR)
+    return send_from_directory(runs_path, filename)
+
+# ============ MAIN ============
 if __name__ == '__main__':
+    # run Flask
     app.run(host='127.0.0.1', port=5000, debug=True)

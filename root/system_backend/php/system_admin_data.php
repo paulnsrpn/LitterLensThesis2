@@ -1429,3 +1429,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'delete_detections') {
     exit;
 }
 
+
+
+

@@ -267,242 +267,277 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-/* =========================================================
-   🧩 MODEL MANAGEMENT — ADMIN 1 ONLY
-========================================================= */
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("⚙️ Model Management Loaded for Admin:", ADMIN_ID);
-
-  // 🔗 DOM Elements
-  const modelSection = document.querySelector(".settings-card2");
-  const activeModelInput = modelSection.querySelector("#activeModel");
-  const modelFileInput = modelSection.querySelector("#modelFile");
-  const uploadModelBtn = modelSection.querySelector("#uploadModelBtn");
-  const editModelBtn = modelSection.querySelector("#editModelBtn");
-  const saveModelBtn = modelSection.querySelector("#saveModelBtn");
-  const cancelModelBtn = modelSection.querySelector("#cancelModelBtn");
-
-  if (!activeModelInput || !modelFileInput || !editModelBtn) {
-    console.warn("⚠️ Missing Model Management elements.");
-    return;
-  }
-
-  // =========================================================
-  // Helper Functions
-  // =========================================================
-  function disableModelControls() {
-    [activeModelInput, modelFileInput, uploadModelBtn, saveModelBtn, cancelModelBtn].forEach((el) => {
-      el.disabled = true;
-      el.style.opacity = "0.6";
-      el.style.cursor = "not-allowed";
-    });
-  }
-
-  function enableModelControls() {
-    [activeModelInput, modelFileInput, uploadModelBtn, saveModelBtn, cancelModelBtn].forEach((el) => {
-      el.disabled = false;
-      el.style.opacity = "1";
-      el.style.cursor = "pointer";
-    });
-  }
-
-  // =========================================================
-  // 🔒 Restrict Access — Only Admin 1
-  // =========================================================
-  if (parseInt(ADMIN_ID) !== 1) {
-    console.log("🚫 Model management disabled — not Admin 1");
-
-    disableModelControls();
-    editModelBtn.disabled = true;
-    editModelBtn.style.opacity = "0.6";
-    editModelBtn.style.cursor = "not-allowed";
-    editModelBtn.title = "Only Admin 1 can edit models.";
-
-    editModelBtn.addEventListener("mouseenter", () => {
-      const tip = document.createElement("div");
-      tip.textContent = "Restricted: Only Admin 1 can manage models.";
-      tip.className = "no-access-tooltip";
-      tip.style.position = "absolute";
-      tip.style.top = "-35px";
-      tip.style.right = "0";
-      tip.style.background = "#333";
-      tip.style.color = "#fff";
-      tip.style.padding = "6px 10px";
-      tip.style.borderRadius = "6px";
-      tip.style.fontSize = "13px";
-      tip.style.whiteSpace = "nowrap";
-      editModelBtn.appendChild(tip);
-      setTimeout(() => tip.remove(), 2000);
-    });
-
-    return;
-  }
-
-  // =========================================================
-  // 👑 Admin 1 Functional Logic
-  // =========================================================
-  disableModelControls();
-
-  editModelBtn.addEventListener("click", () => {
-    enableModelControls();
-    editModelBtn.disabled = true;
-    editModelBtn.style.opacity = "0.5";
-    editModelBtn.style.cursor = "not-allowed";
-  });
-
-  cancelModelBtn.addEventListener("click", () => {
-    disableModelControls();
-    editModelBtn.disabled = false;
-    editModelBtn.style.opacity = "1";
-    editModelBtn.style.cursor = "pointer";
-  });
-
-  saveModelBtn.addEventListener("click", () => {
-    alert("✅ Model details saved successfully!");
-    disableModelControls();
-    editModelBtn.disabled = false;
-    editModelBtn.style.opacity = "1";
-    editModelBtn.style.cursor = "pointer";
-  });
-
-  uploadModelBtn.addEventListener("click", () => {
-    const file = modelFileInput.files[0];
-    if (!file) {
-      alert("⚠️ Please select a model (.pt) file to upload.");
-      return;
-    }
-    alert(`📤 Uploading ${file.name} to Supabase...`);
-  });
-});
-
 
 /* =========================================================
-   🧩 LOAD REAL MODEL DATA FROM SUPABASE (with Loading State)
+   🧩 MODEL MANAGEMENT — ADMIN 1 ONLY (Final On-Load Lock)
 ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("⚙️ Model Management Loaded");
+
+  // =========================================================
+  // 🔒 ROLE-BASED ACCESS CONTROL
+  // =========================================================
+  const ADMIN_ID = window.currentAdminId || 0;
+  const ADMIN_ROLE = (window.currentAdminRole || "").toLowerCase();
+  const isSuperAdmin = ADMIN_ID === 1 || ADMIN_ROLE === "admin";
+
+  // =========================================================
+  // 🔧 ELEMENTS
+  // =========================================================
   const modelTableBody = document.querySelector("#modelTable tbody");
+  const uploadModelBtn = document.querySelector("#uploadModelBtn");
+  const modelFileInput = document.querySelector("#modelFile");
+  const activeModelInput = document.querySelector("#activeModel");
+  const editModelBtn = document.querySelector("#editModelBtn");
+  const cancelModelBtn = document.querySelector("#cancelModelBtn");
+  const saveModelBtn = document.querySelector("#saveModelBtn");
 
-  // 🌀 Initial loading indicator
+  let inEditMode = false;
+
+  // =========================================================
+  // 🧩 ON-LOAD INSTANT LOCK (before fetching anything)
+  // =========================================================
+  lockAllControls();
+
+  // =========================================================
+  // 📥 FETCH MODELS
+  // =========================================================
   modelTableBody.innerHTML = `
     <tr>
-      <td colspan="5" style="text-align:center; padding:20px;">
+      <td colspan="6" style="text-align:center; padding:20px;">
         <div class="loading-spinner"></div>
-        <p style="margin-top:10px; color:#444;">Loading models...</p>
+        <p>Loading models...</p>
       </td>
     </tr>
   `;
 
-  // Fetch model records
   fetch("/LitterLensThesis2/root/system_backend/php/fetch_models.php")
-    .then((res) => {
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
-    })
+    .then((res) => res.json())
     .then((data) => {
-      if (!data.success) {
-        console.error("❌ Failed to load models:", data.error);
-        modelTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">⚠️ Error loading models.</td></tr>`;
-        return;
-      }
-
+      if (!data.success) throw new Error(data.error);
       const models = data.data;
+
       if (!models.length) {
-        modelTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No model records found.</td></tr>`;
+        modelTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No models found.</td></tr>`;
+        disableAll();
         return;
       }
 
-      // ✅ Build table rows dynamically
+      models.sort((a, b) => (a.status === "Active" ? -1 : 1));
+
+      // Show active model name
+      const activeModel = models.find((m) => m.status === "Active");
+      if (activeModel)
+        activeModelInput.value = `${activeModel.model_name} (${activeModel.version})`;
+
+      // Build table rows
       modelTableBody.innerHTML = models
         .map(
           (m) => `
-          <tr>
-            <td>${m.model_name || "—"}</td>
-            <td>${m.version || "—"}</td>
-            <td>${m.accuracy !== null ? m.accuracy + "%" : "N/A"}</td>
-            <td>${new Date(m.uploaded_on).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}</td>
-            <td class="status ${m.status === "Active" ? "active" : "inactive"}">
-              ${m.status}
-            </td>
-          </tr>`
+        <tr>
+          <td>${m.model_name || "—"}</td>
+          <td>${m.version || "—"}</td>
+          <td>${m.accuracy ?? "N/A"}%</td>
+          <td>${new Date(m.uploaded_on).toLocaleString()}</td>
+          <td class="status ${m.status === "Active" ? "active" : "inactive"}">${m.status}</td>
+          <td>
+            <button class="activate-btn" 
+              data-id="${m.model_id}" 
+              ${!isSuperAdmin || m.status === "Active" ? "disabled" : ""}>
+              Activate
+            </button>
+            <button class="delete-btn" 
+              data-id="${m.model_id}" 
+              ${!isSuperAdmin || m.model_id == 1 ? "disabled" : ""}>
+              🗑 Delete
+            </button>
+          </td>
+        </tr>`
         )
         .join("");
+
+      bindModelActions();
+      disableAll(); // lock again after table is built
     })
     .catch((err) => {
-      console.error("⚠️ Error fetching models:", err);
-      modelTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">❌ Failed to fetch model data.</td></tr>`;
+      console.error("❌ Fetch error:", err);
+      modelTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Error loading models.</td></tr>`;
+      disableAll();
     });
 
-uploadModelBtn.addEventListener("click", async () => {
-  const file = modelFileInput.files[0];
-  if (!file) {
-    alert("⚠️ Please select a .pt file first.");
-    return;
+  // =========================================================
+  // 🧩 LOCK / UNLOCK FUNCTIONS
+  // =========================================================
+  function lockAllControls() {
+    const elements = [uploadModelBtn, modelFileInput, cancelModelBtn, saveModelBtn, activeModelInput];
+    elements.forEach((el) => {
+      if (el) {
+        el.disabled = true;
+        el.style.opacity = "0.6";
+        el.style.pointerEvents = "none";
+      }
+    });
+
+    document.querySelectorAll(".activate-btn, .delete-btn").forEach((btn) => {
+      btn.disabled = true;
+      btn.style.opacity = "0.6";
+      btn.style.pointerEvents = "none";
+    });
+
+    // Keep Edit active
+    editModelBtn.disabled = false;
+    editModelBtn.style.opacity = "1";
+    editModelBtn.style.pointerEvents = "auto";
   }
 
-  // 🌀 Start loading state
-  uploadModelBtn.disabled = true;
-  uploadModelBtn.innerHTML = `
-    <div class="spinner" style="
-      display:inline-block;
-      width:16px; 
-      height:16px; 
-      border:2px solid #fff; 
-      border-top:2px solid transparent;
-      border-radius:50%;
-      margin-right:8px;
-      animation: spin 0.8s linear infinite;">
-    </div> Uploading...
-  `;
+  function disableAll() {
+    inEditMode = false;
+    lockAllControls();
+  }
 
-  try {
+  function enableAll() {
+    if (!isSuperAdmin) {
+      alert("⚠️ Only Admin 1 can edit models.");
+      return;
+    }
+
+    inEditMode = true;
+
+    [uploadModelBtn, modelFileInput, cancelModelBtn, saveModelBtn, activeModelInput].forEach((el) => {
+      if (el) {
+        el.disabled = false;
+        el.style.opacity = "1";
+        el.style.pointerEvents = "auto";
+      }
+    });
+
+    editModelBtn.disabled = true;
+    editModelBtn.style.opacity = "0.6";
+    editModelBtn.style.pointerEvents = "none";
+
+    document.querySelectorAll(".activate-btn, .delete-btn").forEach((btn) => {
+      const id = btn.dataset.id;
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      btn.style.pointerEvents = "auto";
+
+      // Protect model 1 from deletion
+      if (btn.classList.contains("delete-btn") && id == "1") {
+        btn.disabled = true;
+        btn.style.opacity = "0.6";
+        btn.style.pointerEvents = "none";
+      }
+    });
+  }
+
+  editModelBtn.addEventListener("click", enableAll);
+
+  cancelModelBtn.addEventListener("click", () => {
+    if (!inEditMode) return;
+    const confirmCancel = confirm("Discard unsaved changes and exit edit mode?");
+    if (confirmCancel) {
+      disableAll();
+      console.log("🔒 Edit mode exited.");
+    } else {
+      console.log("↩️ Cancel aborted — staying in edit mode");
+    }
+  });
+
+  // =========================================================
+  // 🧩 ACTION BUTTONS
+  // =========================================================
+  function bindModelActions() {
+    document.querySelectorAll(".activate-btn").forEach((btn) =>
+      btn.addEventListener("click", async () => {
+        if (!inEditMode || !isSuperAdmin) return alert("⚠️ Enable Edit Mode first.");
+        const id = btn.dataset.id;
+        if (!confirm("Activate this model?")) return;
+
+        const formData = new FormData();
+        formData.append("action", "activate");
+        formData.append("id", id);
+
+        const res = await fetch("/LitterLensThesis2/root/system_backend/php/manage_model.php", {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+        const result = await res.json();
+        alert(result.success ? "✅ Model activated!" : "❌ " + result.error);
+        if (result.success) location.reload();
+      })
+    );
+
+    document.querySelectorAll(".delete-btn").forEach((btn) =>
+      btn.addEventListener("click", async () => {
+        if (!inEditMode || !isSuperAdmin) return alert("⚠️ Enable Edit Mode first.");
+        const id = btn.dataset.id;
+        if (id == 1) return alert("⚠️ Default model cannot be deleted.");
+        if (!confirm("🗑 Delete this model from Supabase?")) return;
+
+        const formData = new FormData();
+        formData.append("action", "delete");
+        formData.append("id", id);
+
+        const res = await fetch("/LitterLensThesis2/root/system_backend/php/manage_model.php", {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+        const result = await res.json();
+        if (result.success) {
+          alert("✅ Model deleted.");
+          btn.closest("tr").remove();
+        } else alert("❌ " + result.error);
+      })
+    );
+  }
+
+  // =========================================================
+  // 📤 UPLOAD MODEL
+  // =========================================================
+  uploadModelBtn.addEventListener("click", async () => {
+    if (!inEditMode || !isSuperAdmin) return alert("⚠️ Only Admin 1 can upload models.");
+    const file = modelFileInput.files[0];
+    if (!file) return alert("Select a .pt file first.");
+
+    uploadModelBtn.disabled = true;
+    uploadModelBtn.innerHTML = "⏳ Uploading...";
+
     const formData = new FormData();
+    formData.append("action", "upload");
     formData.append("modelFile", file);
-    formData.append("model_name", file.name.replace(".pt", ""));
-    formData.append("accuracy", "0"); // default if none provided
+    formData.append("accuracy", "0");
 
-    const response = await fetch("/LitterLensThesis2/root/system_backend/php/upload_model.php", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const res = await fetch("/LitterLensThesis2/root/system_backend/php/manage_model.php", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+      const data = await res.json();
 
-    const data = await response.json();
-    console.log("📦 Upload Response:", data);
-
-    if (!data.success) throw new Error(data.error || "Upload failed.");
-
-    // ✅ Success UI feedback
-    uploadModelBtn.innerHTML = "✅ Uploaded Successfully";
-    uploadModelBtn.style.backgroundColor = "#2d6a4f";
-
-    // 🔄 Reload table after 1.5s
-    setTimeout(() => location.reload(), 1500);
-
-  } catch (err) {
-    console.error("❌ Upload Error:", err);
-    alert("❌ Upload failed. Check console for details.");
-
-    // ❌ Error feedback
-    uploadModelBtn.innerHTML = "❌ Upload Failed";
-    uploadModelBtn.style.backgroundColor = "#b81c1c";
-
-    setTimeout(() => {
-      uploadModelBtn.innerHTML = "Upload Model";
-      uploadModelBtn.style.backgroundColor = "#215a36";
+      if (data.success) {
+        alert("✅ Model uploaded successfully!");
+        location.reload();
+      } else {
+        alert("❌ " + data.error);
+      }
+    } catch (err) {
+      console.error("Upload failed:", err);
+      alert("⚠️ Upload failed.");
+    } finally {
       uploadModelBtn.disabled = false;
-    }, 2000);
+      uploadModelBtn.innerHTML = "Upload & Activate";
+    }
+  });
 
+  // =========================================================
+  // 🧱 NON-ADMIN USERS
+  // =========================================================
+  if (!isSuperAdmin) {
+    disableAll();
+    document.querySelector(".settings-card2").classList.add("locked-section");
+    console.warn("🔒 Non-admin detected: Model Management is read-only.");
   }
 });
-});
-
-/* =========================================================
-   END OF FILE
-========================================================= */    
-
-
-
-

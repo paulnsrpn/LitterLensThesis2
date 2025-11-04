@@ -157,3 +157,19 @@ Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantit
 Inserted litter summary: {"realtime_id":6,"littertype_id":7,"litter_count":1}
 Inserted detection: {"image_id":1,"littertype_id":7,"date":"2025-11-04","quantity":1,"confidence_lvl":52.71,"detection_time":"14:50:45"}
 Activity logged for admin 1
+RAW JSON: {"totalDetections":2,"topDetectedLitter":"Plastic","detectionSpeed":"0.21s/frame","detectionAccuracy":86.78,"litterSummary":{"Plastic":2},"latitude":"14.644019","longitude":"121.031885","cameraName":"📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":2,"top_detected_litter":"Plastic","detection_speed":0.21,"detection_accuracy":86.78,"latitude":"14.644019","longitude":"121.031885","date":"2025-11-04"}
+Insert Response: [{"realtime_id":7,"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":2,"top_detected_litter":"Plastic","detection_speed":0.21,"detection_accuracy":86.78,"longitude":121.031885,"latitude":14.644019,"timestamp":"2025-11-04T15:52:58.250813","date":"2025-11-04"}]
+Inserted litter summary: {"realtime_id":7,"littertype_id":2,"litter_count":2}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":2,"confidence_lvl":86.78,"detection_time":"16:52:57"}
+Activity logged for admin 1
+RAW JSON: {"totalDetections":8,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.188s/frame","detectionAccuracy":22.3,"litterSummary":{"Organic Debris":5,"Plastic":2,"Sanitary Waste":1},"latitude":"14.644019","longitude":"121.031885","cameraName":"📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines"}
+Realtime Insert: {"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":8,"top_detected_litter":"Organic Debris","detection_speed":0.188,"detection_accuracy":22.3,"latitude":"14.644019","longitude":"121.031885","date":"2025-11-04"}
+Insert Response: [{"realtime_id":8,"admin_id":1,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":8,"top_detected_litter":"Organic Debris","detection_speed":0.19,"detection_accuracy":22.3,"longitude":121.031885,"latitude":14.644019,"timestamp":"2025-11-04T18:45:22.097649","date":"2025-11-04"}]
+Inserted litter summary: {"realtime_id":8,"littertype_id":1,"litter_count":5}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-11-04","quantity":5,"confidence_lvl":22.3,"detection_time":"19:45:21"}
+Inserted litter summary: {"realtime_id":8,"littertype_id":2,"litter_count":2}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":2,"confidence_lvl":22.3,"detection_time":"19:45:22"}
+Inserted litter summary: {"realtime_id":8,"littertype_id":5,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":5,"date":"2025-11-04","quantity":1,"confidence_lvl":22.3,"detection_time":"19:45:24"}
+Activity logged for admin 1

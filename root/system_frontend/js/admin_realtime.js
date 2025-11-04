@@ -177,7 +177,7 @@ async function getReadableLocationFromProxy(lat, lon) {
   }
 }
 
-
+ 
 /**
  * ======================================================
  * 🧩 Backend Camera Checker — Helper
@@ -321,6 +321,9 @@ async function probeCamerasAndLabel() {
   async function startStreamForCamera(camIndex) {
     await fetch(`${BASE_URL}/stop_camera`).catch(() => {});
     await fetch(`${BASE_URL}/reset_stats`, { method: "POST" }).catch(() => {});
+
+    // 🕒 Give camera hardware 1s cooldown before starting stream
+    await new Promise((res) => setTimeout(res, 1000));
 
     const thr = parseFloat(thresholdSelect?.value ?? 0.25) || 0.25;
     await fetch(`${BASE_URL}/set_threshold`, {

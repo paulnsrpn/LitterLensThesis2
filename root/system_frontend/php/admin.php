@@ -1,13 +1,54 @@
 <?php
-require_once '../../system_backend/php/system_config.php';
-require_once '../../system_backend/php/system_admin_data.php';
+    require_once '../../system_backend/php/system_config.php';
+    require_once '../../system_backend/php/system_admin_data.php';
 
-// ✅ LOGIN CHECK
-if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
-    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
-}
 
-$admin_name = $_SESSION['admin_name'] ?? 'Admin';
+    // ✅ LOGIN CHECK
+    if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
+        redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
+    }
+
+    $admin_name = $_SESSION['admin_name'] ?? 'Admin';
+
+    
+    // =======================================================
+    // 🧠 AUTO-START FLASK BACKEND (Python app.py)
+    // =======================================================
+    $flaskDir = realpath(__DIR__ . '/../../system_backend/python');
+    $flaskScript = escapeshellarg($flaskDir . DIRECTORY_SEPARATOR . 'app.py');
+
+    // Check if Flask already running on port 5000
+    $check = @fsockopen('127.0.0.1', 5000);
+    if (!$check) {
+        // Start Flask silently in background
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            // Windows
+            pclose(popen("start /B python $flaskScript >nul 2>&1", "r"));
+        } else {
+            // Linux / Mac
+            exec("nohup python3 $flaskScript > /dev/null 2>&1 &");
+        }
+    } else {
+        fclose($check);
+    }
+
+    // =======================================================
+    // 🩺 WAIT UNTIL FLASK RESPONDS (health check loop)
+    // =======================================================
+    $maxAttempts = 10; // try for up to ~10 seconds
+    $flaskReady = false;
+    for ($i = 0; $i < $maxAttempts; $i++) {
+        $check = @fsockopen('127.0.0.1', 5000);
+        if ($check) {
+            fclose($check);
+            $flaskReady = true;
+            break;
+        }
+        sleep(1); // wait 1 second per attempt
+    }
+    if (!$flaskReady) {
+        error_log("[Admin] Flask failed to start after 10s");
+    }
 
 ?>
 
@@ -904,30 +945,31 @@ $admin_name = $_SESSION['admin_name'] ?? 'Admin';
                     </div>
 
                     <!-- Upload Model -->
-                    <div class="model-section upload-model-section">
-                        <label class="section-title">Upload New Model (.pt)</label>
-                        <div class="upload-inline">
-                            <input type="file" id="modelFile" accept=".pt" class="file-input" />
-                            <button id="uploadModelBtn" class="model-upload-btn">Upload Model</button>
-                        </div>
-                        <p class="field-description">Upload a new trained model file.</p>
-                    </div>
+                   <div class="model-section upload-model-section">
+  <label class="section-title">Upload New Model (.pt)</label>
+  <div class="upload-inline">
+    <input type="file" id="modelFile" accept=".pt" class="file-input" />
+    <button id="uploadModelBtn" class="model-upload-btn">Upload & Activate</button>
+  </div>
+  <p class="field-description">Upload a new trained model. It will automatically become the active model.</p>
+</div>
 
                     <!-- Models Table -->
                     <div class="table-container">
-                        <table class="model-table" id="modelTable">
-                            <thead>
-                                <tr>
-                                    <th>Model Name</th>
-                                    <th>Version</th>
-                                    <th>Accuracy</th>
-                                    <th>Uploaded on</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
+    <table class="model-table" id="modelTable">
+      <thead>
+        <tr>
+          <th>Model Name</th>
+          <th>Version</th>
+          <th>Accuracy</th>
+          <th>Uploaded on</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
                     <!-- Buttons -->
                     <div class="settings-btn-container">
