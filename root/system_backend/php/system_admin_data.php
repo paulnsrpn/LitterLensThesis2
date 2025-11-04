@@ -53,6 +53,8 @@ if ($admin_id) {
     }
 }
 
+
+
 // =======================================================
 // 🔧 INITIAL VARIABLES
 // =======================================================
@@ -199,16 +201,18 @@ function getDetectionsAverageAccuracy(&$logs)
  */
 function getRecentDetections(&$logs, $timeFilter = 'today')
 {
-    $today = date('Y-m-d');
+    date_default_timezone_set('Asia/Manila');
+    $todayPH = new DateTime('now', new DateTimeZone('Asia/Manila'));
     $queryFilter = '';
 
     switch ($timeFilter) {
         case 'today':
-            $queryFilter = '&date=eq.' . $today;
+            $queryFilter = '&date=eq.' . $todayPH->format('Y-m-d');
             break;
+
         case 'last7':
-            $start = date('Y-m-d', strtotime('-7 days'));
-            $queryFilter = '&date=gte.' . $start;
+            $startPH = (clone $todayPH)->modify('-7 days');
+            $queryFilter = '&date=gte.' . $startPH->format('Y-m-d');
             break;
     }
 
@@ -277,14 +281,30 @@ function getUsersCount(&$logs)
 // =======================================================
 function getReportsTodayCount(&$logs)
 {
-    $today = date('Y-m-d');
-    $response = supabaseRequest('GET', 'detections', null, 'select=count&date=eq.' . $today);
+    // Force Philippine timezone
+    date_default_timezone_set('Asia/Manila');
+    $today = new DateTime('now', new DateTimeZone('Asia/Manila'));
+
+    // Supabase stores UTC timestamps, so compute UTC range for local "today"
+    $startUTC = clone $today;
+    $startUTC->setTime(0, 0, 0)->setTimezone(new DateTimeZone('UTC'));
+    $endUTC = clone $today;
+    $endUTC->setTime(23, 59, 59)->setTimezone(new DateTimeZone('UTC'));
+
+    $start = $startUTC->format('Y-m-d\TH:i:s');
+    $end   = $endUTC->format('Y-m-d\TH:i:s');
+
+    // 👇 Use between comparison instead of date equality
+    $query = "select=count&timestamp=gte.{$start}&timestamp=lte.{$end}";
+
+    $response = supabaseRequest('GET', 'detections', null, $query);
 
     if (is_array($response) && isset($response[0]['count'])) {
-        debugLog($logs, "🟢 Reports today: {$response[0]['count']}");
+        debugLog($logs, "🟢 Reports today (local): {$response[0]['count']}");
         return (int)$response[0]['count'];
     }
 
+    debugLog($logs, "❌ Failed to fetch reports today: " . json_encode($response));
     return 0;
 }
 
@@ -450,12 +470,14 @@ function getLitterLineChartData(&$logs, $filter)
     debugLog($logs, "🟢 Litter line chart data ({$filter}): " . json_encode($trends));
     return $trends;
 }
-
 // =======================================================
 // 📊 REALTIME LITTER TREND (BY DAY / MONTH / YEAR)
 // =======================================================
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'realtime_trend') {
     header('Content-Type: application/json');
+
+    // 🕓 Ensure we always use Philippine timezone
+    date_default_timezone_set('Asia/Manila');
     $filter = $_GET['filter'] ?? 'day';
 
     $response = supabaseRequest(
@@ -473,37 +495,51 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'realtime_trend') {
     $trend = [];
 
     foreach ($response as $row) {
-        $type = $row['top_detected_litter'] ?? 'Unknown';
+        $type  = $row['top_detected_litter'] ?? 'Unknown';
         $count = (int)($row['total_detections'] ?? 0);
-        $date = strtotime($row['date']);
 
+        // 🔧 Interpret stored date as PH local date (safe regardless of DB timezone)
+        $phDate = new DateTime($row['date'], new DateTimeZone('Asia/Manila'));
+
+        // 🧭 Group data based on requested filter
         switch ($filter) {
-            case 'year': $key = date('Y', $date); break;
-            case 'month': $key = date('M Y', $date); break;
-            default: $key = date('M d, Y', $date); break;
+            case 'year':
+                $key = $phDate->format('Y');
+                break;
+            case 'month':
+                $key = $phDate->format('M Y');
+                break;
+            default:
+                $key = $phDate->format('M d, Y');
+                break;
         }
 
         $trend[$type][$key] = ($trend[$type][$key] ?? 0) + $count;
     }
 
-    // Sort by date keys
+    // 🧹 Sort and structure data
     $allDates = [];
-    foreach ($trend as $arr) $allDates = array_merge($allDates, array_keys($arr));
+    foreach ($trend as $arr) {
+        $allDates = array_merge($allDates, array_keys($arr));
+    }
+
     $labels = array_values(array_unique($allDates));
     sort($labels);
 
     $datasets = [];
     foreach ($trend as $type => $data) {
         $points = [];
-        foreach ($labels as $lbl) $points[] = $data[$lbl] ?? 0;
+        foreach ($labels as $lbl) {
+            $points[] = $data[$lbl] ?? 0;
+        }
         $datasets[] = [
             'label' => $type,
-            'data' => $points
+            'data'  => $points
         ];
     }
 
     echo json_encode([
-        'labels' => $labels,
+        'labels'   => $labels,
         'datasets' => $datasets
     ]);
     exit;
@@ -1428,7 +1464,77 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'delete_detections') {
     ]);
     exit;
 }
+// =======================================================
+// 📊 CSV EXPORT: LitterLens Analytics (No Vendor Needed)
+// =======================================================
+if (isset($_GET['export']) && $_GET['export'] === 'analytics') {
+    ob_clean();
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="LitterLens_Analytics_' . date('Ymd_His') . '.csv"');
+    header('Cache-Control: no-cache, must-revalidate');
+    header('Expires: 0');
 
+    date_default_timezone_set('Asia/Manila');
 
+   
 
+    // ------------------------------------------------
+    // 🧾 Fetch Data from Supabase
+    // ------------------------------------------------
+    $detections = supabaseRequest('GET', 'detections', null, 'select=detection_id,date,detection_time,confidence_lvl,littertype_id,image_id');
+    $realtime   = supabaseRequest('GET', 'realtime_detections', null, 'select=date,top_detected_litter,total_detections');
+    $images     = supabaseRequest('GET', 'images', null, 'select=image_id,latitude,longitude,uploaded_by');
 
+    // ------------------------------------------------
+    // ✏️ Write to CSV Output
+    // ------------------------------------------------
+    $output = fopen('php://output', 'w');
+
+    // ===== SHEET 1: DETECTIONS =====
+    fputcsv($output, ['--- DETECTIONS SUMMARY ---']);
+    fputcsv($output, ['Detection ID', 'Date', 'Time', 'Accuracy', 'Litter Type', 'Image ID']);
+    if (is_array($detections)) {
+        foreach ($detections as $d) {
+            fputcsv($output, [
+                $d['detection_id'] ?? '',
+                $d['date'] ?? '',
+                $d['detection_time'] ?? '',
+                $d['confidence_lvl'] ?? '',
+                $d['littertype_id'] ?? '',
+                $d['image_id'] ?? ''
+            ]);
+        }
+    }
+
+    // ===== SHEET 2: REALTIME TRENDS =====
+    fputcsv($output, []); // blank line
+    fputcsv($output, ['--- REALTIME LITTER TRENDS ---']);
+    fputcsv($output, ['Date', 'Top Litter Type', 'Total Detections']);
+    if (is_array($realtime)) {
+        foreach ($realtime as $r) {
+            fputcsv($output, [
+                $r['date'] ?? '',
+                $r['top_detected_litter'] ?? '',
+                $r['total_detections'] ?? ''
+            ]);
+        }
+    }
+
+    // ===== SHEET 3: GEO DATA =====
+    fputcsv($output, []); // blank line
+    fputcsv($output, ['--- GEO MAPPING DATA ---']);
+    fputcsv($output, ['Image ID', 'Latitude', 'Longitude', 'Uploaded By']);
+    if (is_array($images)) {
+        foreach ($images as $img) {
+            fputcsv($output, [
+                $img['image_id'] ?? '',
+                $img['latitude'] ?? '',
+                $img['longitude'] ?? '',
+                $img['uploaded_by'] ?? ''
+            ]);
+        }
+    }
+
+    fclose($output);
+    exit;
+}

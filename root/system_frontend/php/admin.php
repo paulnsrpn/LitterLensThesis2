@@ -492,12 +492,17 @@
                     <div class="a-box" style="grid-column: span 2;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <h3>Litter Trends</h3>
-                            <select id="trendFilterAnalytics" class="a-dropdown">
+                            <div class="a-toolbar-right">
+                              <button id="exportAnalyticsBtn" class="export-btn">
+                                <i class="fas fa-file-excel"></i> Export Analytics (CSV)
+                              </button>
+                              <select id="trendFilterAnalytics" class="a-dropdown">
                                 <option value="day" selected>Daily</option>
                                 <option value="month">Monthly</option>
                                 <option value="year">Yearly</option>
-                            </select>
-                        </div>
+                              </select>
+                            </div>
+                          </div>
 
                         <div class="chart-container" style="position: relative; height: 400px;">
                             <div id="lineChartLoader" class="chart-loader">Loading data...</div>
@@ -942,48 +947,53 @@
                         <label class="section-title">Active Model</label>
                         <input type="text" id="activeModel" class="model-input" placeholder="e.g. LitterLens_CNN v1" />
                         <p class="field-description">Select which model should be used for detection.</p>
-                    </div>
+                        </div>
 
-                    <!-- Upload Model -->
-                   <div class="model-section upload-model-section">
-  <label class="section-title">Upload New Model (.pt)</label>
-  <div class="upload-inline">
-    <input type="file" id="modelFile" accept=".pt" class="file-input" />
-    <button id="uploadModelBtn" class="model-upload-btn">Upload & Activate</button>
-  </div>
-  <p class="field-description">Upload a new trained model. It will automatically become the active model.</p>
-</div>
+                                <!-- Upload Model -->
+                                    <div class="model-section upload-model-section">
+                                    <label class="section-title">Upload New Model (.pt)</label>
+                                    <div class="upload-inline">
+                                      <input type="file" id="modelFile" accept=".pt" class="file-input" />
+                                      <button id="uploadModelBtn" class="model-upload-btn">Upload & Activate</button>
+                                    </div>
+                                    <p class="field-description">Upload a new trained model. It will automatically become the active model.</p>
+                                  </div>
 
-                    <!-- Models Table -->
-                    <div class="table-container">
-    <table class="model-table" id="modelTable">
-      <thead>
-        <tr>
-          <th>Model Name</th>
-          <th>Version</th>
-          <th>Accuracy</th>
-          <th>Uploaded on</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+                                <!-- Models Table -->
+                                <div class="table-container">
+                                    <table class="model-table" id="modelTable">
+                                      <thead>
+                                        <tr>
+                                          <th>Model Name</th>
+                                          <th>Version</th>
+                                          <th>Accuracy</th>
+                                          <th>Uploaded on</th>
+                                          <th>Status</th>
+                                          <th>Actions</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody></tbody>
+                                    </table>
+                                  </div>
 
-                    <!-- Buttons -->
-                    <div class="settings-btn-container">
-                        <button id="editModelBtn" class="model-edit-btn">Edit</button>
-                        <button id="saveModelBtn" class="model-save-btn">Save</button>
-                        <button id="cancelModelBtn" class="model-cancel-btn">Cancel</button>
-                    </div>
-                </div>
+                                <!-- Buttons -->
+                                <div class="settings-btn-container">
+                                    <button id="editModelBtn" class="model-edit-btn">Edit</button>
+                                    <button id="saveModelBtn" class="model-save-btn">Save</button>
+                                    <button id="cancelModelBtn" class="model-cancel-btn">Cancel</button>
+                                </div>
+                            </div>
 
-            </div>
+                        </div>
 
 
                                       
-            <!-- 📝 EDIT MEMBER MODAL -->
+            
+            
+            
+            
+            
+                        <!-- 📝 EDIT MEMBER MODAL -->
             <div id="editMemberModal" class="modal-overlay" style="display:none;">
               <div class="modal-content" style="text-align: left;">
                 <h3 style="text-align: center;">Edit Member</h3>

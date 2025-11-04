@@ -203,3 +203,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
+document.addEventListener("DOMContentLoaded", () => {
+  const exportBtn = document.getElementById("exportAnalyticsBtn");
+  const dropdown = document.getElementById("trendFilterAnalytics");
+
+  if (!exportBtn) return;
+
+  exportBtn.addEventListener("click", () => {
+    exportBtn.disabled = true;
+    const originalText = exportBtn.innerHTML;
+
+    // Add spinner animation
+    exportBtn.innerHTML = `
+      <div class="spinner"></div> Exporting...
+    `;
+
+    const filter = dropdown.value || "day";
+    const exportUrl = `../../system_backend/php/system_admin_data.php?export=analytics&filter=${filter}`;
+
+    // Trigger download
+    const link = document.createElement("a");
+    link.href = exportUrl;
+    link.download = "";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    // Simulate short delay for better UX
+    setTimeout(() => {
+      exportBtn.innerHTML = originalText;
+      exportBtn.disabled = false;
+    }, 2500);
+  });
+});

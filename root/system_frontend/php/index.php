@@ -128,7 +128,9 @@ if (isLoggedIn) {
         `color:${color}; font-weight:bold; background:${bg}; padding:4px; border-radius:4px;`
       );
     })();
+    
 </script>
+
 
 
 <!DOCTYPE html>
@@ -641,6 +643,43 @@ if (isLoggedIn) {
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script> <!-- Dropzone for File Upload -->
     <script src="../js/main.js"></script> <!-- Main Site Scripts -->
     <script src="../js/upload.js"></script> <!-- Upload Page Logic -->
+
+    <script>
+    document.getElementById("contactForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        firstName: e.target.firstName.value,
+        lastName: e.target.lastName.value,
+        email: e.target.email.value,
+        countryCode: e.target.countryCode.value,
+        phone: e.target.phone.value,
+        message: e.target.message.value
+      };
+
+      try {
+        const res = await fetch("../../system_backend/php/send_contact_email.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert("✅ Message sent successfully!");
+          e.target.reset();
+        } else {
+          alert("⚠️ Failed: " + (data.error || "Unknown error"));
+        }
+      } catch (err) {
+        alert("❌ Network Error: " + err.message);
+      }
+    });
+    </script>
+
+
+
 
   </body>
 </html>

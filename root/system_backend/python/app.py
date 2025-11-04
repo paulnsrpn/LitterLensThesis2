@@ -214,7 +214,7 @@ initial_info = load_models_from_supabase()
 print("[Startup] Models load info:", initial_info)
 
 # ============ HELPER: NMS & Ensemble Merging ============
-def simple_nms(boxes, scores, iou_threshold=0.5):
+def simple_nms(boxes, scores, iou_threshold=0.1):
     """
     Basic NMS for numpy arrays (boxes Nx4, scores N).
     Returns indices kept.

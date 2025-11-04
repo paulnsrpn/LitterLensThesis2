@@ -56,3 +56,25 @@ Array
 
 Registration successful. Auto-login done.
 
+==== Registration Attempt ====
+Time: 2025-11-04 22:24:18
+Full Name: eman | Email: eflorida1024@gmail.com
+Email check result: NOT EXISTS
+Supabase insert result:
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 3
+            [admin_name] => eman
+            [email] => eflorida1024@gmail.com
+            [password] => $2y$10$zQCd7meMYtTD0Dzy5eYI9e2J813qgNiLgZrRAfRz/gZVqa.aIN4zm
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+
+Registration successful. Auto-login done.
+

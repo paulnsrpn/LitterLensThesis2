@@ -99,7 +99,7 @@
   display: flex;
   flex-direction: column;
   align-items: left;
-  padding-top: 100px;
+  padding-top: 80px;
 }
 
 .r-content h1 {
@@ -163,13 +163,14 @@
 }
 
 .r-cards .img-container {
+ 
   width: 900px;
-  height: 650px;
+  height: 450px;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
-  padding: 10px;
+  padding: 20px;
   flex-direction: column;
 }
 
@@ -185,7 +186,7 @@
 
 .main-img {
   width: 500px;
-  height: 500px;
+  height: 350px;
   transform-origin: center center; /* ensures zoom happens from center */
   cursor: grab;
   object-fit: contain; /* or 'cover' depending on what you want */

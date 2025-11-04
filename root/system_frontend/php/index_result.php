@@ -19,7 +19,6 @@
         }
     }
 
-    
     // If not logged in, leave session empty (guest)
     $admin_id = $_SESSION['admin_id'] ?? null;
     $admin_name = $_SESSION['admin_name'] ?? null;
@@ -51,34 +50,39 @@
 
 
 <body>
-              <!-- ================================================
-                  🧭 NAVIGATION BAR SECTION
-              ================================================= -->
-              <div class="nav">
-                <div class="navbar">
+            <!-- ================================================
+                🧭 NAVIGATION BAR SECTION
+            ================================================ -->
+            <div class="nav">
+              <div class="navbar">
+              
 
-                  <!-- 🟢 Logo -->
-                  <a href="../php/index.php" class="logo-link">
-                    <img src="../imgs/logo.png" alt="LitterLens logo" class="logo-img">
+                <!-- 🟢 Logo -->
+                <a href="index.php" class="logo-link">
+                  <img src="../imgs/logo.png" alt="LitterLens logo" class="logo-img">
+                </a>
+
+                <!-- 🟣 Right Navigation Links -->
+                <div class="r-nav">
+                  <!-- Navigation Links -->
+                  <a href="index.php">Home</a>
+                  <a href="index.php#about-page">About</a>
+                  <a href="index.php#contact-page">Contacts</a>
+                 
+
+                  <!-- Upload Button -->
+                  <!-- <button class="upload-btn" onclick="window.location.href='upload_page.php'">
+                    Upload
+                  </button> -->
+
+                  <!-- 👤 User Login Icon -->
+                  <a href="../php/index_login.php" title="Login">
+                    <i class="fa-solid fa-user" id="user-icon"></i>
                   </a>
-
-                  <!-- 🟣 Right Navigation Links -->
-                  <div class="r-nav">
-                    <a href="#">Home</a>
-                    <a href="#about-page">About</a>
-                    <a href="#contact-page">Contacts</a>
-
-                    <!-- Upload Button -->
-                    <button class="upload-btn" onclick="location.href='#upload-page'">Upload</button>
-
-                    <!-- User Icon -->
-                    <a href="../php/index_login.php">
-                      <i class="fa-solid fa-user" id="user-icon"></i>
-                    </a>
-                  </div>
-
                 </div>
+
               </div>
+            </div>
 
 
 
@@ -94,8 +98,8 @@
 
                     <!-- 🔹 Confidence Threshold -->
                   <select class="threshold-dropdown">
-                    <option value="0.05">Confidence Threshold: 10% (Very Sensitive)</option>
-                    <option value="0.10" selected>Confidence Threshold: 20% (Balanced Default)</option>
+                    <option value="0.05"selected>Confidence Threshold: 10% (Very Sensitive)</option>
+                    <option value="0.10">Confidence Threshold: 20% (Balanced Default)</option>
                     <option value="0.20">Confidence Threshold: 40% (Moderate)</option>
                     <option value="0.30">Confidence Threshold: 60% (Strict)</option>
                     <option value="0.40">Confidence Threshold: 80% (Very Strict)</option>
@@ -111,10 +115,10 @@
 
                     <!-- 🔹 Opacity Control -->
                     <select id="opacityDropdown" class="label-opacity-dropdown">
-                      <option value="0.25">Opacity Threshold: 25%</option>
-                      <option value="0.50">Opacity Threshold: 50%</option>
-                      <option value="0.75">Opacity Threshold: 75%</option>
-                      <option value="1.00" selected>Opacity Threshold: 100%</option>
+                      <option value="0.25">Bounding Box Opacity: 25%</option>
+                      <option value="0.50">Bounding Box Opacity: 50%</option>
+                      <option value="0.75">Bounding Box Opacity: 75%</option>
+                      <option value="1.00" selected>Bounding Box Opacity: 100%</option>
                     </select>
                   </div>
 
@@ -233,8 +237,8 @@
   const currentAdminName = "<?php echo $admin_name ?? ''; ?>";
 </script>
 
-      <!-- 📦 Main Result Page Logic -->
-      <script src="../js/gallery.js"></script>
-
+<script src="../js/gallery.js"></script>
 </body>
+
+
 </html>
