@@ -1,1 +1,0 @@
-RAW: {"totalDetections":2,"topDetectedLitter":"Plastic","detectionSpeed":"0.07s/frame","detectionAccuracy":11.76,"litterSummary":{"Plastic":2},"latitude":"14.683341","longitude":"121.054822","cameraName":"📷 Camera 0 • Unknown Area"}
