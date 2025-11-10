@@ -1,34 +1,93 @@
 @import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Arbutus&family=Homemade+Apple&family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jockey+One&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Macondo&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Tilt+Neon&display=swap');
 
+/* ============================================================
+   🧩 GLOBAL RESET + BASE STYLES
+   ------------------------------------------------------------
+   Ensures consistent spacing, box sizing, and smooth scrolling.
+============================================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-overflow-scrolling: auto;
+  margin: 0;
+  background: white;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+/* Fade-out transition for page changes */
+body.fade-out {
+  opacity: 0;
+}
+
+/* ============================================================
+   🧭 NAVIGATION BAR — iPhone Island Style
+   ------------------------------------------------------------
+   Floating, centered nav on desktop. Full-width on smaller screens.
+============================================================ */
+.nav {
+  position: relative;
+  z-index: 1000; 
+  max-width: 900px; /* Prevents navbar from getting too wide */
+  min-width: 340px; 
+}
+
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 90%;
+  max-width: 900px;
+  height: 55px;
   background: white;
   color: #141E46;
-  padding: 12px 24px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  width: 900px;
-  position: fixed;
-  top: 0; 
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  font-family: 'Afacad';
-  font-weight: bolder;
+  padding: 0 24px;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  font-family: 'Afacad', sans-serif;
+  font-weight: 600;
   font-size: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
+/* Glassy navbar effect when scrolling */
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Hover effect for navbar */
 .navbar:hover {
   background: #f9f9f9;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
+/* Logo adjustments */
 .navbar img {
-  width: 80px;
+  width: 70px;
   height: auto;
   transition: transform 0.3s ease;
 }
@@ -37,18 +96,19 @@
   transform: scale(1.05);
 }
 
+/* Desktop navigation links */
 .r-nav {
   display: flex;
   align-items: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .navbar a {
   color: #141E46;
   text-decoration: none;
   font-weight: 600;
-  font-size: 18px;
-  position: relative;
+  font-size: 17px;
   transition: color 0.3s ease;
 }
 
@@ -56,21 +116,7 @@
   color: #346347;
 }
 
-.navbar button {
-  background: #141E46;
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.navbar button:hover {
-  background: #346347;
-  transform: translateY(-2px);
-}
-
+/* User icon (login/profile) */
 .navbar i {
   font-size: 18px;
   color: #141E46;
@@ -79,10 +125,194 @@
 }
 
 .navbar i:hover {
-  color: #346347;
-  transform: scale(1.2);
+  color: #346347;  
+  transform: scale(1.2); 
 }
 
+
+/* ============================================================
+   🍔 HAMBURGER ICON (Mobile Trigger)
+   ------------------------------------------------------------
+   Hidden on desktop; appears on mobile. Animates into an “X”.
+============================================================ */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 25px;
+  height: 18px;
+  cursor: pointer;
+  z-index: 20000;
+  position: relative;
+}
+
+.hamburger span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: #141E46;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+/* Animate hamburger into “X” shape */
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translateY(7px);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translateY(-7px);
+}
+
+
+/* ============================================================
+   📱 MOBILE MENU — Modern Glassy Sidebar
+   ------------------------------------------------------------
+   Smooth slide-in sidebar with a blurred glass aesthetic.
+============================================================ */
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  right: -100%;
+  height: 100vh;
+  width: 260px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  padding-top: 0;
+  transition: right 0.4s ease, opacity 0.3s ease;
+  z-index: 15000;
+  visibility: hidden;
+  opacity: 0;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  overflow-y: auto;
+}
+
+/* Active state — visible sidebar */
+.mobile-menu.active {
+  right: 0;
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Menu header (logo + close button) */
+.menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Header logo and text */
+.menu-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.menu-title {
+  font-family: 'Afacad', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #141E46;
+}
+
+/* Close (X) button */
+.menu-close {
+  background: #141E46;
+  color: white;
+  font-size: 22px;
+  font-weight: 600;
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.menu-close:hover {
+  background: #346347;
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* Sidebar navigation links */
+.mobile-menu a {
+  display: block;
+  padding: 15px 25px;
+  color: #141E46;
+  font-family: 'Afacad';
+  text-decoration: none;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  transition: background 0.3s ease, padding-left 0.3s ease;
+}
+
+.mobile-menu a:hover {
+  background: #f0f4f3;
+  color: #346347;
+  padding-left: 35px;
+}
+
+
+
+/* ============================================================
+   🌑 OVERLAY (Behind Mobile Menu)
+   ------------------------------------------------------------
+   Dark semi-transparent background when the sidebar is active.
+============================================================ */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 14000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Overlay active state */
+.mobile-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+
+@media (max-width: 992px) {
+  .hamburger { display: flex; }
+  .r-nav { display: none; }
+}
+@media (min-width: 993px) {
+  .hamburger { display: none; }
+  .r-nav { display: flex; }
+}
+
+/* ============================================================
+   🎯 RESULTS SECTION
+============================================================ */
 .background {
   position: relative;
   width: 99%;
@@ -94,32 +324,32 @@
   z-index: 1;
   transition: transform 0.4s ease;
 }
-
 .r-content {
   display: flex;
   flex-direction: column;
-  align-items: left;
+  align-items: flex-start;
   padding-top: 80px;
+  font-family: 'Afacad', sans-serif;
 }
-
 .r-content h1 {
-  font-family: 'Afacad';
+  color: #141E46;
+  margin: 0;
 }
-
 .r-header {
   display: flex;
   align-items: flex-end;
-  align-content: bottom;
-  justify-content: bottom;
+  justify-content: flex-start;
   gap: 7px;
 }
-
 .r-header h1 {
   font-size: 45px;
   color: #141E46;
   margin: 0;
 }
 
+/* ============================================================
+   🎚️ DROPDOWNS
+============================================================ */
 .threshold-dropdown,
 .label-mode-dropdown,
 .label-opacity-dropdown {
@@ -136,34 +366,25 @@
   height: 30px;
   margin-bottom: 12px;
 }
-
-/* ✅ Fixed: hover now applies to ALL dropdowns */
 .threshold-dropdown:hover,
 .label-mode-dropdown:hover,
 .label-opacity-dropdown:hover {
   background-color: #1d4d1d;
   color: white;
-
 }
 
-/* ✅ Fixed: focus now correctly applies (removed space before :focus) */
-.threshold-dropdown:focus,
-.label-mode-dropdown:focus,
-.label-opacity-dropdown:focus {
-  outline: none;
-  box-shadow: 0 0 5px rgba(52, 99, 71, 0.4);
-    border-radius:  8px;
-}
-
-
+/* ============================================================
+   🖼️ IMAGE CONTAINER
+============================================================ */
 .r-content .r-cards {
   display: flex;
   flex-direction: row;
   gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
 }
-
 .r-cards .img-container {
- 
   width: 900px;
   height: 450px;
   border-radius: 20px;
@@ -172,218 +393,85 @@
   justify-content: center;
   padding: 20px;
   flex-direction: column;
-}
-
-
-.img-container {
-  overflow: hidden;  
+  overflow: hidden;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-height: 80vh;
 }
-
 .main-img {
   width: 500px;
   height: 350px;
-  transform-origin: center center; /* ensures zoom happens from center */
+  transform-origin: center center;
   cursor: grab;
-  object-fit: contain; /* or 'cover' depending on what you want */
+  object-fit: contain;
   border-radius: 10px;
   display: block;
 }
 
+/* ============================================================
+   📱 MOBILE RESPONSIVE FIXES
+============================================================ */
+@media (max-width: 600px) {
+  .r-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+  .dropdown-group,
+  .r-header select,
+  .threshold-dropdown,
+  .label-mode-dropdown,
+  .label-opacity-dropdown {
+    display: flex;
+    flex-direction: column !important;
+    width: 90% !important;
+    margin: 6px auto;
+  }
+  .r-cards {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+    margin-top: 15px;
+  }
+  .r-cards .img-container {
+    width: 90%;
+    max-width: 360px;
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 16px;
+    padding: 15px;
+  }
+  .main-img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+}
 
-
-
+/* ============================================================
+   📸 IMAGE CONTROLS
+============================================================ */
 .nav-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   color: rgba(20, 30, 70, 0.203);
   border: none;
-  font-size: 24px; 
+  font-size: 24px;
   cursor: pointer;
   transition: 0.3s ease, transform 0.2s ease;
   z-index: 10;
 }
-
-.nav-btn.next-btn{
-  background: transparent;
-}
-
-.nav-btn.prev-btn{
-  background: transparent;
-}
-
 .nav-btn:hover {
   color: #346347;
   transform: translateY(-50%) scale(1.1);
 }
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
 
-.prev-btn {
-  left: 10px;
-}
-
-.next-btn {
-  right: 10px;
-}
-
-
-.r-cards .receipt {
-  width: 250px;
-  height: auto;
-  border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.r-content .r-buttons {
-  display: flex;
-  flex-direction: row;
-}
-
-.content-container {
-  justify-content: center;
-  justify-items: center;
-  align-items: center;
-  align-content: center;
-}
-
-.r-cards {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-}
-
-.left-col {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-
-.r-buttons {
-  display: flex;
-  flex-direction: row;
-  position: static;
-  left: 20%;
-  gap: 420px;
-  bottom: 190px;
-  font-family: 'Afacad', sans-serif;
-  font-size: 18px;
-  align-items: center;
-  align-content: center;
-}
-
-.r-buttons button {
-  border-radius: 20px;
-  background-color: #3e905f;
-  color: white;
-  font-family: 'Afacad', sans-serif;
-  font-size: 18px;
-  padding: 2px 5px;
-  margin: 0;
-  width: 200px;
-  height: 35px;
-  cursor:pointer;
-}
-
-.upload-button{
-  position: relative;
-  left: 100px;
-}
-
-
-
-/*                                            TOGGLE SWITCH                                               */
- .switch {
-  position: absolute;
-  margin-top: 10px;
-  margin-right: 10px;
-  display: inline-block;
-  width: 50px;
-  height: 25px;
-  align-self: end;
-  z-index: 10;
-} 
-
-/* Hide default checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* Slider background */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: white;
-  /* Default white background */
-  border: 2px solid #0b4429;
-  /* Dark green border */
-  border-radius: 25px;
-  transition: 0.4s;
-}
-
-/* The white circle */
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 2.5px;
-  background-color: #0b4429;
-  /* Dark green knob */
-  border-radius: 50%;
-  transition: 0.4s;
-}
-
-/* Checked (ON) state */
-input:checked+.slider {
-  background-color: #0b4429;
-  /* Green background */
-}
-
-input:checked+.slider:before {
-  transform: translateX(24px);
-  background-color: white;
-  /* White knob */
-}
-
-.switch::after {
-  content: "show bounding box";
-  /* the text you want */
-  position: absolute;
-  top: -30px;
-  /* position above the switch */
-  right: 0;
-  background-color: transparent;
-  color: black;
-  padding: 5px 10px;
-  border-radius: 10px;
-  font-size: 15px;
-  white-space: nowrap;
-  opacity: 0;
-  transform: translateY(5px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
-  font-family: 'Afacad';
-}
-
-/* Show on hover */
-.switch:hover::after {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/*                                                    RECEIPT SECTION                                           */
+/* ============================================================
+   📄 RECEIPT SUMMARY
+============================================================ */
 .receipt-card {
   background: white;
   border-radius: 12px;
@@ -394,31 +482,22 @@ input:checked+.slider:before {
   color: #0a3d0a;
   font-family: 'Afacad', sans-serif;
 }
-
 .receipt-card h2 {
   font-size: 22px;
-  margin-top: 0;
   margin-bottom: 20px;
   color: #1d4d1d;
 }
-
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  font-family: 'Afacad', sans-serif;
 }
-
-th,
-td {
+th, td {
   text-align: left;
   padding: 5px 0;
   font-size: 15px;
 }
-
-th {
-  font-weight: bold;
-}
+th { font-weight: bold; }
 
 .accuracy {
   font-size: 16px;
@@ -426,40 +505,52 @@ th {
   margin-top: 8px;
   transition: color 0.3s ease;
 }
+.accuracy-good { color: #28a745; }
+.accuracy-medium { color: #ffc107; }
+.accuracy-low { color: #dc3545; }
 
-.accuracy-good {
-  color: #28a745; /* green */
-}
-
-.accuracy-medium {
-  color: #ffc107; /* yellow */
-}
-
-.accuracy-low {
-  color: #dc3545; /* red */
-}
-
-
-.divider {
-  border-top: 2px dashed #333;
-  margin: 10px 0 15px;
-}
-
+/* ============================================================
+   📍 GEO LOCATION & DOWNLOAD — THEMED (System Green: #1d4d1d)
+============================================================ */
 .location {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;  /* keeps text aligned with label baseline */
+  gap: 6px;
   margin-bottom: 20px;
   font-size: 14px;
+  color: #1d4d1d; /* 🌿 Base text color */
+  flex-wrap: wrap; /* handle small screens gracefully */
+}
+
+.location strong {
+  min-width: 70px; /* ensures label aligns neatly */
 }
 
 .location-icon {
-  width: 14px;
-  height: 14px;
-  background: #1d4d1d;
-  border-radius: 50%;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: #1d4d1d;
+  font-size: 0.95em;
 }
 
+/* 🔗 Location link (Google Maps) */
+#location-link {
+  color: #1d4d1d !important;
+  font-weight: 500;
+  text-decoration: underline;
+  transition: all 0.2s ease-in-out;
+  white-space: normal; /* allow wrapping on small screens */
+  line-height: 1.4;
+}
+
+#location-link:hover {
+  color: #145414 !important;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* ⬇️ Download Report Button Link */
 .download {
   text-align: center;
   font-weight: bold;
@@ -467,149 +558,1176 @@ th {
   text-decoration: none;
   font-size: 15px;
   display: block;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
 }
 
 .download:hover {
+  color: #145414;
   text-decoration: underline;
 }
 
-.location {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: inherit;
-}
-.location:hover {
-  opacity: 0.8;
-}
+/* ============================================================
+   🖼️ IMAGE CONTAINER — CENTERED + RESPONSIVE + ZOOM FIX
+============================================================ */
 
-#go-back-btn {
-  display: inline-block;       /* behaves like a button */
-  padding: 8px 16px;
-  color: black;
-  cursor: pointer;            /* pointer on hover */
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  background: transparent;    /* transparent background */
-  transition: all 0.3s ease;   /* smooth hover effect */
-}
-
-#go-back-btn:hover {
-  color: #1d4d1d;         /* white text on hover */
-}
-
-
-
-.logo-link {
+.img-container {
+  position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  text-decoration: none;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 850px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-.logo-img {
-  width: 120px; /* adjust size as needed */
+/* Image stays centered and scales smoothly */
+.main-img {
+  width: 100%;
+  max-height: 600px;
+  object-fit: contain;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+  transform-origin: center center;
 }
 
-.file-name {
-
-  font-family: 'Afacad', sans-serif;
-  font-size: 14px;
-  color: #333;
-  margin-top: 10px;
-  text-align: center;
-  max-width: 150px;
-  word-wrap: break-word;
+/* When zoomed in, keep image centered */
+.main-img.zoomed {
+  cursor: grab;
 }
 
-.bbox-canvas {
+/* ============================================================
+   🎚️ SWITCH FIXED TOP-RIGHT
+============================================================ */
+.switch {
   position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-.zoom-controls {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.9);
+  top: 10px;
+  right: 10px;
+  width: 50px;
+  height: 26px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
+  justify-content: center;
+  background: rgba(255,255,255,0.85);
   border-radius: 25px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  font-family: Arial, sans-serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  z-index: 50;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: white;
+  border: 2px solid #0b4429;
+  border-radius: 25px;
+  transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #0b4429;
+  border-radius: 50%;
+  transition: transform 0.4s ease;
+}
+
+input:checked + .slider {
+  background-color: #0b4429;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+  background-color: white;
+}
+
+/* ============================================================
+   🔍 ZOOM CONTROLS — ENABLED ONLY ON WIDE SCREENS
+============================================================ */
+.zoom-controls {
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+  background: rgba(255,255,255,0.9);
+  padding: 6px 14px;
+  border-radius: 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 .zoom-controls button {
   border: none;
   background: transparent;
   font-size: 20px;
+  font-weight: bold;
   cursor: pointer;
-  padding: 4px 8px;
-  transition: background 0.2s;
+  color: #1d4d1d;
+  transition: transform 0.2s ease, color 0.3s ease;
 }
 
 .zoom-controls button:hover {
-  background: rgba(0,0,0,0.05);
-  border-radius: 50%;
+  transform: scale(1.2);
+  color: #3e905f;
 }
 
 #zoom-level {
+  font-family: 'Afacad', sans-serif;
   font-size: 14px;
-  min-width: 50px;
-  text-align: center;
+  color: #141E46;
 }
 
 
-/* 🌀 Spinner overlay inside image container */
+/* ============================================================
+   🧩 RESPONSIVE ADJUSTMENTS
+============================================================ */
+
+/* Tablet (≤992px) */
+@media (max-width: 992px) {
+  .img-container {
+    width: 85%;
+    max-width: 700px;
+  }
+
+  .main-img {
+    max-height: 480px;
+  }
+
+  .switch {
+    top: 8px;
+    right: 8px;
+    transform: scale(0.9);
+  }
+
+  .zoom-controls {
+    gap: 8px;
+    padding: 5px 10px;
+  }
+}
+
+/* Mobile (≤600px) */
+@media (max-width: 600px) {
+  .img-container {
+    width: 90%;
+    max-width: 360px;
+    border-radius: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  .main-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .switch {
+    top: 6px;
+    right: 6px;
+    transform: scale(0.85);
+  }
+
+  /* 📴 Disable zoom controls for small screens */
+  .zoom-controls {
+    display: none !important;
+  }
+}
+
+/* Smallest phones (≤400px) */
+@media (max-width: 400px) {
+  .img-container {
+    width: 95%;
+    max-width: 320px;
+  }
+
+  .switch {
+    top: 5px;
+    right: 5px;
+    transform: scale(0.8);
+  }
+}
+
+/* Large Desktop (≥1440px) */
+@media (min-width: 1440px) {
+  .img-container {
+    max-width: 900px;
+  }
+
+  .main-img {
+    max-height: 650px;
+  }
+
+  .switch {
+    top: 10px;
+    right: 10px;
+    transform: scale(1);
+  }
+
+  /* ✅ Zoom enabled on large screen */
+  .zoom-controls {
+    display: flex !important;
+  }
+}
+
+
+/* ============================================================
+   🎯 BUTTONS
+============================================================ */
+.r-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 420px;
+  font-family: 'Afacad';
+  font-size: 18px;
+  align-items: center;
+}
+.r-buttons button {
+  border-radius: 20px;
+  background-color: #3e905f;
+  color: white;
+  font-family: 'Afacad';
+  font-size: 18px;
+  width: 200px;
+  height: 35px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.r-buttons button:hover {
+  background-color: #2d7549;
+  transform: scale(1.05);
+}
+
+/* ============================================================
+   🌀 SPINNER
+============================================================ */
 .spinner-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0,0,0,0.4);
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  z-index: 5;
+  z-index: 9999;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
-
 .spinner-overlay.active {
   opacity: 1;
   pointer-events: auto;
 }
-
-.spinner-overlay p {
-  color: #fff;
-  margin-top: 10px;
-  font-size: 14px;
-  font-family: 'Afacad', sans-serif;
-}
-
 .spinner {
-  display: inline-block;
   width: 28px;
   height: 28px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  border: 3px solid rgba(255,255,255,0.3);
   border-top: 3px solid #1d4d1d;
   border-radius: 50%;
   animation: spin 1.2s ease-in-out infinite;
 }
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
+
+/* ============================================================
+   ✨ ANIMATIONS & TRANSITIONS (CONTINUED)
+============================================================ */
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(25px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.fade-scale {
+  opacity: 0;
+  transform: scale(0.95);
+  animation: fadeScaleIn 0.8s ease forwards;
+}
+
+@keyframes fadeScaleIn {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.slide-left {
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideLeft 0.6s ease forwards;
+}
+@keyframes slideLeft {
+  0% { opacity: 0; transform: translateX(-20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+.slide-right {
+  opacity: 0;
+  transform: translateX(20px);
+  animation: slideRight 0.6s ease forwards;
+}
+@keyframes slideRight {
+  0% { opacity: 0; transform: translateX(20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+.pulse {
+  animation: pulseAnim 2s infinite;
+}
+@keyframes pulseAnim {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================================
+   💡 HOVER EFFECTS — Subtle Elevation & Glow
+============================================================ */
+.card-hover:hover {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transform: translateY(-4px);
+}
+
+.btn-hover:hover {
+  background: #255f3b;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.glow:hover {
+  box-shadow: 0 0 10px rgba(29,77,29,0.5), 0 0 25px rgba(29,77,29,0.3);
+}
+
+/* ============================================================
+   🌈 COLOR UTILITIES
+============================================================ */
+.text-green { color: #1d4d1d; }
+.text-dark { color: #141E46; }
+.text-light { color: #f4f4f4; }
+.bg-green { background-color: #1d4d1d; }
+.bg-lightgreen { background-color: #3e905f; }
+.bg-soft { background: #f9f9f9; }
+.bg-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+/* ============================================================
+   🧱 UTILITY CLASSES (PADDING / MARGIN)
+============================================================ */
+.p-10 { padding: 10px; }
+.p-20 { padding: 20px; }
+.p-30 { padding: 30px; }
+.m-10 { margin: 10px; }
+.m-20 { margin: 20px; }
+.m-30 { margin: 30px; }
+.mt-10 { margin-top: 10px; }
+.mt-20 { margin-top: 20px; }
+.mt-30 { margin-top: 30px; }
+.mb-10 { margin-bottom: 10px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-30 { margin-bottom: 30px; }
+
+/* ============================================================
+   📏 FLEX & GRID UTILITIES
+============================================================ */
+.flex { display: flex; }
+.flex-center { display: flex; justify-content: center; align-items: center; }
+.flex-column { display: flex; flex-direction: column; }
+.flex-row { display: flex; flex-direction: row; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+/* ============================================================
+   🖋️ TEXT UTILITIES
+============================================================ */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+.bold { font-weight: 700; }
+.semibold { font-weight: 600; }
+.light { font-weight: 300; }
+.uppercase { text-transform: uppercase; }
+.capitalize { text-transform: capitalize; }
+
+/* ============================================================
+   🎨 BORDER UTILITIES
+============================================================ */
+.border-none { border: none; }
+.border { border: 1px solid #ccc; }
+.border-green { border: 2px solid #1d4d1d; }
+.rounded { border-radius: 10px; }
+.rounded-lg { border-radius: 20px; }
+.rounded-xl { border-radius: 30px; }
+
+/* ============================================================
+   🪄 SHADOW UTILITIES
+============================================================ */
+.shadow-sm { box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.shadow-md { box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+.shadow-lg { box-shadow: 0 8px 18px rgba(0,0,0,0.25); }
+.shadow-hover:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+
+/* ===============================================
+   💻 Laptop & Desktop Screens (≥992px)
+   =============================================== */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .r-content {
+    align-items: center;
+    justify-content: center;
+    padding: 60px 6% 0 6%; /* ✅ Added 60px top padding for breathing space */
+  }
+
+  .r-cards {
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    margin-top: 20px; /* ✅ Add a small offset below the heading */
+  }
+
+  .img-container {
+    position: relative;
+    flex: 1;
+    max-width: 800px;
+    margin: 40px auto 25px auto; /* ✅ Added top margin for separation from header */
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .main-img {
+    padding: 10px;
+    width: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+
+  /* ✅ Keep switch top-right inside image box */
+  .switch {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transform: scale(0.95);
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 25px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  /* ✅ Buttons centered & evenly spaced */
+  .r-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 60px;
+    margin-top: 35px;  /* ✅ Slightly more space above buttons */
+    margin-bottom: 60px; /* ✅ Added more bottom margin for visual balance */
+    width: 100%;
+  }
+
+  .r-buttons button {
+    border-radius: 20px;
+    background-color: #3e905f;
+    color: white;
+    font-family: 'Afacad', sans-serif;
+    font-size: 17px;
+    width: 220px;
+    height: 45px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 10px 22px;
+    text-align: center;
+  }
+
+  .r-buttons button:hover {
+    background-color: #2d7549;
+    transform: scale(1.05);
+  }
+
+  /* ✅ Center zoom controls under image */
+  .zoom-controls {
+    margin: 20px auto 25px auto; /* ✅ Added 20px top margin */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .receipt{
+    width: 100%;
+  }
+  .receipt-card {
+    flex-shrink: 0;
+    max-width: 420px;
+    margin: 5px auto 20px; /* ✅ Added vertical space for balance */
+  }
+}
+
+
+/* ===============================================
+   💻 Large Desktop (≥1200px)
+   =============================================== */
+@media (min-width: 1200px) {
+  .r-cards {
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 40px;
+  }
+
+  .img-container {
+    margin: 0 auto 20px auto;
+  }
+
+  .r-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 70px; /* ✅ Balanced spacing for wider screens */
+    margin-top: 30px;
+    margin-bottom: 55px;
+    flex-wrap: nowrap;
+  }
+
+  .r-buttons button {
+    border-radius: 20px;
+    background-color: #3e905f;
+    color: white;
+    font-family: 'Afacad';
+    font-size: 18px;
+    width: 230px;
+    height: 45px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 10px 22px;
+  }
+
+  .r-buttons button:hover {
+    background-color: #2d7549;
+    transform: scale(1.05);
+  }
+
+  .zoom-controls {
+    margin: 15px auto 25px auto;
+  }
+}
+
+/* ===============================================
+   🖥️ Ultra-Wide (≥1440px)
+   =============================================== */
+@media (min-width: 1440px) {
+  .r-buttons {
+    margin-top: 25px;
+    margin-bottom: 60px;
+    gap: 90px; /* ✅ More space between buttons for wide screens */
+  }
+
+  .r-buttons button {
+    width: 240px;
+    height: 46px;
+    font-size: 19px;
+    padding: 12px 24px;
+  }
+}
+
+/* ===============================================
+   📲 Mobile Screens (≤991px)
+   =============================================== */
+@media (max-width: 991px) {
+  .r-cards {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .img-container {
+    width: 92%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .r-buttons {
+    display: flex;
+    flex-direction: column; /* ✅ Stack vertically */
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+    margin-bottom: 35px;
+    width: 100%;
+  }
+
+  .r-buttons button {
+    width: 85%;
+    max-width: 300px;
+    font-size: 16px;
+    height: 42px;
+  }
+
+  .zoom-controls {
+    display: none !important; /* Disable zoom controls on mobile */
+  }
+
+   .receipt {
+    width: 95%; /* ⬆ from 90% → 95% */
+    max-width: 500px; /* ⬆ allow slightly more space */
+    text-align: center;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 0 auto 35px auto;
+    padding: 25px 20px;
+  }
+}
+
+/* ===============================================
+   🖥️ PERFECT CENTER ALIGNMENT FOR LARGE SCREENS
+   (≥1440px) — IMAGE + RECEIPT + BUTTONS
+   =============================================== */
+@media (min-width: 1440px) {
+  /* ✅ Center the entire Detection Results content */
+  .r-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+
+  /* ✅ Keep everything centered within content */
+  .r-cards {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 60px;                /* Space between image and receipt */
+    width: 100%;
+    max-width: 1280px;        /* ✅ Prevents spreading too far on ultra-wide screens */
+    margin: 0 auto;
+  }
+
+  /* ✅ Image container centered */
+  .img-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 850px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin: 0 auto 25px auto;
+  }
+
+  .main-img {
+    padding: 10px;
+    width: 80%;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+
+  /* ✅ Switch top-right inside the image box */
+  .switch {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transform: scale(1);
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 25px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  /* ✅ Center both buttons perfectly under the image */
+  .r-buttons {
+    display: flex;
+    justify-content: center;     /* centers the group horizontally */
+    align-items: center;
+    gap: 80px;                   /* even spacing between buttons */
+    margin-top: 30px;
+    margin-bottom: 60px;
+    width: 100%;
+    max-width: 800px;            /* ✅ keeps buttons centered with image width */
+  }
+
+  .r-buttons button {
+    border-radius: 20px;
+    background-color: #3e905f;
+    color: white;
+    font-family: 'Afacad', sans-serif;
+    font-size: 18px;
+    width: 230px;
+    height: 46px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 12px 24px;
+  }
+
+  .r-buttons button:hover {
+    background-color: #2d7549;
+    transform: scale(1.05);
+  }
+
+  /* ✅ Center zoom controls under image */
+  .zoom-controls {
+    margin: 15px auto 25px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+  }
+
+  /* ✅ Keep the receipt aligned visually beside the image */
+  .receipt-card {
+    flex-shrink: 0;
+    max-width: 420px;
+    text-align: left;
+    margin: auto 0;
+  }
+
+  /* ✅ Ensures the page doesn't hug the sides of the browser */
+  .content-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+/* ============================================================
+   📱 TABLET (768px–992px) — CENTERED LAYOUT + GREEN HOVER STYLE
+============================================================ */
+@media (min-width: 601px) and (max-width: 991px) {
+  /* ✅ Center all content */
+  .r-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 70px 25px 0 25px;
+    margin: 0 auto;
+  }
+
+  /* ✅ Header (Title + Dropdowns) */
+  .r-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 480px;
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+
+  .r-header h1 {
+    font-size: 32px;
+    color: #141E46;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  /* ✅ Dropdowns vertically stacked and centered */
+  .r-header select {
+    display: block;
+    width: 100%;
+    max-width: 440px;
+    font-size: 16px;
+    font-family: 'Afacad', sans-serif;
+    text-align: start;
+    padding: 2px 2px;
+    border-radius: 12px;
+    border: 1.5px solid #14452F;
+    background-color: #ffffff;
+    color: #14452F !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+  }
+
+  .r-header select + select {
+    margin-top: 12px;
+  }
+
+  /* ✅ Hover and focus effect */
+  .r-header select:hover,
+  .r-header select:focus {
+    background-color: #14452F;
+    color: #ffffff !important;
+    border-color: #14452F;
+    outline: none;
+  }
+
+  /* ✅ Dropdown option styling */
+  .r-header select option {
+    background-color: #ffffff;
+    color: #14452F;
+  }
+
+  .r-header select option:checked {
+    background-color: #14452F;
+    color: #ffffff;
+  }
+
+  /* ✅ Image Container */
+  .img-container {
+    width: 95%;
+    max-width: 620px;
+    margin: 0 auto 25px auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .main-img {
+    width: 100%;
+    
+    border-radius: 12px;
+    object-fit: contain;
+    padding: 10px;
+  }
+
+  .switch {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transform: scale(0.9);
+    z-index: 10;
+    background: rgba(255,255,255,0.85);
+    border-radius: 25px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  }
+
+  /* ✅ Zoom Controls */
+  .zoom-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px auto 25px auto;
+    gap: 10px;
+    z-index: 100px;
+  }
+
+  /* ✅ Buttons Centered */
+  .r-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+    margin-bottom: 35px;
+    width: 100%;
+  }
+
+  .r-buttons button {
+    background-color: #3e905f;
+    color: white;
+    font-family: 'Afacad', sans-serif;
+    font-size: 16px;
+    border-radius: 20px;
+    width: 85%;
+    max-width: 340px;
+    height: 44px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .r-buttons button:hover {
+    background-color: #2d7549;
+    transform: scale(1.05);
+  }
+
+    /* ✅ Receipt Card Centered — Wider and Balanced */
+  .receipt {
+   height: 100%;
+  }
+
+  .receipt-card{
+    max-width: 600px; /* ⬆ allow more breathing space */
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 25px 25px;
+  }
+
+
+  .receipt-card h2 {
+    text-align: center;
+    margin-bottom: 12px;
+    color: #141E46;
+  }
+
+  .receipt-card table {
+    margin: 0 auto;
+    width: 90%;
+    text-align: left;
+  }
+
+  .receipt-card td {
+    padding: 4px 8px;
+  }
+}
+
+/* ============================================================
+   🧭 SCROLLBAR STYLING
+============================================================ */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #1d4d1d;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2f653a;
+}
+
+/* ============================================================
+   ⚡ BUTTON ANIMATIONS
+============================================================ */
+.button-glow {
+  position: relative;
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+.button-glow::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: skewX(-25deg);
+}
+.button-glow:hover::after {
+  animation: shimmer 1.2s forwards;
+}
+@keyframes shimmer {
+  0% { left: -75%; }
+  100% { left: 125%; }
+}
+
+/* ============================================================
+   🧩 MODAL OVERLAY (OPTIONAL EXTENSION)
+============================================================ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: #fff;
+  padding: 25px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  text-align: center;
+  animation: fadeScaleIn 0.4s ease;
+}
+
+/* ============================================================
+   🎬 TRANSITION HELPERS
+============================================================ */
+.transition-fast { transition: all 0.2s ease; }
+.transition-medium { transition: all 0.4s ease; }
+.transition-slow { transition: all 0.8s ease; }
+
+/* ============================================================
+   🌐 LINKS
+============================================================ */
+a {
+  color: #1d4d1d;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+  color: #3e905f;
+}
+
+/* ============================================================
+   🌟 FOOTER / COPYRIGHT
+============================================================ */
+footer {
+  text-align: center;
+  padding: 30px;
+  background: #f9f9f9;
+  color: #333;
+  font-size: 15px;
+  margin-top: 40px;
+}
+footer a { color: #1d4d1d; }
+footer a:hover { color: #3e905f; }
+
+/* ============================================================
+   🧠 ANIMATION SEQUENCES (APPLY TO LOADED COMPONENTS)
+============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-up { animation: fadeUp 0.6s ease forwards; }
+
+@keyframes zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.animate-zoom { animation: zoomIn 0.5s ease forwards; }
+
+@keyframes slideIn {
+  from { transform: translateX(50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-slide { animation: slideIn 0.6s ease forwards; }
+
+/* ============================================================
+   📏 RESPONSIVE CONTAINER CENTERING
+============================================================ */
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+}
+
+/* ============================================================
+   🌊 Creek Toast (Popup)
+============================================================ */
+.creek-toast {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.creek-toast.active {
+  display: flex;
+}
+
+.toast-content {
+  background: #fff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  max-width: 350px;
+  text-align: center;
+  color: #1d4d1d;
+}
+
+.toast-content h3 {
+  margin-bottom: 8px;
+  font-size: 18px;
+  color: #1d4d1d;
+}
+
+.toast-content p {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.toast-content select,
+.toast-content input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  border: 1px solid #1d4d1d;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1d4d1d;
+}
+
+.toast-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.toast-actions button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#toast-cancel {
+  background: #ccc;
+  color: #333;
+}
+
+#toast-confirm {
+  background: #1d4d1d;
+  color: #fff;
+}
+
+#toast-confirm:hover {
+  background: #145414;
+}
+
+/* ============================================================
+   ✨ END — STYLE COMPLETED (~1,012 lines)
+============================================================ */

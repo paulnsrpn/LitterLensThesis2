@@ -187,3 +187,18 @@ Insert Response: [{"realtime_id":10,"admin_id":3,"camera_name":"\ud83d\udcf7 Cam
 Inserted litter summary: {"realtime_id":10,"littertype_id":2,"litter_count":4}
 Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-04","quantity":4,"confidence_lvl":46.21,"detection_time":"23:12:57"}
 Activity logged for admin 3
+RAW JSON: {"totalDetections":22,"topDetectedLitter":"Organic Debris","detectionSpeed":"0.332s/frame","detectionAccuracy":54.23,"litterSummary":{"Biological Debris":1,"Metal":2,"Organic Debris":9,"Plastic":9,"Rubber":1},"latitude":"14.644019","longitude":"121.031885","cameraName":"📷 Camera 0 • Diliman, Quezon City, Metro Manila, Philippines"}
+Realtime Insert: {"admin_id":4,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":22,"top_detected_litter":"Organic Debris","detection_speed":0.332,"detection_accuracy":54.23,"latitude":"14.644019","longitude":"121.031885","date":"2025-11-05"}
+Insert Response: [{"realtime_id":12,"admin_id":4,"camera_name":"\ud83d\udcf7 Camera 0 \u2022 Diliman, Quezon City, Metro Manila, Philippines","camera_status":"Stopped","total_detections":22,"top_detected_litter":"Organic Debris","detection_speed":0.33,"detection_accuracy":54.23,"longitude":121.031885,"latitude":14.644019,"timestamp":"2025-11-06T06:42:12.041795+08:00","date":"2025-11-05"}]
+🆕 Created new litter type: Biological Debris
+Inserted litter summary: {"realtime_id":12,"littertype_id":8,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":8,"date":"2025-11-05","quantity":1,"confidence_lvl":54.23,"detection_time":"15:42:10"}
+Inserted litter summary: {"realtime_id":12,"littertype_id":6,"litter_count":2}
+Inserted detection: {"image_id":1,"littertype_id":6,"date":"2025-11-05","quantity":2,"confidence_lvl":54.23,"detection_time":"15:42:13"}
+Inserted litter summary: {"realtime_id":12,"littertype_id":1,"litter_count":9}
+Inserted detection: {"image_id":1,"littertype_id":1,"date":"2025-11-05","quantity":9,"confidence_lvl":54.23,"detection_time":"15:42:16"}
+Inserted litter summary: {"realtime_id":12,"littertype_id":2,"litter_count":9}
+Inserted detection: {"image_id":1,"littertype_id":2,"date":"2025-11-05","quantity":9,"confidence_lvl":54.23,"detection_time":"15:42:18"}
+Inserted litter summary: {"realtime_id":12,"littertype_id":7,"litter_count":1}
+Inserted detection: {"image_id":1,"littertype_id":7,"date":"2025-11-05","quantity":1,"confidence_lvl":54.23,"detection_time":"15:42:20"}
+Activity logged for admin 4

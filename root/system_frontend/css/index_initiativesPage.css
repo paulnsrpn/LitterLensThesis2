@@ -1,39 +1,84 @@
-.initiatives-page{
-  height: 100vh;
+/* ==============================================
+   🌱 PASIG RIVER INITIATIVES SECTION
+   ----------------------------------------------
+   Full-screen layout, centered grid, responsive cards
+============================================== */
+#initiatives-page {
+  position: relative;
+  min-height: 100vh;             /* ✅ fills full screen height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;       /* ✅ centers vertically */
+  align-items: center;           /* ✅ centers horizontally */
+  background: #ffffff;
+  padding: 3rem 2rem;
+  box-sizing: border-box;
 }
 
+/* 🌊 Section Title */
 .section-title {
-  margin: 40px auto 20px;  /* auto centers horizontally */
-  font-size: 28px;
-  font-weight: bold;
-  color: #141E46;
-  text-align: center;      /* ensures text itself is centered */
-  display: block;          /* makes sure auto margin works */
-  width: 100%;             /* full width so it stays centered */
-  padding: 2rem;
-  font-family: 'Montserrat Alternates';
+  font-family: 'Montserrat Alternates', sans-serif;
   font-size: 45px;
+  font-weight: 700;
+  color: #141E46;
+  text-align: center;
+  margin-bottom: 3rem;
+  width: 100%;
 }
 
-
+/* 💚 Initiatives Container */
 .initiatives {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
-  padding-bottom: 6rem;
+  gap: 30px;
+  width: 100%;
+  max-width: 1400px;
+  box-sizing: border-box;
+  padding-bottom: 3rem;
 }
 
+/* 🟩 Individual Cards */
 .i-card {
-  width: 250px;
-  height: 450px;
+  position: relative;
+  width: 260px;
+  height: 420px;
   background: #ddd;
-  transform: skew(-10deg); /* slant effect */
+  border-radius: 16px;
   overflow: hidden;
+  transform: skew(-10deg);
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
-.card img {
+.i-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: skew(10deg); /* un-slant image inside */
+  transform: skew(10deg); /* un-skew image inside card */
+  transition: transform 0.3s ease, scale 0.3s ease;
+}
+
+.i-card:hover {
+  transform: skew(-10deg) scale(1.05);
+}
+
+.i-card:hover img {
+  transform: skew(10deg) scale(1.1);
+}
+
+/* 🌈 Smooth fade-in animation for appearance */
+.i-card {
+  opacity: 0;
+  animation: fadeInCards 1s forwards;
+}
+.i-card:nth-child(1) { animation-delay: 0.2s; }
+.i-card:nth-child(2) { animation-delay: 0.4s; }
+.i-card:nth-child(3) { animation-delay: 0.6s; }
+.i-card:nth-child(4) { animation-delay: 0.8s; }
+
+@keyframes fadeInCards {
+  from { opacity: 0; transform: translateY(40px) skew(-10deg); }
+  to { opacity: 1; transform: translateY(0) skew(-10deg); }
 }

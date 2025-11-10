@@ -135,6 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+
+
+
   // Smooth scroll to specific step when clicked
   navLinks.forEach(link => {
     link.addEventListener("click", e => {
@@ -151,6 +154,65 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.getElementById("hamburger");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const overlay = document.getElementById("mobile-overlay");
+  const closeBtn = document.getElementById("menu-close");
+
+  if (hamburger && mobileMenu && overlay && closeBtn) {
+    // 🍔 Open menu
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("active");
+      mobileMenu.classList.toggle("active");
+      overlay.classList.toggle("active");
+    });
+
+    // ❌ Close when pressing the X
+    closeBtn.addEventListener("click", () => {
+      hamburger.classList.remove("active");
+      mobileMenu.classList.remove("active");
+      overlay.classList.remove("active");
+    });
+
+    // 🌑 Close when clicking the overlay
+    overlay.addEventListener("click", () => {
+      hamburger.classList.remove("active");
+      mobileMenu.classList.remove("active");
+      overlay.classList.remove("active");
+    });
+
+    // 📱 Auto-close when clicking a link
+    mobileMenu.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        hamburger.classList.remove("active");
+        mobileMenu.classList.remove("active");
+        overlay.classList.remove("active");
+      });
+    });
+  }
+});
+
+// ================================================
+// 🧠 AUTO-CLOSE MOBILE MENU ON WINDOW RESIZE
+// ================================================
+window.addEventListener("resize", () => {
+  const hamburger = document.getElementById("hamburger");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const overlay = document.getElementById("mobile-overlay");
+
+  // If window width is greater than 992px (desktop view)
+  if (window.innerWidth > 992) {
+    if (hamburger && mobileMenu && overlay) {
+      hamburger.classList.remove("active");
+      mobileMenu.classList.remove("active");
+      overlay.classList.remove("active");
+    }
+  }
+});
+
 // ==============================
 // 🎞️ AOS (Animate On Scroll) INIT
 // ==============================
@@ -161,3 +223,4 @@ AOS.init({
   once: false,
   mirror: true
 });
+

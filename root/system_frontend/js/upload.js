@@ -23,7 +23,7 @@ const myDropzone = new Dropzone("#my-dropzone", {
   paramName: "image",
   method: "post",
 
-  // 🧩 Event Initialization
+  // 🧩 Event Initialization 
   init: function () {
     this.on("error", function (file, errorMessage) {
       console.error("❌ Upload error:", errorMessage);

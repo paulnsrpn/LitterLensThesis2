@@ -30,27 +30,54 @@ document.addEventListener("DOMContentLoaded", () => {
   const SUPABASE_REST_URL = `${SUPABASE_URL}/rest/v1`;
   const SUPABASE_STORAGE_URL = `${SUPABASE_URL}/storage/v1/object`;
 
-  // 🗺️ Populate location data if available
-  const latVal = localStorage.getItem("user_latitude");
-  const lngVal = localStorage.getItem("user_longitude");
+const latVal = localStorage.getItem("user_latitude");
+const lngVal = localStorage.getItem("user_longitude");
 
-  if (latVal && lngVal) {
-    const latElem = document.getElementById("lat-value");
-    const lngElem = document.getElementById("lng-value");
-    const linkElem = document.getElementById("location-link");
+if (latVal && lngVal) {
+  const latElem = document.getElementById("lat-value");
+  const lngElem = document.getElementById("lng-value");
+  const locElem = document.getElementById("location-name");
+  const linkElem = document.getElementById("location-link");
 
-    if (latElem && lngElem && linkElem) {
-      latElem.textContent = parseFloat(latVal).toFixed(4);
-      lngElem.textContent = parseFloat(lngVal).toFixed(4);
-      linkElem.href = `https://www.google.com/maps?q=${latVal},${lngVal}`;
-      fetch(`${FLASK_BASE}/reverse_geocode?lat=${latVal}&lon=${lngVal}`)
-        .then((r) => r.json())
-        .then((d) => {
-          if (d.display_name) linkElem.title = d.display_name;
-        })
-        .catch(() => {});
-    }
+  if (latElem && lngElem && locElem && linkElem) {
+    latElem.textContent = parseFloat(latVal).toFixed(4);
+    lngElem.textContent = parseFloat(lngVal).toFixed(4);
+
+    // 🗺️ Make the link open Google Maps
+    linkElem.href = `https://www.google.com/maps?q=${latVal},${lngVal}`;
+
+    // Fetch readable location (barangay, city, etc.)
+    fetch(`${FLASK_BASE}/reverse_geocode?lat=${latVal}&lon=${lngVal}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.error) {
+          locElem.textContent = "Unknown area";
+          return;
+        }
+
+        const parts = [];
+        if (d.barangay && d.barangay !== "Unknown") parts.push(d.barangay);
+        if (d.city && d.city !== "Unknown") parts.push(d.city);
+        if (d.province && d.province !== "Unknown") parts.push(d.province);
+        if (d.country && d.country !== "Unknown") parts.push(d.country);
+
+        let text = parts.join(", ") || d.display_name || "Unknown area";
+
+        // 🏞️ Add note for rivers or creeks
+        if (d.display_name?.toLowerCase().includes("river") || d.display_name?.toLowerCase().includes("creek")) {
+          const landmark = d.display_name.split(",")[0];
+          text += ` (near ${landmark})`;
+        }
+
+        locElem.textContent = text;
+        linkElem.title = text;
+      })
+      .catch(() => {
+        locElem.textContent = "Location unavailable";
+      });
   }
+}
+  
 
   // ----------------------------
   // Utility
@@ -90,6 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const zoomOutBtn = $("#zoom-out");
   const zoomResetBtn = $("#zoom-reset");
   const zoomLevelDisplay = $("#zoom-level");
+
 
   if (!imgElement) {
     debugLog("🚨 .main-img element not found — script will exit.", "error");
@@ -225,28 +253,32 @@ document.addEventListener("DOMContentLoaded", () => {
   let lastSummary = {};
   let lastTotalItems = 0;
 
+  // =============================
+  // Updated showImage (always uses per-image data)
+  // =============================
   function showImage(index) {
     if (!detectionResult?.results?.length) return;
     if (index < 0) index = 0;
-    if (index >= detectionResult.results.length) index = detectionResult.results.length - 1;
+    if (index >= detectionResult.results.length)
+      index = detectionResult.results.length - 1;
     currentIndex = index;
-    const imgData = detectionResult.results[currentIndex];
 
+    const imgData = detectionResult.results[currentIndex];
     const src = showingResult
       ? `${FLASK_BASE}/${imgData.result_image}`
       : `${FLASK_BASE}/${imgData.original_image}`;
     updateImageDisplay(src);
 
-    // 🧮 Preserve last known totals to prevent reset when rerendering or switching
-    if (imgData.summary && Object.keys(imgData.summary).length > 0) {
-      lastSummary = imgData.summary;
-      lastTotalItems =
-        imgData.total_items ||
-        Object.values(imgData.summary).reduce((a, b) => a + b, 0);
-    }
+    // Use this image's summary ALWAYS (no global fallback)
+    const summary = imgData.summary || {};
+    const totalItems =
+      imgData.total_items ?? Object.values(summary).reduce((a, b) => a + b, 0);
 
-    updateTable(lastSummary, lastTotalItems);
-    updateAccuracy(imgData.accuracy ?? detectionResult.accuracy);
+    updateTable(summary, totalItems);
+
+    // Always display this image's per-image accuracy (backend returned)
+    const accValue = Number(imgData.accuracy ?? 0);
+    updateAccuracy(accValue);
   }
 
 
@@ -269,61 +301,106 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     return res.json();
   }
+// ============================================================
+// 🧠 FIXED: Accurate Redetect (Threshold-Based, Fully Synced)
+// ============================================================
+async function redetect(newThreshold, labelMode = currentLabelMode, opacity = currentOpacity) {
+  if (!detectionResult?.folder) return;
+  showSpinner("Re-running detection...");
 
-  // ----------------------------
-  // Redetect / Rerender
-  // ----------------------------
-  async function redetect(newThreshold, labelMode = currentLabelMode, opacity = currentOpacity) {
-    if (!detectionResult?.folder) return;
-    showSpinner("Re-running detection...");
-    try {
-      const data = await postJson(`${FLASK_BASE}/redetect`, {
-        folder: detectionResult.folder,
-        threshold: newThreshold,
-        label_mode: labelMode,
-        opacity,
-      });
-      hideSpinner();
-      detectionResult = { ...detectionResult, ...data };
-      localStorage.setItem("detectionResult", JSON.stringify(detectionResult));
-      showImage(currentIndex);
+  try {
+    const data = await postJson(`${FLASK_BASE}/redetect`, {
+      folder: detectionResult.folder,
+      threshold: newThreshold,
+      label_mode: labelMode,
+      opacity,
+    });
+    hideSpinner();
 
-      if (data.total_summary) {
-        const totalItems = Object.values(data.total_summary).reduce((a, b) => a + b, 0);
-        updateTable(data.total_summary, totalItems);
-        updateAccuracy(data.accuracy);
-      }
-      debugLog("Redetect complete", "success");
-    } catch (err) {
-      hideSpinner();
-      debugLog("Redetect failed: " + err.message, "error");
+    if (!data?.results?.length) {
+      debugLog("Redetect: No results returned", "warn");
+      return;
     }
+
+    // ✅ Replace the entire result set with the new one from backend
+    // Each image’s summary, total_items, and accuracy come from backend threshold-based detection
+    detectionResult = {
+      ...data,
+      folder: detectionResult.folder, // keep folder info
+    };
+
+    // ✅ Save to localStorage so it persists correctly
+    localStorage.setItem("detectionResult", JSON.stringify(detectionResult));
+
+    // ✅ Refresh the currently shown image (shows per-image accuracy & summary)
+    showImage(currentIndex);
+
+    debugLog(
+      `Redetect complete — threshold ${newThreshold} applied successfully`,
+      "success"
+    );
+  } catch (err) {
+    hideSpinner();
+    debugLog("Redetect failed: " + (err.message || err), "error");
   }
+}
 
-  // =============================
-  // 🎨 Rerender (fix summary reset)
-  // =============================
-  async function rerender(labelMode = currentLabelMode, opacity = currentOpacity) {
-    if (!detectionResult?.folder) return;
-    showSpinner("Redrawing boxes...");
-    try {
-      const data = await postJson(`${FLASK_BASE}/rerender`, {
-        folder: detectionResult.folder,
-        label_mode: labelMode,
-        opacity,
-      });
-      hideSpinner();
-      detectionResult = { ...detectionResult, ...data };
-      localStorage.setItem("detectionResult", JSON.stringify(detectionResult));
-      showImage(currentIndex);
+// ============================================================
+// 🎨 FIXED: Rerender (Keeps Per-Image Accuracy & Summary)
+// ============================================================
+async function rerender(labelMode = currentLabelMode, opacity = currentOpacity) {
+  if (!detectionResult?.folder) return;
+  showSpinner("Redrawing boxes...");
 
-      // ✅ Keep previous total summary after rerender
-      updateTable(lastSummary, lastTotalItems);
-    } catch (err) {
-      hideSpinner();
-      debugLog("Rerender failed: " + err.message, "error");
+  try {
+    const data = await postJson(`${FLASK_BASE}/rerender`, {
+      folder: detectionResult.folder,
+      label_mode: labelMode,
+      opacity,
+    });
+    hideSpinner();
+
+    if (!data?.results?.length) {
+      debugLog("Rerender: No results returned", "warn");
+      return;
     }
+
+    // ✅ Merge new visuals (rerender keeps old accuracy — we don’t re-detect)
+    const updatedResults = data.results.map((newImg, i) => {
+      const oldImg = detectionResult.results?.[i] || {};
+      return {
+        ...oldImg,
+        ...newImg,
+        summary: newImg.summary ?? oldImg.summary ?? {},
+        total_items:
+          newImg.total_items ??
+          oldImg.total_items ??
+          (newImg.summary
+            ? Object.values(newImg.summary).reduce((a, b) => a + b, 0)
+            : 0),
+        accuracy:
+          newImg.accuracy !== undefined
+            ? newImg.accuracy
+            : oldImg.accuracy ?? 0,
+      };
+    });
+
+    detectionResult = {
+      ...detectionResult,
+      results: updatedResults,
+      total_summary: data.total_summary || detectionResult.total_summary,
+    };
+
+    // ✅ Store and refresh UI
+    localStorage.setItem("detectionResult", JSON.stringify(detectionResult));
+    showImage(currentIndex);
+
+    debugLog("Rerender complete — per-image accuracy preserved", "success");
+  } catch (err) {
+    hideSpinner();
+    debugLog("Rerender failed: " + (err.message || err), "error");
   }
+}
 
   // =============================
   // 🔄 Before/After Switch (fix total reset)
@@ -370,22 +447,45 @@ document.addEventListener("DOMContentLoaded", () => {
     rerender(currentLabelMode, currentOpacity);
   });
 
-  // ----------------------------
-  // Prev / Next
-  // ----------------------------
-  prevBtn?.addEventListener("click", () => {
-    if (!detectionResult?.results?.length) return;
-    currentIndex =
-      (currentIndex - 1 + detectionResult.results.length) %
-      detectionResult.results.length;
-    showImage(currentIndex);
-  });
+// ----------------------------
+// Prev / Next (Threshold-Safe Navigation)
+// ----------------------------
+async function ensureThresholdSynced() {
+  try {
+    const currentThreshold = parseFloat(
+      thresholdDropdown?.value || localStorage.getItem("currentThreshold") || "0.30"
+    );
+    // Save in localStorage to persist
+    localStorage.setItem("currentThreshold", currentThreshold.toFixed(2));
 
-  nextBtn?.addEventListener("click", () => {
-    if (!detectionResult?.results?.length) return;
-    currentIndex = (currentIndex + 1) % detectionResult.results.length;
-    showImage(currentIndex);
-  });
+    // Optional: check current backend threshold (optional optimization)
+    // For simplicity, just reapply — Flask will ignore if unchanged
+    await fetch(`${FLASK_BASE}/set_threshold`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ threshold: currentThreshold }),
+    });
+  } catch (err) {
+    console.warn("⚠️ Failed to sync threshold with backend:", err);
+  }
+}
+
+prevBtn?.addEventListener("click", async () => {
+  if (!detectionResult?.results?.length) return;
+  await ensureThresholdSynced();
+  currentIndex =
+    (currentIndex - 1 + detectionResult.results.length) %
+    detectionResult.results.length;
+  showImage(currentIndex);
+});
+
+nextBtn?.addEventListener("click", async () => {
+  if (!detectionResult?.results?.length) return;
+  await ensureThresholdSynced();
+  currentIndex = (currentIndex + 1) % detectionResult.results.length;
+  showImage(currentIndex);
+});
+
 
   // ----------------------------
   // Before/After
@@ -405,6 +505,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const detectionSource = localStorage.getItem("detectionSource");
     const shouldAdminRedirect = detectionSource === "admin" || isLoggedIn;
     const target = shouldAdminRedirect ? ADMIN_REDIRECT : USER_REDIRECT;
+
+    // ✅ Reset threshold to default before leaving
+    try {
+      await fetch(`${FLASK_BASE}/set_threshold`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ threshold: 0.30 }),
+      });
+      debugLog("Threshold reset to default (0.30)", "info");
+    } catch {}
+
     if (detectionResult?.folder) {
       try {
         await fetch(`${FLASK_BASE}/cleanup`, {
@@ -418,6 +529,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("detectionSource");
     window.location.href = target;
   });
+
 
   // ----------------------------
   // Supabase Upload (with duplicate protection)
@@ -479,7 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (existing.length > 0) return existing[0].littertype_id;
     const postRes = await fetch(`${SUPABASE_REST_URL}/litter_types`, {
       method: "POST",
-      headers: {
+      headers: { 
         apikey: SUPABASE_KEY,
         Authorization: `Bearer ${SUPABASE_KEY}`,
         "Content-Type": "application/json",
@@ -491,100 +603,216 @@ document.addEventListener("DOMContentLoaded", () => {
     return newType[0].littertype_id;
   }
 
-  async function storeDetectionToSupabase(detectionResult) {
-    try {
-      const folderKey = detectionResult?.folder || "defaultFolder";
-      if (localStorage.getItem(`uploaded_${folderKey}`)) {
-        debugLog("Already uploaded previously.", "warn");
-        alert("Already uploaded previously.");
-        return;
-      }
+// ============================================================
+// 🌊 Enhanced: Ensure creek exists and store location metadata
+// ============================================================
+async function getCreekId(name) {
+  if (!name) return null;
 
-      const lat = localStorage.getItem("user_latitude");
-      const lng = localStorage.getItem("user_longitude");
-      const uploads = await uploadAllImagesToBucket(detectionResult.results);
-      // 🕓 Use Philippine (Asia/Manila) local date/time
-      const phNow = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Manila" });
-      const [dateStr, timeStr] = phNow.split(" ");
+  // Fetch coordinates
+  const lat = localStorage.getItem("user_latitude");
+  const lng = localStorage.getItem("user_longitude");
 
-
-
-      for (let i = 0; i < uploads.length; i++) {
-        const imgUpload = uploads[i];
-        const imgData = detectionResult.results[i];
-        let imageId = imgUpload.existingImageRecord?.image_id || null;
-        if (!imageId) {
-          const imgPayload = {
-            imagefile_name: imgUpload.fileName,
-            uploaded_by: isLoggedIn ? parseInt(adminId) : null,
-            latitude: parseFloat(lat) || null,
-            longitude: parseFloat(lng) || null,
-          };
-          const imgRes = await fetch(`${SUPABASE_REST_URL}/images`, {
-            method: "POST",
-            headers: {
-              apikey: SUPABASE_KEY,
-              Authorization: `Bearer ${SUPABASE_KEY}`,
-              "Content-Type": "application/json",
-              Prefer: "return=representation",
-            },
-            body: JSON.stringify(imgPayload),
-          });
-          const imgJson = await imgRes.json();
-          imageId = imgJson[0]?.image_id;
-        }
-
-        for (const [typeName, qty] of Object.entries(imgData.summary || {})) {
-          const typeId = await getLitterTypeId(typeName);
-          const detCheck = await fetch(
-            `${SUPABASE_REST_URL}/detections?image_id=eq.${imageId}&littertype_id=eq.${typeId}&date=eq.${dateStr}`,
-            { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
-          );
-          const exist = await detCheck.json();
-          if (exist.length > 0) continue;
-
-          const detPayload = {
-            image_id: imageId,
-            littertype_id: typeId,
-            date: dateStr,
-            quantity: qty,
-            confidence_lvl: parseFloat(imgData.accuracy || detectionResult.accuracy || 0),
-            detection_time: timeStr,
-          };
-          await fetch(`${SUPABASE_REST_URL}/detections`, {
-            method: "POST",
-            headers: {
-              apikey: SUPABASE_KEY,
-              Authorization: `Bearer ${SUPABASE_KEY}`,
-              "Content-Type": "application/json",
-              Prefer: "return=representation",
-            },
-            body: JSON.stringify(detPayload),
-          });
-        }
-      }
-
-      localStorage.setItem(`uploaded_${folderKey}`, "1");
-      debugLog("All detections saved to Supabase.", "success");
-      alert("Upload complete.");
-    } catch (err) {
-      debugLog("Upload failed: " + err.message, "error");
-      alert("Upload failed: " + err.message);
-    }
+  // Fetch readable address for more context
+  let geo = {};
+  try {
+    const res = await fetch(`${FLASK_BASE}/reverse_geocode?lat=${lat}&lon=${lng}`);
+    geo = await res.json();
+  } catch (err) {
+    console.warn("⚠️ Reverse geocode failed for creek metadata:", err);
   }
 
-  uploadBtn?.addEventListener("click", async () => {
-    const dr = JSON.parse(localStorage.getItem("detectionResult") || "null");
-    if (!dr) {
-      alert("No detection results available.");
+  // Extract optional location data
+  const barangay = geo.barangay && geo.barangay !== "Unknown" ? geo.barangay : null;
+  const city = geo.city && geo.city !== "Unknown" ? geo.city : null;
+  const province = geo.province && geo.province !== "Unknown" ? geo.province : null;
+  const coordinates = lat && lng ? `${lat},${lng}` : null;
+
+  // 1️⃣ Check if creek already exists
+  const getRes = await fetch(
+    `${SUPABASE_REST_URL}/creeks?creek_name=eq.${encodeURIComponent(name)}`,
+    {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+      },
+    }
+  );
+  const existing = await getRes.json();
+  if (existing.length > 0) return existing[0].creek_id;
+
+  // 2️⃣ Insert new creek with full metadata
+  const postRes = await fetch(`${SUPABASE_REST_URL}/creeks`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify({
+      creek_name: name,
+      city,
+      barangay,
+      province,
+      coordinates,
+    }),
+  });
+
+  const newCreek = await postRes.json();
+  return newCreek[0]?.creek_id || null;
+}
+// ============================================================
+// 🧠 UPDATED: Upload detections to Supabase with Creek Handling
+// ============================================================
+async function storeDetectionToSupabase(detectionResult) {
+  try {
+    const folderKey = detectionResult?.folder || "defaultFolder";
+    if (localStorage.getItem(`uploaded_${folderKey}`)) {
+      debugLog("Already uploaded previously.", "warn");
+      alert("Already uploaded previously.");
       return;
     }
+
+    const lat = localStorage.getItem("user_latitude");
+    const lng = localStorage.getItem("user_longitude");
+    const creekName = localStorage.getItem("selected_creek") || null;
+
+    // ✅ Ensure creek is registered in Supabase
+    let creekId = null;
+    if (creekName) creekId = await getCreekId(creekName);
+
+    const uploads = await uploadAllImagesToBucket(detectionResult.results);
+    // 🕓 Use Philippine local date/time
+    const phNow = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Manila" });
+    const [dateStr, timeStr] = phNow.split(" ");
+
+    for (let i = 0; i < uploads.length; i++) {
+      const imgUpload = uploads[i];
+      const imgData = detectionResult.results[i];
+      let imageId = imgUpload.existingImageRecord?.image_id || null;
+
+      // 🖼️ Insert image if not yet in database
+      if (!imageId) {
+        const imgPayload = {
+          imagefile_name: imgUpload.fileName,
+          uploaded_by: isLoggedIn ? parseInt(adminId) : null,
+          latitude: parseFloat(lat) || null,
+          longitude: parseFloat(lng) || null,
+          creek_id: creekId || null, // 🌊 Add link to creek
+        };
+
+        const imgRes = await fetch(`${SUPABASE_REST_URL}/images`, {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify(imgPayload),
+        });
+        const imgJson = await imgRes.json();
+        imageId = imgJson[0]?.image_id;
+      }
+
+      // 🗑️ Insert detections linked to image
+      for (const [typeName, qty] of Object.entries(imgData.summary || {})) {
+        const typeId = await getLitterTypeId(typeName);
+        const detCheck = await fetch(
+          `${SUPABASE_REST_URL}/detections?image_id=eq.${imageId}&littertype_id=eq.${typeId}&date=eq.${dateStr}`,
+          { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+        );
+        const exist = await detCheck.json();
+        if (exist.length > 0) continue;
+
+        const detPayload = {
+          image_id: imageId,
+          littertype_id: typeId,
+          date: dateStr,
+          quantity: qty,
+          confidence_lvl: parseFloat(imgData.accuracy || detectionResult.accuracy || 0),
+          detection_time: timeStr,
+        };
+        await fetch(`${SUPABASE_REST_URL}/detections`, {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify(detPayload),
+        });
+      }
+    }
+
+    localStorage.setItem(`uploaded_${folderKey}`, "1");
+    debugLog("All detections saved to Supabase (with creek link).", "success");
+    alert("Upload complete — creek data included.");
+  } catch (err) {
+    debugLog("Upload failed: " + err.message, "error");
+    alert("Upload failed: " + err.message);
+  }
+}
+
+
+uploadBtn?.addEventListener("click", async () => {
+  const dr = JSON.parse(localStorage.getItem("detectionResult") || "null");
+  if (!dr) {
+    alert("No detection results available.");
+    return;
+  }
+
+  // Show creek selection toast
+  const toast = document.getElementById("creek-toast");
+  const creekSelect = document.getElementById("creek-select");
+  const creekInput = document.getElementById("creek-input");
+  const confirmBtn = document.getElementById("toast-confirm");
+  const cancelBtn = document.getElementById("toast-cancel");
+
+  toast.classList.add("active");
+  creekSelect.value = "";
+  creekInput.value = "";
+  creekInput.style.display = "none";
+
+  creekSelect.addEventListener("change", () => {
+    creekInput.style.display = creekSelect.value === "Other" ? "block" : "none";
+  });
+
+  const handleConfirm = async () => {
+    let creekName =
+      creekSelect.value === "Other"
+        ? creekInput.value.trim()
+        : creekSelect.value;
+
+    if (!creekName) {
+      alert("Please select or type the creek/river name.");
+      return;
+    }
+
+    localStorage.setItem("selected_creek", creekName);
+    toast.classList.remove("active");
+
     uploadBtn.disabled = true;
     uploadBtn.textContent = "Uploading...";
     await storeDetectionToSupabase(dr);
     uploadBtn.disabled = false;
     uploadBtn.textContent = "Upload to Database";
-  });
+
+    // cleanup event listeners
+    confirmBtn.removeEventListener("click", handleConfirm);
+    cancelBtn.removeEventListener("click", handleCancel);
+  };
+
+  const handleCancel = () => {
+    toast.classList.remove("active");
+  };
+
+  confirmBtn.addEventListener("click", handleConfirm);
+  cancelBtn.addEventListener("click", handleCancel);
+});
+  
 
   // ----------------------------
   // Zoom & Pan
@@ -802,16 +1030,7 @@ pdfButton?.addEventListener("click", async () => {
 });
 
 
-  // ----------------------------
-  // Default threshold reset
-  // ----------------------------
-  (async () => {
-    try {
-      await fetch(`${FLASK_BASE}/set_threshold`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ threshold: 0.05 }),
-      });
-    } catch {}
-  })();
+
 });
+
+

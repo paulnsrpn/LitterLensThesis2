@@ -1,9 +1,11 @@
+/* ================================================
+   ☎️ CONTACT PAGE SECTION (Full Responsive)
+================================================ */
 #contact-page {
   width: 100%;
   min-height: 100vh;
   background-color: #FFFDF6;
   position: relative;
-  color: #FFFDF6;
   overflow: hidden;
   font-family: 'Montserrat Alternates', sans-serif;
 }
@@ -29,21 +31,20 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(52, 99, 71, 0.8); /* translucent green */
+  background-color: rgba(52, 99, 71, 0.8);
   pointer-events: none;
 }
 
 /* Header text over upper image */
 .contact-header {
   color: #fff;
-  font-family: 'Montserrat Alternates', sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: left;
   text-align: left;
   position: absolute;
   top: 110px;
-  left: 150px;
+  left: 120px;
   max-width: 500px;
 }
 
@@ -60,6 +61,7 @@
   margin-top: 0;
 }
 
+/* Contact info content */
 .contact-content {
   font-family: 'Afacad';
   display: flex;
@@ -83,28 +85,34 @@
   font-size: 18px;
 }
 
-/* Glass form style */
+/* Glass form - right aligned */
 .contact-form {
   font-family: 'Afacad';
   width: 600px;
   max-height: 700px;
+
+  /* alignment */
+  position: absolute;
+  top: 150px;
+  right: 0; /* flush against right edge */
+  margin-right: 50px; /* small gap from edge */
+
+  /* glass look */
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 25px;
-  position: absolute;
-  right: 100px;
-  top: 150px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  padding-top: 30px;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-bottom: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+
+  /* layout */
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 30px;
+  transition: all 0.3s ease;
 }
+
 
 /* Form header */
 .contact-form-header h1 {
@@ -114,8 +122,8 @@
   font-weight: bold;
 }
 
-.contact-form-header p{
-    margin: 0;
+.contact-form-header p {
+  margin: 0;
 }
 
 /* Input layout */
@@ -150,7 +158,8 @@
   min-width: 90px;
 }
 
-input, textarea {
+input,
+textarea {
   padding: 8px 18px;
   border-radius: 25px;
   border: 1px solid rgba(13, 12, 36, 0.3);
@@ -164,17 +173,18 @@ input, textarea {
   font-family: 'Afacad';
 }
 
-input::placeholder, textarea::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: #141e4640;
   font-weight: 500;
   font-family: 'Afacad';
 }
 
-/* Message textarea */
 .message {
   height: 135px;
 }
 
+/* Submit button */
 .submit-btn {
   padding: 12px 20px;
   background-color: #141E46;
@@ -202,17 +212,201 @@ input::placeholder, textarea::placeholder {
   text-decoration: underline;
 }
 
-/*                                                                    Animations                              */
+/* ===============================================
+   💻 RESPONSIVE BREAKPOINTS (Merged & Optimized)
+================================================ */
 
-.fade-in {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.6s ease-out;
+/* 🖥️ 4K / Large Screens */
+@media (min-width: 1920px) {
+  .contact-header h1 {
+    font-size: 90px;
+  }
+
+  .contact-form {
+    right: 200px;
+    width: 700px;
+  }
 }
 
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
+/* 💻 Laptops / Desktops */
+@media (max-width: 1200px) {
+  .contact-header {
+    left: 80px;
+    top: 90px;
+  }
+
+  .contact-form {
+    right: 30px;
+    width: 500px;
+  }
+
+  .contact-content {
+    margin-left: 6rem;
+  }
 }
 
+/* 📱 Tablets (≤992px) */
+@media (max-width: 992px) {
+  #contact-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #FFFDF6;
+    overflow-x: hidden;
+  }
 
+  .upper-sec {
+    height: 30vh;
+  }
+
+  .contact-header {
+    top: 25px;
+    left: auto;
+    margin: 2rem auto 1rem;
+    text-align: center;
+    max-width: 90%;
+  }
+
+  .contact-header h1 {
+    font-size: 52px;
+  }
+
+  .contact-header p {
+    font-size: 16px;
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+
+  .contact-content {
+    margin: 2rem 0;
+    text-align: center;
+    align-items: center;
+    color: #141E46;
+  }
+
+  /* Center and widen the form */
+  .contact-form {
+    position: relative;
+    right: auto;
+    top: auto;
+    margin: 2rem auto 4rem;
+    width: 90%;
+    max-width: 650px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 25px;
+    padding: 2rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Inputs stack neatly */
+  .names {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .phone-field {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  input, textarea, select {
+    font-size: 15px;
+    padding: 10px 16px;
+  }
+
+  .submit-btn {
+    padding: 12px 20px;
+    font-size: 15px;
+  }
+}
+
+/* 📱 Mobile (≤600px) */
+@media (max-width: 600px) {
+  .upper-sec {
+    height: 25vh;
+  }
+
+  .contact-header h1 {
+    font-size: 40px;
+  }
+
+  .contact-header p {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .contact-content {
+    gap: 1rem;
+    font-size: 16px;
+  }
+
+  .contact-form {
+    width: 94%;
+    padding: 1.5rem;
+    border-radius: 20px;
+    margin-bottom: 3rem;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .contact-form-header h1 {
+    font-size: 22px;
+  }
+
+  .contact-form-header p {
+    font-size: 13px;
+  }
+
+  .names,
+  .phone-field {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .submit-btn {
+    font-size: 14px;
+    padding: 10px 16px;
+    border-radius: 20px;
+  }
+
+  .disclaimer {
+    font-size: 11px;
+  }
+}
+
+/* 📱 Smallest Screens (≤400px) */
+@media (max-width: 400px) {
+  .upper-sec {
+    height: 22vh;
+  }
+
+  .contact-header h1 {
+    font-size: 32px;
+  }
+
+  .contact-header p {
+    font-size: 13px;
+  }
+
+  .contact-content {
+    font-size: 15px;
+  }
+
+  .contact-form {
+    padding: 1rem;
+    width: 96%;
+    border-radius: 16px;
+  }
+
+  input, textarea {
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    padding: 9px 14px;
+    font-size: 13px;
+  }
+}

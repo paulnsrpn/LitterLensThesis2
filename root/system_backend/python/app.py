@@ -39,7 +39,7 @@ SUPABASE_BUCKET = "model"
 PUBLIC_URL_PREFIX = f"{SUPABASE_STORAGE_BASE}/public/{SUPABASE_BUCKET}/"
 
 # Detection defaults
-DETECTION_THRESHOLD = 0.10  # global, adjustable via /set_threshold
+DETECTION_THRESHOLD = 0.30  # global, adjustable via /set_threshold
 TARGET_FPS = 30.0
 
 # ============ FLASK APP ============
@@ -214,7 +214,7 @@ initial_info = load_models_from_supabase()
 print("[Startup] Models load info:", initial_info)
 
 # ============ HELPER: NMS & Ensemble Merging ============
-def simple_nms(boxes, scores, iou_threshold=0.1):
+def simple_nms(boxes, scores, iou_threshold=0.5):
     """
     Basic NMS for numpy arrays (boxes Nx4, scores N).
     Returns indices kept.
@@ -248,7 +248,7 @@ def simple_nms(boxes, scores, iou_threshold=0.1):
         order = order[inds + 1]
     return np.array(keep, dtype=int)
 
-def ensemble_predict(image, conf=0.10, iou_thresh=0.5):
+def ensemble_predict(image, conf=0.30, iou_thresh=0.5):
     """
     Run inference on all loaded models and merge predictions using class-aware NMS.
     Accepts an OpenCV image path or numpy array or filepath (YOLO supports both).
@@ -706,7 +706,7 @@ def analyze():
     except Exception as e:
         import traceback; traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-
+ 
 @app.route('/admin_analyze', methods=['POST'])
 def admin_analyze():
     """
@@ -931,39 +931,73 @@ def serve_model_file(filename):
 def render_from_dets(orig_path, dets, output_path, mode="confidence", box_opacity=1.0):
     """
     Draw bounding boxes (det dicts) on orig image and save to output_path.
-    dets: list of dicts {x1,y1,x2,y2,conf,cls}
-    mode: "confidence" or "labels"
+    mode options:
+      - "confidence": show only confidence values
+      - "labels": show label + confidence
+      - "boxes": show only boxes (no text)
     """
+    if box_opacity <= 0 or box_opacity > 1:
+        box_opacity = 1.0  # 🧩 ensure valid opacity
+
     img = cv2.imread(orig_path)
     if img is None:
         raise RuntimeError(f"cannot read {orig_path}")
+
     overlay = img.copy()
     base_model = first_model()
     names = getattr(base_model, "names", {}) if base_model else {}
+
+    # 🟩 Draw filled boxes with color + transparency
+    # 🟩 Draw filled boxes with color + transparency
     for d in dets:
         x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
         label = names.get(d["cls"], str(d["cls"]))
-        conf_pct = int(round(d["conf"] * 100))
-        color = CLASS_COLORS.get(label, (255,255,255))
-        # fill with alpha based on confidence
-        alpha = 0.6
-        sub = overlay.copy()
-        cv2.rectangle(sub, (x1, y1), (x2, y2), color, -1)
-        cv2.addWeighted(sub, alpha, overlay, 1 - alpha, 0, overlay)
+        color = CLASS_COLORS.get(label, (255, 255, 255))
+        conf_pct = d["conf"] * 100
+
+        if conf_pct < 90:  
+            # 🟢 Below 90% → fill with dynamic opacity
+            dynamic_opacity = np.interp(d["conf"], [0.3, 0.9], [0.2, 0.8])
+            dynamic_opacity = np.clip(dynamic_opacity, 0.2, 0.8)
+            sub = overlay.copy()
+            cv2.rectangle(sub, (x1, y1), (x2, y2), color, -1)
+            cv2.addWeighted(sub, dynamic_opacity, overlay, 1 - dynamic_opacity, 0, overlay)
+        else:
+            # 🔵 90% and above → no fill, outline only
+            pass
+
+        # Always draw the outer border
         cv2.rectangle(overlay, (x1, y1), (x2, y2), color, 2)
+
+
+    # Merge overlay with base image using opacity
     img = cv2.addWeighted(overlay, box_opacity, img, 1 - box_opacity, 0)
+
+    # 🏷️ Draw text (only if mode allows)
     for d in dets:
+        if mode == "boxes":
+            continue  # 🚫 skip all text drawing
+
         x1, y1, x2, y2 = map(int, [d["x1"], d["y1"], d["x2"], d["y2"]])
-        conf_pct = int(round(d["conf"] * 100))
         label = names.get(d["cls"], str(d["cls"]))
-        color = CLASS_COLORS.get(label, (255,255,255))
-        text = f"{conf_pct}%" if mode == "confidence" else f"{label} {conf_pct}%"
+        conf_pct = int(round(d["conf"] * 100))
+        color = CLASS_COLORS.get(label, (255, 255, 255))
+
+        if mode == "confidence":
+            text = f"{conf_pct}%"
+        elif mode == "labels":
+            text = f"{label} {conf_pct}%"
+        else:
+            text = f"{conf_pct}%"
+
         (tw, th), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
         py = max(0, y1 - th - 6)
         cv2.rectangle(img, (x1, py), (x1 + tw + 6, y1), color, -1)
-        cv2.putText(img, text, (x1 + 3, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2)
+        cv2.putText(img, text, (x1 + 3, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+
     cv2.imwrite(output_path, img)
 
+    
 # ============================================================
 # 🖼️ STATIC FILE SERVE — allow gallery.js to access /runs/*
 # ============================================================

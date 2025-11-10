@@ -78,3 +78,25 @@ Array
 
 Registration successful. Auto-login done.
 
+==== Registration Attempt ====
+Time: 2025-11-05 15:38:35
+Full Name: Jervie Alentajan | Email: jervie@gmail.com
+Email check result: NOT EXISTS
+Supabase insert result:
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 4
+            [admin_name] => Jervie Alentajan
+            [email] => jervie@gmail.com
+            [password] => $2y$10$JXzVsq4Qc5QQd92C7Gie4uKhl1KzcauHuwj6CduN64/Vo3oV/xejm
+            [role] => user
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+
+Registration successful. Auto-login done.
+

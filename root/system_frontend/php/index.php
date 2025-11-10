@@ -71,21 +71,23 @@
 
 <script>
 
-  const isLoggedIn = <?php echo $isLoggedIn ? 'true' : 'false'; ?>;
-const adminId = "<?php echo $isLoggedIn ? $adminId : ''; ?>";
-const adminName = "<?php echo $isLoggedIn ? addslashes($adminName) : ''; ?>";
+    const isLoggedIn = <?php echo $isLoggedIn ? 'true' : 'false'; ?>;
+    const adminId = "<?php echo $isLoggedIn ? $adminId : ''; ?>";
+    const adminName = "<?php echo $isLoggedIn ? addslashes($adminName) : ''; ?>";
 
-if (isLoggedIn) {
-  console.log(`👑 Admin logged in: ${adminName} (ID: ${adminId})`);
-  localStorage.setItem("admin_id", adminId);
-  localStorage.setItem("admin_name", adminName);
-  localStorage.setItem("detectionSource", "admin");
-} else {
-  console.log("🧍 Guest mode — not logged in");
-  localStorage.removeItem("admin_id");
-  localStorage.removeItem("admin_name");
-  localStorage.removeItem("detectionSource");
-}
+    if (isLoggedIn) {
+      console.log(`👑 Admin logged in: ${adminName} (ID: ${adminId})`);
+      localStorage.setItem("admin_id", adminId);
+      localStorage.setItem("admin_name", adminName);
+      localStorage.setItem("detectionSource", "admin");
+    } else {
+      console.log("🧍 Guest mode — not logged in");
+      localStorage.removeItem("admin_id");
+      localStorage.removeItem("admin_name");
+      localStorage.removeItem("detectionSource");
+    }
+
+
     // ================================================
     // 📍 GEOLOCATION CAPTURE
     // ================================================
@@ -114,6 +116,7 @@ if (isLoggedIn) {
     // ================================================
     // 🧠 FLASK STATUS LOG IN BROWSER CONSOLE
     // ================================================
+
     (() => {
       const status = "<?php echo $debugStatus; ?>";
       const msg = "<?php echo addslashes($debugMessage); ?>";
@@ -178,84 +181,116 @@ if (isLoggedIn) {
                 <link rel="stylesheet" href="../css/index_footer.css">
 
                 <!-- ☎️ Contact or feedback page styling -->
-              <link rel="stylesheet" href="../css/index_contactPage.css">
+                <link rel="stylesheet" href="../css/index_contactPage.css">
+
+                <!-- Responsive Styles (Tablets, Mobile, 4K, etc.) -->
+                <link rel="preload" href="../css/responsive.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+                <noscript><link rel="stylesheet" href="../css/responsive.css"></noscript>
             </head>
 
-
-
 <body>
-  <!--                                        MAIN PAGE                                   -->
-
-  <input type="hidden" id="latField" name="latitude">
-  <input type="hidden" id="lonField" name="longitude">
+              <!--                                        MAIN PAGE                                   -->
+              <input type="hidden" id="latField" name="latitude">
+              <input type="hidden" id="lonField" name="longitude">
 
               <!-- ================================================
                   🧭 NAVIGATION BAR SECTION
                   ================================================ -->
               <div class="nav">
-                <div class="navbar">
-                  
-                  <!-- 🏠 Logo (links to homepage) -->
-                  <a href="../php/index.php">
-                    <img src="../imgs/logo.png" alt="LitterLens logo">
-                  </a>
-
-                  <!-- 📌 Right-side navigation links -->
-                  <div class="r-nav">
-                    <a href="#">Home</a>
-                    <a href="#about-page">About</a>
-                    <a href="#contact-page">Contacts</a>
-
-                    <button class="upload-btn" onclick="location.href='#upload-page'">
-                      Upload
-                    </button>
-
-                    <a href="../php/index_login.php">
-                      <i class="fa-solid fa-user" id="user-icon"></i>
+                  <div class="navbar">
+                    <!-- 🏠 Logo -->
+                    <a href="../php/index.php" class="logo-link">
+                      <img src="../imgs/logo.png" alt="LitterLens logo" />
                     </a>
+
+                    <!-- 📌 Navigation Links -->
+                    <div class="r-nav" id="nav-links">
+                      <a href="#home">Home</a>
+                      <a href="#about-page">About</a>
+                      <a href="#contact-page">Contacts</a>
+
+                      <button class="upload-btn" onclick="location.href='#upload-page'">
+                        Upload
+                      </button>
+
+                      <a href="../php/index_login.php">
+                        <i class="fa-solid fa-user" id="user-icon"></i>
+                      </a>
+                    </div>
+
+                    <!-- 🍔 Hamburger Icon -->
+                    <div class="hamburger" id="hamburger">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
                   </div>
 
+                  <!-- 📱 Mobile Slide Menu -->
+                  <div class="mobile-menu" id="mobile-menu">
+                    <div class="menu-header">
+                      <div class="menu-info">
+                        <img src="../imgs/logo.png" alt="Logo" class="menu-logo" />
+                        <span class="menu-title">Navigation</span>
+                      </div>
+                      <button class="menu-close" id="menu-close">&times;</button>
+                    </div>
+
+                  <a href="#home">Home</a>
+                  <a href="#about-page">About</a>
+                  <a href="#upload-page">Upload</a>
+                  <a href="#guidePage">Guide</a>
+                  <a href="#contact-page">Contacts</a>
+                  <a href="../php/index_login.php">Login</a>
                 </div>
+
+                <!-- 🌑 Overlay (dark background when menu is open) -->
+                <div class="mobile-overlay" id="mobile-overlay"></div>
               </div>
 
-              
               <!-- 🌊 Background Section -->
-              <div class="background">
-                <img src="../imgs/pasigRiver.png" alt="Pasig River">
-                <div class="blue-overlay"></div>
-              </div>
+              <section id="home" class="background-wrapper">
+                <div class="background">
+                  <img src="../imgs/pasigRiver.png" alt="Pasig River">
+                  <div class="blue-overlay"></div>
 
-              <!-- 🧠 Main Hero Content -->
-              <div class="main-content">
-                <p>Detect and Measure Water Litter</p>
-                <a href="#upload-page">
+                  <div class="main-content">
+                    <p>Detect and Measure Water Litter</p>
+                  </div>
+                </div>
+
+                <!-- 🎯 Floating Button -->
+                <a href="#upload-page" class="hero-btn">
                   <button>Get Started</button>
                 </a>
-              </div>
+              </section>
 
               <!-- ⚡ Quick Highlights Section -->
-              <p class="h-title">Quick Highlights</p>
+              <section class="highlights-section">
+                <p class="h-title">Quick Highlights</p>
 
-              <div class="highlights">
-                <div class="h-card">
-                  <img src="../imgs/highlight1.jpg" alt="card 1">
-                  <p>Monitors Pasig River</p>
-                </div>
-                <div class="h-card">
-                  <img src="../imgs/highlight2.jpg" alt="card 2">
-                  <p>AI-Powered Detection</p>
-                </div>
-                <div class="h-card">
-                  <img src="../imgs/highlight3.jpg" alt="card 3">
-                  <p>Real-time Litter Data</p>
-                </div>
-                <div class="h-card">
-                  <img src="../imgs/highlight4.jpg" alt="card 4">
-                  <p>For a Greener Future</p>
-                </div>
-              </div>
+                <div class="highlights">
+                  <div class="h-card">
+                    <img src="../imgs/highlight1.jpg" alt="Monitors Pasig River">
+                    <p>Monitors Pasig River</p>
+                  </div>
 
+                  <div class="h-card">
+                    <img src="../imgs/highlight2.jpg" alt="AI-Powered Detection">
+                    <p>AI-Powered Detection</p>
+                  </div>
 
+                  <div class="h-card">
+                    <img src="../imgs/highlight3.jpg" alt="Real-time Litter Data">
+                    <p>Real-time Litter Data</p>
+                  </div>
+
+                  <div class="h-card">
+                    <img src="../imgs/highlight4.jpg" alt="For a Greener Future">
+                    <p>For a Greener Future</p>
+                  </div>
+                </div>
+              </section>
 
               <!-- ================================================
                   📤 UPLOAD PAGE SECTION
@@ -293,8 +328,6 @@ if (isLoggedIn) {
                 </div>
               </section>
 
-
-
               <!-- ================================================
                   🌱 INITIATIVES PAGE SECTION
                   ================================================ -->
@@ -316,8 +349,6 @@ if (isLoggedIn) {
                   </div>
                 </div>
               </section>
-
-
 
               <!-- ================================================
                   ℹ️ ABOUT PAGE SECTION
@@ -374,8 +405,6 @@ if (isLoggedIn) {
 
                 </div>
               </section>
-
-
 
               <!-- ================================================
                   📘 GUIDE PAGE SECTION
@@ -479,8 +508,6 @@ if (isLoggedIn) {
                 </div>
               </section>
 
-
-
               <!-- ================================================
                   ☎️ CONTACT PAGE SECTION
                   ================================================ -->
@@ -566,7 +593,6 @@ if (isLoggedIn) {
                   </div>
                 </form>
               </section>
-
 
               <!-- ================================================
                   🌊 FOOTER SECTION
@@ -677,9 +703,5 @@ if (isLoggedIn) {
       }
     });
     </script>
-
-
-
-
   </body>
 </html>

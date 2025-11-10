@@ -1,0 +1,421 @@
+
+
+
+
+
+<!--                                            ANALYTICS SECTION                                     -->
+<section id="analytics" class="tab-content">
+    <h2 class="a-title">Analytics Overview</h2>
+
+    <!-- KPI Cards -->
+    <div class="a-overview">
+        <div class="a-card">
+            <h3>Total Detections</h3>
+            <div class="a-value"><?= number_format($total_detections_summary) ?></div>
+        </div>
+        <div class="a-card">
+            <h3>Users</h3>
+            <div class="a-value"><?= number_format($total_users_summary) ?></div>
+        </div>
+        <div class="a-card">
+            <h3>Reports Today</h3>
+            <div class="a-value"><?= number_format($reports_today_summary) ?></div>
+        </div>
+        <div class="a-card">
+            <h3>Accuracy</h3>
+            <div class="a-value"><?= number_format($accuracy_summary, 2) ?>%</div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="a-grid">
+        <!-- Pie Chart -->
+        <div class="a-box">
+            <h3>Detections by Category</h3>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Map -->
+        <div class="a-box">
+            <h3>Geospatial Mapping</h3>
+            <div id="a-map"></div>
+        </div>
+
+        <!-- Line Chart -->
+        <div class="a-box" style="grid-column: span 2;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Litter Trends</h3>
+                <button class="a-dropdown">Monthly ⟳</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!--                                            USER SECTION                                   -->
+ <div id="users" class="tab-content">
+    <div class="user-header">
+        <h2>The Team</h2>
+
+        <div class="user-controls">
+            <button class="add-member-btn" onclick="window.location.href='../php/index_register.php'">
+                <i class="fa-solid fa-plus"></i> Add Member
+            </button>
+
+            <div class="search-wrapper">
+                <input type="text" placeholder="Search users..." class="user-search">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="user-grid">
+        <?php if (!empty($users_list)): ?>
+            <?php foreach ($users_list as $user): ?>
+                <div class="user-card">
+                    <div class="user-menu">
+                        <button class="menu-btn">⋮</button>
+                        <div class="menu-options">
+                            <button>View</button>
+                            <button>Edit</button>
+                            <button class="danger">Delete</button>
+                        </div>
+                    </div>
+
+                    Default avatar used since avatar_url is not in the table 
+                    <img src="../imgs/default-avatar.png" alt="User Avatar" class="user-avatar">
+
+                    <h3><?= htmlspecialchars($user['name']) ?></h3>
+                    <p><?= htmlspecialchars($user['email']) ?></p>
+                    <span class="role"><?= htmlspecialchars($user['role']) ?></span>
+
+                    <div class="user-contact">
+                        <button class="contact-btn email-btn" onclick="window.location='mailto:<?= htmlspecialchars($user['email']) ?>'">
+                            <i class="fa-solid fa-envelope"></i> Email
+                        </button>
+                        <button class="contact-btn call-btn">
+                            <i class="fa-solid fa-phone"></i> Call
+                        </button>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p style="text-align:center; width:100%; margin-top: 20px;">No users found.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+
+
+    <!--                                            LOGS SECTION                                   -->
+
+    <div id="logs" class="tab-content">
+        <h2 class="l-title">Activity Logs</h2>
+        <div class="logs-search">
+            <input type="text" placeholder="Search activty...">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <div class="activity-card">
+            <div class="activity-section left">
+                <i class="fa-regular fa-clock"></i>
+                <span><strong>31</strong> Actions Today</span>
+            </div>
+            <div class="divider"></div>
+            <div class="activity-section right">
+                <i class="fa-regular fa-user"></i>
+                <div class="most-active">
+                    <span class="label">Most Active:</span>
+                    <span class="user">admin [#]</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="logs-container">
+            <div class="logs-header">
+                <div class="logs-filters">
+                    <!-- Date Range Picker -->
+                    <div class="date-range">
+                        <i class="fa-regular fa-calendar"></i>
+                        <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
+                    </div>
+
+                    <!-- Dropdown Filter -->
+                    <div class="action-filter">
+                        <button class="dropdown-btn" id="actionDropdown">
+                            All Actions <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu" id="dropdownMenu">
+                            <li data-value="all">All Actions</li>
+                            <li data-value="added">Added</li>
+                            <li data-value="updated">Updated</li>
+                            <li data-value="deleted">Deleted</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button class="download-btn">Download Logs (.pdf)</button>
+            </div>
+
+            <table class="logs-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Admin</th>
+                        <th>Action</th>
+                        <th>Affected Record</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="logsBody">
+                    <!-- Example data -->
+                    <tr>
+                        <td>10/01/2025</td>
+                        <td>Jervie Alentajan</td>
+                        <td>Updated</td>
+                        <td>admin</td>
+                        <td>Changed Email</td>
+                        <td class="status success">Success</td>
+                    </tr>
+                    <tr>
+                        <td>10/02/2025</td>
+                        <td>Pauline Serapion</td>
+                        <td>Added</td>
+                        <td>admin</td>
+                        <td>New Contact No.</td>
+                        <td class="status success">Success</td>
+                    </tr>
+                    <tr>
+                        <td>10/03/2025</td>
+                        <td>Emanuel Florida</td>
+                        <td>Deleted</td>
+                        <td>detections</td>
+                        <td>Removed Image</td>
+                        <td class="status success">Success</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <span id="prevPage">&lt; Previous</span>
+                <span id="pageInfo">Page 1 of 10</span>
+                <span id="nextPage">Next &gt;</span>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!--                                            SETTINGS SECTION                                   -->
+    <div id="settings" class="tab-content">
+        <h2 class="s-title">Settings</h2>
+        <div class="settings-search">
+            <input type="text" placeholder="Search settings...">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <div class="settings-card1">
+            <h3>Profile</h3>
+            <div class="profile-pic-container">
+                <img src="../imgs/avatar2.jpg" alt="Profile Picture" class="profile-pic">
+                <div class="overlay">
+                    <i class="fa-solid fa-camera"></i>
+                    <input type="file" id="upload" accept="image/*">
+                </div>
+            </div>
+
+            <!-- Modal for cropping -->
+            <div id="cropModal" class="modal">
+                <div class="modal-content">
+                    <h3>Adjust your photo</h3>
+                    <div class="crop-container">
+                        <img id="cropImage" style="max-width: 100%; display: block;">
+                    </div>
+                    <div class="modal-actions">
+                        <button id="cancelCrop">Cancel</button>
+                        <button id="confirmCrop">Upload Photo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-columns">
+                <div class="details1">
+                    <div class="dt-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" value=" ">
+                    </div>
+
+                    <div class="dt-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" value="">
+                    </div>
+
+                    <div class="dt-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" value="">
+                    </div>
+                </div>
+                <div class="details2">
+                    <div class="dt-group">
+                        <label for="phone">Contact Number</label>
+                        <input type="text" id="phone" value="">
+                        <p class="contact-description">
+                            <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
+                            Please add your contact number for administrative verification and important updates.
+                        </p>
+                    </div>
+
+                    <div class="dt-group">
+                        <label for="conpassword">Confirm Password</label>
+                        <input type="password" id="conpassword" value=" ">
+                    </div>
+                </div>
+            </div>
+            <button class="settings-save-btn">Save Changes</button>
+        </div>
+        <div class="settings-card2">
+            <h3> Model Management </h3>
+            <div class="model-section">
+                <label class="section-title">Active Model</label>
+                <input type="text" class="model-input" placeholder="">
+                <p class="field-description">Select which model should be used for the detection</p>
+            </div>
+
+            <div class="model-section">
+                <label class="section-title">Upload New Model (.pt)</label>
+                <input type="file" class="file-input">
+                <p class="field-description">Upload a new trained model file</p>
+            </div>
+            <h3> Model Version Control </h3>
+            <div class="table-container">
+                <table class="model-table">
+                    <thead>
+                        <tr>
+                            <th>Model Name</th>
+                            <th>Version</th>
+                            <th>Accuracy</th>
+                            <th>Uploaded on</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>LitterLens_CNN</td>
+                            <td>v1</td>
+                            <td>98%</td>
+                            <td>August 2025</td>
+                            <td class="status active">Active</td>
+                        </tr>
+                        <tr>
+                            <td>Las Vegas Mowdels</td>
+                            <td>v2</td>
+                            <td>69%</td>
+                            <td>June 2025</td>
+                            <td class="status inactive">Inactive</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="model-save-btn">Save Changes</button>
+        </div>
+    </div>
+
+
+    <!--                                            REAL-TIME DETECTION SECTION                                   -->
+    <div id="realtime" class="tab-content realtime">
+        <div class="realtime-header">
+            <h2 class="r-title">Real-Time Detection</h2>
+            <p>Monitor Live Litter Detection</p>
+            </div>
+                <div class="realtime-content">
+                    <div class="realtime-upload">
+                        <div class="cam-container">
+                            <h2>Live Feed:</h2>
+                                    <select id="camera-select">
+                                        
+                                        <option value="local" selected>Local Camera</option>
+                                        <!-- <option value="">IP Camera 1</option> -->
+                                    </select>
+                            <div class="camera-header">
+                                <div class="location-details">
+                                    <h3>📍 Location Details</h3>
+                                    <p>Latitude: <span id="latitude">--</span></p>
+                                    <p>Longitude: <span id="longitude">--</span></p>
+                                </div>
+                                <div class="cam-controls">
+                                    <select id="threshold-select">  
+                                          <option value="0.25"> Threshold: 25%</option>
+                                          <option value="0.50"> Threshold: 50%</option>
+                                          <option value="0.75"> Threshold: 75%</option>
+                                          <option value="1.00"> Threshold: 100%</option>
+                                    </select>
+                                    <button id="startBtn"><i class="fa-solid fa-play"></i> Start</button>
+                                    <button id="stopBtn"><i class="fa-solid fa-stop"></i> Stop</button>
+                                    <button id="refresh-btn"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                                </div>
+                            </div>
+                             <img id="liveFeed" alt="Live Detection Preview" style="display:none; max-width:100%; border:2px solid #ccc; border-radius:8px;">
+                            <!-- <video id="liveVideo" autoplay playsinline></video> -->
+                             <!-- <div id="noDisplay">⚠️ No camera detected. Please check your device.</div> -->
+                            <div class="detection-status">
+                                <p>Time: <span class="time">1hr 10mins 30s</span></p>
+                                <!-- <p>Status: 
+                                    <span class="status">
+                                        <i class="fa-solid fa-circle-notch fa-spin"></i> Idle
+                                    </span>
+                                </p> -->
+                            </div>
+                        </div>
+                        <p class="realtime-footer">
+                            Real-Time Detection powered by <br>
+                            <span>LitterLens AI Model v1</span>
+                        </p>
+                    </div>
+                    <div class="stats-container">
+                       <div class="stats-card">
+                            <h3>Detection Stats</h3>
+                            <div class="stats-item">
+                                <p class="label">Total Detections</p>
+                                <p class="value" id="totalDetections">0</p>
+                            </div>
+                            <div class="stats-item">
+                                <p class="label">Top Detected Litter</p>
+                                <p class="value" id="topLitter">--</p>
+                            </div>
+                            <div class="stats-item">
+                                <p class="label">Detection Speed</p>
+                                <p class="value" id="detectionSpeed">0.0s/frame</p>
+                            </div>
+                            <div class="stats-item">
+                                <p class="label">Camera Status</p>
+                                <p class="value active" id="cameraStatus">Idle</p>
+                            </div>
+                            <div class="stats-item">
+                                <p class="label">Detection Accuracy</p>
+                                <p class="value" id="detectionAccuracy">0%</p>
+                            </div>
+                        </div>
+                   <div class="stats-card">
+                    <h3>Top Detected Litter:</h3>
+                    <table class="litter-table">
+                        <thead>
+                            <tr>
+                                <th>Classification</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody id="litterTableBody">
+                            <!-- dynamically generated -->
+                        </tbody>
+                    </table>
+                </div>
+             </div>
+        </div>
+    </div>
+
+

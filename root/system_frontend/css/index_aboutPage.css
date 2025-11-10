@@ -112,3 +112,322 @@
   background-color: rgba(20, 30, 70, 0.4);
   backdrop-filter: blur(6px);
 }
+
+
+/* ============================================
+   🌍 RESPONSIVE BREAKPOINTS — ABOUT SECTION
+   ------------------------------------------------------------
+   Adjusts layout, typography, and spacing for all screens
+============================================ */
+
+/* 💎 4K & ULTRA-WIDE (≥1920px) */
+@media (min-width: 1920px) {
+  .about-bg-box {
+    padding: 4rem 6rem;
+  }
+
+  .about-header h2 {
+    font-size: 5rem;
+  }
+
+  .about-header h1 {
+    font-size: 8rem;
+  }
+
+  .description {
+    font-size: 1.3rem;
+    max-width: 700px;
+  }
+
+  .card {
+    width: 350px;
+    min-height: 250px;
+    font-size: 24px;
+  }
+
+  .card p {
+    font-size: 18px;
+  }
+}
+
+/* 💻 DESKTOP / LARGE LAPTOP (≥1200px and ≤1919px) */
+@media (min-width: 1200px) and (max-width: 1919px) {
+  .about-header h2 {
+    font-size: 4.5rem;
+  }
+
+  .about-header h1 {
+    font-size: 6.5rem;
+  }
+
+  .description {
+    font-size: 1.15rem;
+  }
+
+  .card {
+    width: 320px;
+    min-height: 230px;
+  }
+}
+
+/* 📱 TABLET (≤992px) */
+@media (max-width: 992px) {
+  .about-bg-box {
+    height: auto; /* allow scrolling on smaller screens */
+    padding: 3rem 2rem;
+  }
+
+  .first-line {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .about-header {
+    padding-top: 3rem;
+    align-items: center;
+  }
+
+  .about-header h2 {
+    font-size: 3.5rem;
+  }
+
+  .about-header h1 {
+    font-size: 5rem;
+  }
+
+  .white-line {
+    width: 60%;
+  }
+
+  .description {
+    font-size: 1rem;
+    max-width: 600px;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .card-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .card {
+    width: 45%;
+    min-width: 260px;
+    font-size: 20px;
+  }
+
+  .card p {
+    font-size: 15px;
+  }
+}
+
+/* 📱 MOBILE (≤600px) */
+@media (max-width: 600px) {
+  .about-bg-box {
+    padding: 2.5rem 1rem;
+    height: auto;
+  }
+
+  .about-header {
+    padding-top: 2rem;
+  }
+
+  .about-header h2 {
+    font-size: 2.5rem;
+  }
+
+  .about-header h1 {
+    font-size: 3.8rem;
+  }
+
+  .white-line {
+    width: 70%;
+  }
+
+  .what-we-do {
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+
+  .description {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-align: center;
+    padding: 0.5rem;
+  }
+
+  .card-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .card {
+    width: 90%;
+    min-width: 260px;
+    font-size: 18px;
+    padding: 1.2rem;
+  }
+
+  .card p {
+    font-size: 14px;
+  }
+}
+
+/* 📱 SMALLEST DEVICES (≤400px) */
+@media (max-width: 400px) {
+  .about-bg-box {
+    padding: 2rem 0.8rem;
+  }
+
+  .about-header h2 {
+    font-size: 2rem;
+  }
+
+  .about-header h1 {
+    font-size: 3rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  .card {
+    width: 95%;
+    min-height: 200px;
+    font-size: 16px;
+  }
+
+  .card p {
+    font-size: 13px;
+  }
+
+  .what-we-do {
+    font-size: 0.9rem;
+  }
+}
+
+/* ============================================
+   📱 SMALLEST SCREENS — ABOUT SECTION FIXES
+   --------------------------------------------
+   Keeps text readable and aligned properly
+============================================ */
+
+@media (max-width: 480px) {
+  .about-bg-box {
+    padding: 1.8rem 1rem;
+    height: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .first-line {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.8rem;
+    width: 100%;
+  }
+
+  /* 🔤 Title scaling */
+  .about-header {
+    padding-top: 2rem;
+  }
+
+  .about-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .about-header h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+
+  .white-line {
+    width: 60%;
+    margin: 0.5rem auto;
+  }
+
+  .what-we-do {
+    margin-top: 1rem;
+    font-size: 1rem;
+  }
+
+  /* 🧾 Description placement fix */
+  .description {
+    order: 3;
+    max-width: 95%;
+    font-size: 0.95rem;
+    text-align: center;
+    line-height: 1.5;
+    margin: 1rem auto;
+    color: #f0f0f0;
+  }
+
+  /* 🧩 Cards layout */
+  .card-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+    width: 100%;
+  }
+
+  .card {
+    width: 90%;
+    max-width: 360px;
+    min-height: 200px;
+    font-size: 17px;
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+  }
+
+  .card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+}
+
+/* 📱 MICRO-SCREENS (≤380px) — tightest fix */
+@media (max-width: 380px) {
+  .about-header h2 {
+    font-size: 1.8rem;
+  }
+
+  .about-header h1 {
+    font-size: 2.6rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .card {
+    width: 95%;
+    min-height: 180px;
+    font-size: 16px;
+  }
+
+  .card h3 {
+    font-size: 1rem;
+  }
+
+  .card p {
+    font-size: 0.85rem;
+  }
+}
