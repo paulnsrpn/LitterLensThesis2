@@ -46,10 +46,6 @@ TARGET_FPS = 30.0
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-
-@app.route('/')
-def home():
-    return jsonify({"message": "Flask API is running!"})
     
 # ============ GLOBAL STATE ============
 # models_list: list of loaded ultralytics.YOLO objects
