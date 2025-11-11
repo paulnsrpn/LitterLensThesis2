@@ -1,8 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:ital,wght@0,300;0,400;0,500;0,600&family=Montserrat+Alternates:wght@400;500;600;700&display=swap");
 
-/* ============================= */
-/* ======== GLOBAL RESET ======= */
-/* ============================= */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -16,9 +13,6 @@ body {
   min-height: 100vh;
 }
 
-/* ============================= */
-/* ======== SIDEBAR NAV ======== */
-/* ============================= */
 .a-nav {
   width: 270px;
   height: 100vh;
@@ -90,9 +84,6 @@ body {
   border-radius: 25px 0 0 25px;
 }
 
-/* ============================= */
-/* ======== CONTENT AREA ======= */
-/* ============================= */
 .tab-content {
   display: none;
 }
@@ -101,9 +92,6 @@ body {
   display: block;
 }
 
-/* ============================= */
-/* ===== REAL-TIME LAYOUT ===== */
-/* ============================= */
 #realtime {
   margin-left: 270px;
   padding: 40px 50px;
@@ -129,9 +117,6 @@ body {
   opacity: 0.8;
 }
 
-/* ===================================================== */
-/* 🎥 CAMERA + STATS GRID (Live Feed left | Stats right) */
-/* ===================================================== */
 .realtime-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -140,7 +125,6 @@ body {
   margin-top: 20px;
 }
 
-/* 🎥 CAMERA CONTAINER */
 .cam-container {
   background: #0d1640;
   border: 1.5px solid #5a678d;
@@ -160,7 +144,6 @@ body {
   border-bottom: 1px solid #5a678d;
 }
 
-/* CAMERA HEADER */
 .camera-header {
   display: flex;
   justify-content: space-between;
@@ -178,9 +161,6 @@ body {
   color: #d9d9d9;
 }
 
-/* ===================================================== */
-/* ✅ CAMERA CONTROLS */
-/* ===================================================== */
 .cam-controls {
   display: flex;
   align-items: center;
@@ -220,9 +200,6 @@ body {
   background-color: #0056b3;
 }
 
-/* ===================================================== */
-/* ✅ CAMERA PREVIEW + NO CAMERA OVERLAY */
-/* ===================================================== */
 .cam-preview {
   position: relative;
   width: 100%;
@@ -244,7 +221,6 @@ body {
   border-radius: 8px;
 }
 
-/* ⚠️ Overlay when no camera */
 .noDisplay {
   position: absolute;
   top: 0;
@@ -276,9 +252,6 @@ body {
   100% { opacity: 0.6; transform: scale(1); }
 }
 
-/* ===================================================== */
-/* ✅ LOCATION DETAILS */
-/* ===================================================== */
 .location-details {
   margin-top: 15px;
   border-radius: 10px;
@@ -296,9 +269,6 @@ body {
   margin: 0;
 }
 
-/* ===================================================== */
-/* ✅ STATUS LINE BELOW CAMERA (Time left | Status right) */
-/* ===================================================== */
 .detection-status {
   display: flex;
   justify-content: space-between;
@@ -322,15 +292,11 @@ body {
   font-size: 14px;
 }
 
-/* Colored states */
 .status.loading { color: #ff9800; }
 .status.active { color: #45F58D; }
 .status.error { color: #F54545; }
 .status.idle { color: #D9D9D9; }
 
-/* ===================================================== */
-/* ✅ STATS SIDE (Right Column) */
-/* ===================================================== */
 .stats-side {
   width: 50vh;
   display: flex;
@@ -395,9 +361,6 @@ body {
   color: #fff;
 }
 
-/* ===================================================== */
-/* ✅ FOOTER */
-/* ===================================================== */
 .realtime-footer {
   text-align: center;
   color: #d3d6f3;
@@ -414,9 +377,6 @@ body {
   color: #ffffff;
 }
 
-/* ===================================================== */
-/* ✅ THRESHOLD SELECT (Match button style) */
-/* ===================================================== */
 #threshold-select {
   background-color: #28a745;
   color: white;
@@ -439,7 +399,6 @@ body {
   box-shadow: 0 0 5px rgba(40, 167, 69, 0.6);
 }
 
-/* ====== UPLOAD MODAL ====== */
 .modal {
   position: fixed;
   top: 0; left: 0;
@@ -514,14 +473,6 @@ body {
   background: #c82333;
 }
 
-
-
-
-
-
-/* ===================================================== */
-/* ✅ RESPONSIVE FIXES */
-/* ===================================================== */
 @media (max-width: 1024px) {
   .realtime-grid {
     grid-template-columns: 1fr;

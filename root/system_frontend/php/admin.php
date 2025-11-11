@@ -428,7 +428,7 @@
             <!-- ✅ End of IMAGE TAB -->
 
             <!-- ==============================================                 
-            ✅   ANALYTICS SECTION
+            ✅ ANALYTICS SECTION
             ============================================== -->
             <section id="analytics" class="tab-content">
 
@@ -440,14 +440,16 @@
                         <h3>Total Detections</h3>
                         <div class="a-value"><?= number_format($total_detections) ?></div>
                     </div>
-                    <div class="a-card">
-                        <h3>Users</h3>
-                        <div class="a-value"><?= number_format($total_users_summary) ?></div>
-                    </div>
-                    <div class="a-card">
-                        <h3>Reports Today</h3>
-                        <div class="a-value"><?= number_format($reports_today_summary) ?></div>
-                    </div>
+                <div class="a-card">
+                  <h3>Creeks</h3>
+                  <div class="a-value"><?= number_format($total_creeks_summary) ?></div>
+                </div>
+                <div class="a-card">
+                    <h3>High-Risk Creeks</h3>
+                    <div class="a-value"><?= number_format($high_risk_creeks_summary) ?></div>
+                </div>
+
+
                     <div class="a-card">
                         <h3>Accuracy</h3>
                         <div class="a-value"><?= number_format($accuracy_summary, 2) ?>%</div>
@@ -538,8 +540,8 @@
             </section>
 
             <!-- ==============================================                 
-                        TEAM SECTION    
-                        ============================================== -->
+            ✅ TEAM SECTION    
+            ============================================== -->
             <div id="users" class="tab-content">
 
               <div class="user-header">
@@ -642,8 +644,8 @@
             </div>
 
             <!-- ==============================================
-                    ✅   LOGS SECTION
-                  ============================================== -->
+            ✅ LOGS SECTION
+           ============================================== -->
             <div id="logs" class="tab-content">
                 <h2 class="l-title">Activity Logs</h2>
 
@@ -747,8 +749,8 @@
             </div>
 
             <!-- ==============================================                 
-                          ✅ REAL-TIME DETECTION SECTION 
-                        ============================================== -->
+            ✅ REAL-TIME DETECTION SECTION 
+             ============================================== -->
             <div id="realtime" class="tab-content realtime">
               <div class="realtime-header">
                 <h2 class="r-title">Real-Time Detection</h2>
@@ -983,14 +985,12 @@
                                     <p class="field-description">Upload a new trained model. It will automatically become the active model.</p>
                                   </div>
 
-                                <!-- Models Table -->
                                 <div class="table-container">
                                     <table class="model-table" id="modelTable">
                                       <thead>
                                         <tr>
                                           <th>Model Name</th>
                                           <th>Version</th>
-                                          <th>Accuracy</th>
                                           <th>Uploaded on</th>
                                           <th>Status</th>
                                           <th>Actions</th>
@@ -999,25 +999,16 @@
                                       <tbody></tbody>
                                     </table>
                                   </div>
-
-                                <!-- Buttons -->
                                 <div class="settings-btn-container">
-                                    <button id="editModelBtn" class="model-edit-btn">Edit</button>
-                                    <button id="saveModelBtn" class="model-save-btn">Save</button>
+                                    <button id="editModelBtn" class="model-edit-btn">Edit Model</button>
                                     <button id="cancelModelBtn" class="model-cancel-btn">Cancel</button>
+                                    <button id="saveModelBtn" class="model-save-btn">Save Changes</button>
                                 </div>
                             </div>
+            </div>
 
-                        </div>
 
-
-                                      
-            
-            
-            
-            
-            
-                        <!-- 📝 EDIT MEMBER MODAL -->
+            <!-- 📝 EDIT MEMBER MODAL -->
             <div id="editMemberModal" class="modal-overlay" style="display:none;">
               <div class="modal-content" style="text-align: left;">
                 <h3 style="text-align: center;">Edit Member</h3>
@@ -1174,7 +1165,7 @@
               }
             });
             </script>
-
+ 
 
         
             <script>
@@ -1235,6 +1226,7 @@
             <script src="../js/admin_Team.js"></script>
             <script src="../js/admin_ActivityLogs.js"></script>
             <script src="../js/admin_settings.js"></script>
+  
     
             <!-- 🌀 EXPORT LOADING OVERLAY -->
             <div id="exportLoading">

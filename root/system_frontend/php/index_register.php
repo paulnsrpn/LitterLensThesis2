@@ -63,7 +63,6 @@
         <small>(Admin registration only)</small>
     </div>
 
-    <!-- RIGHT SECTION -->
     <div class="access-section">
         <div class="brand">
             <h2>LitterLens</h2>

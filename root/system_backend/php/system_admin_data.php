@@ -11,20 +11,19 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 🧠 Helper for future use
 function ensureSession() {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 }
 
-// Redirect if admin not logged in
 if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
     header("Location: /LitterLensThesis2/root/system_frontend/php/index_login.php");
     exit;
 }
+
 // =======================================================
-// 🧾 SESSION VARIABLES — Auto-sync with latest Supabase data
+// 🧾 SESSION VARIABLES 
 // =======================================================
 $admin_id   = $_SESSION['admin_id'] ?? null;
 $admin_name = $_SESSION['admin_name'] ?? '';
@@ -588,6 +587,59 @@ foreach ($litter_trends as $type => $months) {
 $trend_data_json = json_encode($trend_data);
 
 // =======================================================
+// 🌊 CREEKS TABLE COUNT
+// =======================================================
+function getCreeksCount(&$logs) {
+    $response = supabaseRequest('GET', 'creeks', null, 'select=count');
+    if (is_array($response) && isset($response[0]['count'])) {
+        $count = (int)$response[0]['count'];
+        debugLog($logs, "🟢 Total creeks: {$count}");
+        return $count;
+    }
+    debugLog($logs, "❌ Failed to retrieve creeks count: " . json_encode($response));
+    return 0;
+}
+
+/**
+ * Count creeks where total detections exceed $threshold.
+ *
+ * @param array &$logs debug log array
+ * @param int $threshold number of detections considered "high risk"
+ * @return int number of creeks flagged as high-risk
+ */
+
+function getHighRiskCreeksCount(&$logs, $threshold = 500) {
+    $query = 'select=quantity,images:image_id(image_id,creek_id)';
+    $resp = supabaseRequest('GET', 'detections', null, $query);
+
+    if (!is_array($resp) || empty($resp)) {
+        debugLog($logs, "❌ Failed to fetch detections for high-risk creeks: " . json_encode($resp));
+        return 0;
+    }
+
+    // Aggregate totals per creek_id
+    $creekTotals = [];
+    foreach ($resp as $row) {
+        $creekId = $row['images']['creek_id'] ?? null;
+        $qty = (int)($row['quantity'] ?? 0);
+
+        if ($creekId === null) continue; // skip detections without creek mapping
+
+        $creekTotals[$creekId] = ($creekTotals[$creekId] ?? 0) + $qty;
+    }
+
+    // Count creeks above threshold
+    $highRiskCount = 0;
+    foreach ($creekTotals as $cid => $total) {
+        if ($total >= $threshold) $highRiskCount++;
+    }
+
+    debugLog($logs, "🟢 High-risk creeks (threshold={$threshold}): {$highRiskCount}");
+    return $highRiskCount;
+}
+
+
+// =======================================================
 // 📊 DASHBOARD METRICS
 // =======================================================
 $total_images          = getImagesCount($debug_logs);
@@ -601,8 +653,12 @@ $litter_summary        = getLitterTypeSummary($debug_logs);
 $litter_labels         = json_encode(array_keys($litter_summary));
 $litter_data           = json_encode(array_values($litter_summary));
 
-$total_users_summary   = getUsersCount($debug_logs);
-$reports_today_summary = getReportsTodayCount($debug_logs);
+$total_creeks_summary       = getCreeksCount($debug_logs);
+// define threshold (adjust as needed)
+$highRiskThreshold = 1000; // <-- change to whatever you consider "High"
+
+// compute high-risk creeks and ensure variable exists
+$high_risk_creeks_summary = getHighRiskCreeksCount($debug_logs, $highRiskThreshold);
 $accuracy_summary      = getDetectionsAverageAccuracy($debug_logs);
 
 $debug_json            = json_encode($debug_logs);

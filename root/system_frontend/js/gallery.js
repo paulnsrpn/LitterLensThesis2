@@ -16,6 +16,54 @@
 // ================================
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // ============================================================
+// 🌊 Load Creek List from Supabase (Dynamic Select Options)
+// ============================================================
+async function loadCreekList() {
+  const creekSelect = document.getElementById("creek-select");
+  if (!creekSelect) return;
+
+  try {
+    const res = await fetch(`${SUPABASE_REST_URL}/creeks?select=creek_name`, {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+      },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch creeks");
+    const creeks = await res.json();
+
+    // 🧹 Reset dropdown (keep only placeholder)
+    creekSelect.innerHTML = `
+      <option value="" disabled selected>Select creek/river...</option>
+    `;
+
+    // 🏞️ Add creeks from Supabase
+    creeks.forEach((c) => {
+      const opt = document.createElement("option");
+      opt.value = c.creek_name;
+      opt.textContent = c.creek_name;
+      creekSelect.appendChild(opt);
+    });
+
+    // ➕ Add “Other” at the end
+    const otherOpt = document.createElement("option");
+    otherOpt.value = "Other";
+    otherOpt.textContent = "Other (Type below)";
+    creekSelect.appendChild(otherOpt);
+
+    console.log(`✅ Loaded ${creeks.length} creeks from Supabase`);
+  } catch (err) {
+    console.error("❌ Error loading creek list:", err);
+    creekSelect.innerHTML = `
+      <option value="" disabled selected>Select creek/river...</option>
+      <option value="Buli">Buli Creek</option>
+      <option value="Other">Other (Type below)</option>
+    `;
+  }
+}
   // ----------------------------
   // Config
   // ----------------------------
@@ -764,6 +812,7 @@ async function storeDetectionToSupabase(detectionResult) {
 
 
 uploadBtn?.addEventListener("click", async () => {
+   await loadCreekList();
   const dr = JSON.parse(localStorage.getItem("detectionResult") || "null");
   if (!dr) {
     alert("No detection results available.");

@@ -1,6 +1,3 @@
-/* ================================================
-   ☎️ CONTACT PAGE SECTION (Full Responsive)
-================================================ */
 #contact-page {
   width: 100%;
   min-height: 100vh;
@@ -10,7 +7,6 @@
   font-family: 'Montserrat Alternates', sans-serif;
 }
 
-/* Upper section with translucent green overlay */
 .upper-sec {
   position: relative;
   height: 35vh;
@@ -35,7 +31,6 @@
   pointer-events: none;
 }
 
-/* Header text over upper image */
 .contact-header {
   color: #fff;
   display: flex;
@@ -61,7 +56,6 @@
   margin-top: 0;
 }
 
-/* Contact info content */
 .contact-content {
   font-family: 'Afacad';
   display: flex;
@@ -85,27 +79,20 @@
   font-size: 18px;
 }
 
-/* Glass form - right aligned */
 .contact-form {
   font-family: 'Afacad';
   width: 600px;
   max-height: 700px;
-
-  /* alignment */
   position: absolute;
   top: 150px;
-  right: 0; /* flush against right edge */
-  margin-right: 50px; /* small gap from edge */
-
-  /* glass look */
+  right: 0;
+  margin-right: 50px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 25px;
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-
-  /* layout */
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -113,8 +100,6 @@
   transition: all 0.3s ease;
 }
 
-
-/* Form header */
 .contact-form-header h1 {
   margin: 0;
   color: #141E46;
@@ -126,7 +111,6 @@
   margin: 0;
 }
 
-/* Input layout */
 .names {
   display: flex;
   gap: 15px;
@@ -184,7 +168,6 @@ textarea::placeholder {
   height: 135px;
 }
 
-/* Submit button */
 .submit-btn {
   padding: 12px 20px;
   background-color: #141E46;
@@ -211,10 +194,6 @@ textarea::placeholder {
   color: #141E46;
   text-decoration: underline;
 }
-
-/* ===============================================
-   💻 RESPONSIVE BREAKPOINTS (Merged & Optimized)
-================================================ */
 
 /* 🖥️ 4K / Large Screens */
 @media (min-width: 1920px) {
@@ -284,7 +263,6 @@ textarea::placeholder {
     color: #141E46;
   }
 
-  /* Center and widen the form */
   .contact-form {
     position: relative;
     right: auto;
@@ -300,7 +278,6 @@ textarea::placeholder {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   }
 
-  /* Inputs stack neatly */
   .names {
     flex-direction: column;
     gap: 12px;

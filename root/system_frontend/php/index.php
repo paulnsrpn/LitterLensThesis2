@@ -120,7 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -269,24 +268,49 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
               </section>
 
-              <!-- ================================================
+             <!-- ================================================
                   🌱 INITIATIVES PAGE SECTION
-                  ================================================ -->
+              ================================================ -->
               <section id="initiatives-page">
                 <h2 class="section-title">Pasig River Initiatives</h2>
                 <div class="initiatives">
-                  <div class="i-card">
-                    <img src="" alt="Initiative 1">
+
+                  <!-- ICE Hub -->
+                  <div class="i-card" onclick="location.href='../php/initiativespage.php#ice-hub-section'">
+                    <img src="../imgs/ice-hub.png" alt="ICE Hub">
+                    <div class="overlay">
+                      <h3>Innovation for Circular Economy (ICE) Hub</h3>
+                      <p>Pasig’s first circular economy hub promoting upcycling, composting, and sustainable entrepreneurship.</p>
+                    </div>
                   </div>
-                  <div class="i-card">
-                    <img src="" alt="Initiative 2">
+
+                  <!-- Garbage Collection -->
+                  <div class="i-card" onclick="location.href='../php/initiativespage.php#garbage-section'">
+                    <img src="../imgs/garbage1.jpg" alt="Garbage Collection">
+                    <div class="overlay">
+                      <h3>Garbage Collection by Administration</h3>
+                      <p>Modernized waste collection system ensuring cleaner streets and better environmental compliance.</p>
+                    </div>
                   </div>
-                  <div class="i-card">
-                    <img src="" alt="Initiative 3">
+
+                  <!-- WACS -->
+                  <div class="i-card" onclick="location.href='../php/initiativespage.php#wacs-section'">
+                    <img src="../imgs/wacs1.jpg" alt="WACS Initiative">
+                    <div class="overlay">
+                      <h3>Waste Analysis & Characterization Study (WACS)</h3>
+                      <p>Data-driven waste profiling to improve recycling and waste management planning.</p>
+                    </div>
                   </div>
-                  <div class="i-card">
-                    <img src="" alt="Initiative 4">
+
+                  <!-- Walastik na Pasig -->
+                  <div class="i-card" onclick="location.href='../php/initiativespage.php#walastik-section'">
+                    <img src="../imgs/walastik.jpg" alt="Walastik na Pasig">
+                    <div class="overlay">
+                      <h3>“Walastik na Pasig”</h3>
+                      <p>Plastic collection program transforming sachets and wrappers into sustainable materials.</p>
+                    </div>
                   </div>
+
                 </div>
               </section>
 
@@ -510,7 +534,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 </form>
               </section>
               
-
               <!-- ================================================
                   🌊 FOOTER SECTION
                   ================================================ -->

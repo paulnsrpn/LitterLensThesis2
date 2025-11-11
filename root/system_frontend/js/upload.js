@@ -2,14 +2,13 @@
 // 📤 UPLOAD & ANALYZE SCRIPT — Dropzone + Flask Integration
 // ================================================
 
-// ✅ Disable autoDiscover to avoid double initialization
 Dropzone.autoDiscover = false;
 
 // ================================================
 // 🟢 Initialize Dropzone Configuration
 // ================================================
 const myDropzone = new Dropzone("#my-dropzone", {
-  url: "http://127.0.0.1:5000/analyze", // Flask endpoint
+  url: "http://127.0.0.1:5000/analyze",
   maxFiles: 10,
   maxFilesize: 5, // MB
   acceptedFiles: "image/*",
@@ -23,7 +22,6 @@ const myDropzone = new Dropzone("#my-dropzone", {
   paramName: "image",
   method: "post",
 
-  // 🧩 Event Initialization 
   init: function () {
     this.on("error", function (file, errorMessage) {
       console.error("❌ Upload error:", errorMessage);
@@ -55,7 +53,6 @@ analyzeBtn.addEventListener("click", () => {
 
   console.log(`📸 Sending ${myDropzone.files.length} images to Flask...`);
 
-  // ✨ Show loading animation
   analyzeBtn.disabled = true;
   analyzeBtn.innerHTML = `<div class="spinner"></div> Analyzing...`;
 
@@ -69,11 +66,9 @@ myDropzone.on("successmultiple", (files, response) => {
   console.log("✅ Flask response:", response);
   localStorage.setItem("detectionResult", JSON.stringify(response));
 
-  // 🟢 Stop animation & redirect
   analyzeBtn.disabled = false;
   analyzeBtn.textContent = originalBtnText;
 
-  // 🌍 Redirect to result page
   window.location.href = "../php/index_result.php";
 });
 

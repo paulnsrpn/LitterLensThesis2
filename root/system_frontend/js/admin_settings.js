@@ -304,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================================================
   modelTableBody.innerHTML = `
     <tr>
-      <td colspan="6" style="text-align:center; padding:20px;">
+      <td colspan="5" style="text-align:center; padding:20px;">
         <div class="loading-spinner"></div>
         <p>Loading models...</p>
       </td>
@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const models = data.data;
 
       if (!models.length) {
-        modelTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No models found.</td></tr>`;
+        modelTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No models found.</td></tr>`;
         disableAll();
         return;
       }
@@ -337,7 +337,6 @@ document.addEventListener("DOMContentLoaded", () => {
         <tr>
           <td>${m.model_name || "—"}</td>
           <td>${m.version || "—"}</td>
-          <td>${m.accuracy ?? "N/A"}%</td>
           <td>${new Date(m.uploaded_on).toLocaleString()}</td>
           <td class="status ${m.status === "Active" ? "active" : "inactive"}">${m.status}</td>
           <td>
@@ -355,13 +354,12 @@ document.addEventListener("DOMContentLoaded", () => {
         </tr>`
         )
         .join("");
-
       bindModelActions();
-      disableAll(); // lock again after table is built
+      disableAll();
     })
     .catch((err) => {
       console.error("❌ Fetch error:", err);
-      modelTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Error loading models.</td></tr>`;
+      modelTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error loading models.</td></tr>`;
       disableAll();
     });
 
@@ -526,7 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("Upload failed:", err);
       alert("⚠️ Upload failed.");
-    } finally {
+    } finally { 
       uploadModelBtn.disabled = false;
       uploadModelBtn.innerHTML = "Upload & Activate";
     }

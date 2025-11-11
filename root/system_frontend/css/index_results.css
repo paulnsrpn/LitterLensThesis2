@@ -1,10 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Arbutus&family=Homemade+Apple&family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jaldi:wght@400;700&family=Jockey+One&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Macondo&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Tilt+Neon&display=swap');
 
-/* ============================================================
-   🧩 GLOBAL RESET + BASE STYLES
-   ------------------------------------------------------------
-   Ensures consistent spacing, box sizing, and smooth scrolling.
-============================================================ */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -32,20 +27,17 @@ body {
   transition: opacity 0.5s ease;
 }
 
-/* Fade-out transition for page changes */
 body.fade-out {
   opacity: 0;
 }
 
 /* ============================================================
-   🧭 NAVIGATION BAR — iPhone Island Style
-   ------------------------------------------------------------
-   Floating, centered nav on desktop. Full-width on smaller screens.
+   🧭 NAVIGATION BAR 
 ============================================================ */
 .nav {
   position: relative;
   z-index: 1000; 
-  max-width: 900px; /* Prevents navbar from getting too wide */
+  max-width: 900px; 
   min-width: 340px; 
 }
 
@@ -72,20 +64,17 @@ body.fade-out {
   transition: all 0.3s ease;
 }
 
-/* Glassy navbar effect when scrolling */
 .navbar.scrolled {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Hover effect for navbar */
 .navbar:hover {
   background: #f9f9f9;
   box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
-/* Logo adjustments */
 .navbar img {
   width: 70px;
   height: auto;
@@ -96,7 +85,6 @@ body.fade-out {
   transform: scale(1.05);
 }
 
-/* Desktop navigation links */
 .r-nav {
   display: flex;
   align-items: center;
@@ -116,7 +104,6 @@ body.fade-out {
   color: #346347;
 }
 
-/* User icon (login/profile) */
 .navbar i {
   font-size: 18px;
   color: #141E46;
@@ -129,12 +116,6 @@ body.fade-out {
   transform: scale(1.2); 
 }
 
-
-/* ============================================================
-   🍔 HAMBURGER ICON (Mobile Trigger)
-   ------------------------------------------------------------
-   Hidden on desktop; appears on mobile. Animates into an “X”.
-============================================================ */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -155,7 +136,6 @@ body.fade-out {
   transition: all 0.3s ease;
 }
 
-/* Animate hamburger into “X” shape */
 .hamburger.active span:nth-child(1) {
   transform: rotate(45deg) translateY(7px);
 }
@@ -166,12 +146,6 @@ body.fade-out {
   transform: rotate(-45deg) translateY(-7px);
 }
 
-
-/* ============================================================
-   📱 MOBILE MENU — Modern Glassy Sidebar
-   ------------------------------------------------------------
-   Smooth slide-in sidebar with a blurred glass aesthetic.
-============================================================ */
 .mobile-menu {
   display: flex;
   flex-direction: column;
@@ -193,14 +167,12 @@ body.fade-out {
   overflow-y: auto;
 }
 
-/* Active state — visible sidebar */
 .mobile-menu.active {
   right: 0;
   visibility: visible;
   opacity: 1;
 }
 
-/* Menu header (logo + close button) */
 .menu-header {
   display: flex;
   align-items: center;
@@ -214,7 +186,6 @@ body.fade-out {
   z-index: 10;
 }
 
-/* Header logo and text */
 .menu-info {
   display: flex;
   align-items: center;
@@ -234,7 +205,6 @@ body.fade-out {
   color: #141E46;
 }
 
-/* Close (X) button */
 .menu-close {
   background: #141E46;
   color: white;
@@ -256,7 +226,6 @@ body.fade-out {
   transform: rotate(90deg) scale(1.1);
 }
 
-/* Sidebar navigation links */
 .mobile-menu a {
   display: block;
   padding: 15px 25px;
@@ -274,13 +243,6 @@ body.fade-out {
   padding-left: 35px;
 }
 
-
-
-/* ============================================================
-   🌑 OVERLAY (Behind Mobile Menu)
-   ------------------------------------------------------------
-   Dark semi-transparent background when the sidebar is active.
-============================================================ */
 .mobile-overlay {
   display: none;
   position: fixed;
@@ -294,7 +256,6 @@ body.fade-out {
   transition: opacity 0.3s ease;
 }
 
-/* Overlay active state */
 .mobile-overlay.active {
   display: block;
   opacity: 1;
@@ -310,9 +271,6 @@ body.fade-out {
   .r-nav { display: flex; }
 }
 
-/* ============================================================
-   🎯 RESULTS SECTION
-============================================================ */
 .background {
   position: relative;
   width: 99%;
@@ -347,9 +305,6 @@ body.fade-out {
   margin: 0;
 }
 
-/* ============================================================
-   🎚️ DROPDOWNS
-============================================================ */
 .threshold-dropdown,
 .label-mode-dropdown,
 .label-opacity-dropdown {
@@ -373,9 +328,6 @@ body.fade-out {
   color: white;
 }
 
-/* ============================================================
-   🖼️ IMAGE CONTAINER
-============================================================ */
 .r-content .r-cards {
   display: flex;
   flex-direction: row;
@@ -406,9 +358,6 @@ body.fade-out {
   display: block;
 }
 
-/* ============================================================
-   📱 MOBILE RESPONSIVE FIXES
-============================================================ */
 @media (max-width: 600px) {
   .r-header {
     flex-direction: column;
@@ -448,9 +397,6 @@ body.fade-out {
   }
 }
 
-/* ============================================================
-   📸 IMAGE CONTROLS
-============================================================ */
 .nav-btn {
   position: absolute;
   top: 50%;
@@ -469,9 +415,6 @@ body.fade-out {
 .prev-btn { left: 10px; }
 .next-btn { right: 10px; }
 
-/* ============================================================
-   📄 RECEIPT SUMMARY
-============================================================ */
 .receipt-card {
   background: white;
   border-radius: 12px;
@@ -509,21 +452,18 @@ th { font-weight: bold; }
 .accuracy-medium { color: #ffc107; }
 .accuracy-low { color: #dc3545; }
 
-/* ============================================================
-   📍 GEO LOCATION & DOWNLOAD — THEMED (System Green: #1d4d1d)
-============================================================ */
 .location {
   display: flex;
-  align-items: baseline;  /* keeps text aligned with label baseline */
+  align-items: baseline;  
   gap: 6px;
   margin-bottom: 20px;
   font-size: 14px;
-  color: #1d4d1d; /* 🌿 Base text color */
-  flex-wrap: wrap; /* handle small screens gracefully */
+  color: #1d4d1d;
+  flex-wrap: wrap; 
 }
 
 .location strong {
-  min-width: 70px; /* ensures label aligns neatly */
+  min-width: 70px;
 }
 
 .location-icon {
@@ -534,13 +474,12 @@ th { font-weight: bold; }
   font-size: 0.95em;
 }
 
-/* 🔗 Location link (Google Maps) */
 #location-link {
   color: #1d4d1d !important;
   font-weight: 500;
   text-decoration: underline;
   transition: all 0.2s ease-in-out;
-  white-space: normal; /* allow wrapping on small screens */
+  white-space: normal; 
   line-height: 1.4;
 }
 
@@ -550,7 +489,6 @@ th { font-weight: bold; }
   transform: translateY(-1px);
 }
 
-/* ⬇️ Download Report Button Link */
 .download {
   text-align: center;
   font-weight: bold;
@@ -565,10 +503,6 @@ th { font-weight: bold; }
   color: #145414;
   text-decoration: underline;
 }
-
-/* ============================================================
-   🖼️ IMAGE CONTAINER — CENTERED + RESPONSIVE + ZOOM FIX
-============================================================ */
 
 .img-container {
   position: relative;
@@ -586,7 +520,6 @@ th { font-weight: bold; }
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* Image stays centered and scales smoothly */
 .main-img {
   width: 100%;
   max-height: 600px;
@@ -596,14 +529,10 @@ th { font-weight: bold; }
   transform-origin: center center;
 }
 
-/* When zoomed in, keep image centered */
 .main-img.zoomed {
   cursor: grab;
 }
 
-/* ============================================================
-   🎚️ SWITCH FIXED TOP-RIGHT
-============================================================ */
 .switch {
   position: absolute;
   top: 10px;
@@ -656,9 +585,6 @@ input:checked + .slider:before {
   background-color: white;
 }
 
-/* ============================================================
-   🔍 ZOOM CONTROLS — ENABLED ONLY ON WIDE SCREENS
-============================================================ */
 .zoom-controls {
   z-index: 1000;
   display: flex;
@@ -693,10 +619,6 @@ input:checked + .slider:before {
   color: #141E46;
 }
 
-
-/* ============================================================
-   🧩 RESPONSIVE ADJUSTMENTS
-============================================================ */
 
 /* Tablet (≤992px) */
 @media (max-width: 992px) {
@@ -742,7 +664,6 @@ input:checked + .slider:before {
     transform: scale(0.85);
   }
 
-  /* 📴 Disable zoom controls for small screens */
   .zoom-controls {
     display: none !important;
   }
@@ -778,16 +699,11 @@ input:checked + .slider:before {
     transform: scale(1);
   }
 
-  /* ✅ Zoom enabled on large screen */
   .zoom-controls {
     display: flex !important;
   }
 }
 
-
-/* ============================================================
-   🎯 BUTTONS
-============================================================ */
 .r-buttons {
   display: flex;
   flex-direction: row;
@@ -814,9 +730,6 @@ input:checked + .slider:before {
   transform: scale(1.05);
 }
 
-/* ============================================================
-   🌀 SPINNER
-============================================================ */
 .spinner-overlay {
   position: absolute;
   top: 0; left: 0;
@@ -848,11 +761,6 @@ input:checked + .slider:before {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-
-/* ============================================================
-   ✨ ANIMATIONS & TRANSITIONS (CONTINUED)
-============================================================ */
 
 .fade-in {
   opacity: 0;
@@ -905,9 +813,6 @@ input:checked + .slider:before {
   100% { transform: scale(1); }
 }
 
-/* ============================================================
-   💡 HOVER EFFECTS — Subtle Elevation & Glow
-============================================================ */
 .card-hover:hover {
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
   transform: translateY(-4px);
@@ -923,9 +828,6 @@ input:checked + .slider:before {
   box-shadow: 0 0 10px rgba(29,77,29,0.5), 0 0 25px rgba(29,77,29,0.3);
 }
 
-/* ============================================================
-   🌈 COLOR UTILITIES
-============================================================ */
 .text-green { color: #1d4d1d; }
 .text-dark { color: #141E46; }
 .text-light { color: #f4f4f4; }
@@ -937,9 +839,6 @@ input:checked + .slider:before {
   backdrop-filter: blur(8px);
 }
 
-/* ============================================================
-   🧱 UTILITY CLASSES (PADDING / MARGIN)
-============================================================ */
 .p-10 { padding: 10px; }
 .p-20 { padding: 20px; }
 .p-30 { padding: 30px; }
@@ -953,9 +852,6 @@ input:checked + .slider:before {
 .mb-20 { margin-bottom: 20px; }
 .mb-30 { margin-bottom: 30px; }
 
-/* ============================================================
-   📏 FLEX & GRID UTILITIES
-============================================================ */
 .flex { display: flex; }
 .flex-center { display: flex; justify-content: center; align-items: center; }
 .flex-column { display: flex; flex-direction: column; }
@@ -963,9 +859,6 @@ input:checked + .slider:before {
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 
-/* ============================================================
-   🖋️ TEXT UTILITIES
-============================================================ */
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .text-left { text-align: left; }
@@ -975,9 +868,6 @@ input:checked + .slider:before {
 .uppercase { text-transform: uppercase; }
 .capitalize { text-transform: capitalize; }
 
-/* ============================================================
-   🎨 BORDER UTILITIES
-============================================================ */
 .border-none { border: none; }
 .border { border: 1px solid #ccc; }
 .border-green { border: 2px solid #1d4d1d; }
@@ -985,22 +875,16 @@ input:checked + .slider:before {
 .rounded-lg { border-radius: 20px; }
 .rounded-xl { border-radius: 30px; }
 
-/* ============================================================
-   🪄 SHADOW UTILITIES
-============================================================ */
 .shadow-sm { box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 .shadow-md { box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
 .shadow-lg { box-shadow: 0 8px 18px rgba(0,0,0,0.25); }
 .shadow-hover:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 
-/* ===============================================
-   💻 Laptop & Desktop Screens (≥992px)
-   =============================================== */
 @media (min-width: 992px) and (max-width: 1199px) {
   .r-content {
     align-items: center;
     justify-content: center;
-    padding: 60px 6% 0 6%; /* ✅ Added 60px top padding for breathing space */
+    padding: 60px 6% 0 6%; 
   }
 
   .r-cards {
@@ -1009,14 +893,14 @@ input:checked + .slider:before {
     flex-direction: column;
     gap: 30px;
     width: 100%;
-    margin-top: 20px; /* ✅ Add a small offset below the heading */
+    margin-top: 20px; 
   }
 
   .img-container {
     position: relative;
     flex: 1;
     max-width: 800px;
-    margin: 40px auto 25px auto; /* ✅ Added top margin for separation from header */
+    margin: 40px auto 25px auto;
     background: #fff;
     border-radius: 18px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -1032,7 +916,6 @@ input:checked + .slider:before {
     border-radius: 10px;
   }
 
-  /* ✅ Keep switch top-right inside image box */
   .switch {
     position: absolute;
     top: 10px;
@@ -1044,15 +927,14 @@ input:checked + .slider:before {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   }
 
-  /* ✅ Buttons centered & evenly spaced */
   .r-buttons {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
     gap: 60px;
-    margin-top: 35px;  /* ✅ Slightly more space above buttons */
-    margin-bottom: 60px; /* ✅ Added more bottom margin for visual balance */
+    margin-top: 35px; 
+    margin-bottom: 60px;
     width: 100%;
   }
 
@@ -1076,9 +958,8 @@ input:checked + .slider:before {
     transform: scale(1.05);
   }
 
-  /* ✅ Center zoom controls under image */
   .zoom-controls {
-    margin: 20px auto 25px auto; /* ✅ Added 20px top margin */
+    margin: 20px auto 25px auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1090,14 +971,10 @@ input:checked + .slider:before {
   .receipt-card {
     flex-shrink: 0;
     max-width: 420px;
-    margin: 5px auto 20px; /* ✅ Added vertical space for balance */
+    margin: 5px auto 20px;
   }
 }
 
-
-/* ===============================================
-   💻 Large Desktop (≥1200px)
-   =============================================== */
 @media (min-width: 1200px) {
   .r-cards {
     justify-content: center;
@@ -1114,7 +991,7 @@ input:checked + .slider:before {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 70px; /* ✅ Balanced spacing for wider screens */
+    gap: 70px;
     margin-top: 30px;
     margin-bottom: 55px;
     flex-wrap: nowrap;
@@ -1144,14 +1021,11 @@ input:checked + .slider:before {
   }
 }
 
-/* ===============================================
-   🖥️ Ultra-Wide (≥1440px)
-   =============================================== */
 @media (min-width: 1440px) {
   .r-buttons {
     margin-top: 25px;
     margin-bottom: 60px;
-    gap: 90px; /* ✅ More space between buttons for wide screens */
+    gap: 90px;
   }
 
   .r-buttons button {
@@ -1162,9 +1036,6 @@ input:checked + .slider:before {
   }
 }
 
-/* ===============================================
-   📲 Mobile Screens (≤991px)
-   =============================================== */
 @media (max-width: 991px) {
   .r-cards {
     flex-direction: column;
@@ -1183,7 +1054,7 @@ input:checked + .slider:before {
 
   .r-buttons {
     display: flex;
-    flex-direction: column; /* ✅ Stack vertically */
+    flex-direction: column; 
     align-items: center;
     justify-content: center;
     gap: 15px;
@@ -1200,12 +1071,12 @@ input:checked + .slider:before {
   }
 
   .zoom-controls {
-    display: none !important; /* Disable zoom controls on mobile */
+    display: none !important; 
   }
 
    .receipt {
-    width: 95%; /* ⬆ from 90% → 95% */
-    max-width: 500px; /* ⬆ allow slightly more space */
+    width: 95%; 
+    max-width: 500px;
     text-align: center;
     background: #fff;
     border-radius: 14px;
@@ -1215,12 +1086,8 @@ input:checked + .slider:before {
   }
 }
 
-/* ===============================================
-   🖥️ PERFECT CENTER ALIGNMENT FOR LARGE SCREENS
-   (≥1440px) — IMAGE + RECEIPT + BUTTONS
-   =============================================== */
 @media (min-width: 1440px) {
-  /* ✅ Center the entire Detection Results content */
+ 
   .r-content {
     display: flex;
     flex-direction: column;
@@ -1230,20 +1097,18 @@ input:checked + .slider:before {
     padding-right: 10%;
   }
 
-  /* ✅ Keep everything centered within content */
   .r-cards {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     flex-direction: row;
     flex-wrap: nowrap;
-    gap: 60px;                /* Space between image and receipt */
+    gap: 60px;             
     width: 100%;
-    max-width: 1280px;        /* ✅ Prevents spreading too far on ultra-wide screens */
+    max-width: 1280px;      
     margin: 0 auto;
   }
 
-  /* ✅ Image container centered */
   .img-container {
     position: relative;
     display: flex;
@@ -1263,7 +1128,6 @@ input:checked + .slider:before {
     border-radius: 10px;
   }
 
-  /* ✅ Switch top-right inside the image box */
   .switch {
     position: absolute;
     top: 10px;
@@ -1275,16 +1139,15 @@ input:checked + .slider:before {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   }
 
-  /* ✅ Center both buttons perfectly under the image */
   .r-buttons {
     display: flex;
-    justify-content: center;     /* centers the group horizontally */
+    justify-content: center;    
     align-items: center;
-    gap: 80px;                   /* even spacing between buttons */
+    gap: 80px;               
     margin-top: 30px;
     margin-bottom: 60px;
     width: 100%;
-    max-width: 800px;            /* ✅ keeps buttons centered with image width */
+    max-width: 800px;         
   }
 
   .r-buttons button {
@@ -1306,7 +1169,6 @@ input:checked + .slider:before {
     transform: scale(1.05);
   }
 
-  /* ✅ Center zoom controls under image */
   .zoom-controls {
     margin: 15px auto 25px auto;
     display: flex;
@@ -1315,7 +1177,6 @@ input:checked + .slider:before {
     z-index: 100;
   }
 
-  /* ✅ Keep the receipt aligned visually beside the image */
   .receipt-card {
     flex-shrink: 0;
     max-width: 420px;
@@ -1323,7 +1184,6 @@ input:checked + .slider:before {
     margin: auto 0;
   }
 
-  /* ✅ Ensures the page doesn't hug the sides of the browser */
   .content-container {
     width: 100%;
     display: flex;
@@ -1331,11 +1191,7 @@ input:checked + .slider:before {
   }
 }
 
-/* ============================================================
-   📱 TABLET (768px–992px) — CENTERED LAYOUT + GREEN HOVER STYLE
-============================================================ */
 @media (min-width: 601px) and (max-width: 991px) {
-  /* ✅ Center all content */
   .r-content {
     display: flex;
     flex-direction: column;
@@ -1346,7 +1202,6 @@ input:checked + .slider:before {
     margin: 0 auto;
   }
 
-  /* ✅ Header (Title + Dropdowns) */
   .r-header {
     display: flex;
     flex-direction: column;
@@ -1365,7 +1220,6 @@ input:checked + .slider:before {
     margin-bottom: 10px;
   }
 
-  /* ✅ Dropdowns vertically stacked and centered */
   .r-header select {
     display: block;
     width: 100%;
@@ -1387,7 +1241,6 @@ input:checked + .slider:before {
     margin-top: 12px;
   }
 
-  /* ✅ Hover and focus effect */
   .r-header select:hover,
   .r-header select:focus {
     background-color: #14452F;
@@ -1396,7 +1249,6 @@ input:checked + .slider:before {
     outline: none;
   }
 
-  /* ✅ Dropdown option styling */
   .r-header select option {
     background-color: #ffffff;
     color: #14452F;
@@ -1407,7 +1259,6 @@ input:checked + .slider:before {
     color: #ffffff;
   }
 
-  /* ✅ Image Container */
   .img-container {
     width: 95%;
     max-width: 620px;
@@ -1440,7 +1291,6 @@ input:checked + .slider:before {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   }
 
-  /* ✅ Zoom Controls */
   .zoom-controls {
     display: flex;
     justify-content: center;
@@ -1450,7 +1300,6 @@ input:checked + .slider:before {
     z-index: 100px;
   }
 
-  /* ✅ Buttons Centered */
   .r-buttons {
     display: flex;
     flex-direction: column;
@@ -1481,13 +1330,12 @@ input:checked + .slider:before {
     transform: scale(1.05);
   }
 
-    /* ✅ Receipt Card Centered — Wider and Balanced */
   .receipt {
    height: 100%;
   }
 
   .receipt-card{
-    max-width: 600px; /* ⬆ allow more breathing space */
+    max-width: 600px; 
     background: #fff;
     border-radius: 14px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -1513,9 +1361,6 @@ input:checked + .slider:before {
   }
 }
 
-/* ============================================================
-   🧭 SCROLLBAR STYLING
-============================================================ */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -1531,9 +1376,6 @@ input:checked + .slider:before {
   background: #2f653a;
 }
 
-/* ============================================================
-   ⚡ BUTTON ANIMATIONS
-============================================================ */
 .button-glow {
   position: relative;
   overflow: hidden;
@@ -1557,9 +1399,6 @@ input:checked + .slider:before {
   100% { left: 125%; }
 }
 
-/* ============================================================
-   🧩 MODAL OVERLAY (OPTIONAL EXTENSION)
-============================================================ */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -1582,16 +1421,10 @@ input:checked + .slider:before {
   animation: fadeScaleIn 0.4s ease;
 }
 
-/* ============================================================
-   🎬 TRANSITION HELPERS
-============================================================ */
 .transition-fast { transition: all 0.2s ease; }
 .transition-medium { transition: all 0.4s ease; }
 .transition-slow { transition: all 0.8s ease; }
 
-/* ============================================================
-   🌐 LINKS
-============================================================ */
 a {
   color: #1d4d1d;
   text-decoration: none;
@@ -1601,9 +1434,6 @@ a:hover {
   color: #3e905f;
 }
 
-/* ============================================================
-   🌟 FOOTER / COPYRIGHT
-============================================================ */
 footer {
   text-align: center;
   padding: 30px;
@@ -1615,9 +1445,6 @@ footer {
 footer a { color: #1d4d1d; }
 footer a:hover { color: #3e905f; }
 
-/* ============================================================
-   🧠 ANIMATION SEQUENCES (APPLY TO LOADED COMPONENTS)
-============================================================ */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -1636,9 +1463,6 @@ footer a:hover { color: #3e905f; }
 }
 .animate-slide { animation: slideIn 0.6s ease forwards; }
 
-/* ============================================================
-   📏 RESPONSIVE CONTAINER CENTERING
-============================================================ */
 .center-container {
   display: flex;
   justify-content: center;
@@ -1648,9 +1472,6 @@ footer a:hover { color: #3e905f; }
   width: 100%;
 }
 
-/* ============================================================
-   🌊 Creek Toast (Popup)
-============================================================ */
 .creek-toast {
   position: fixed;
   inset: 0;
@@ -1727,7 +1548,3 @@ footer a:hover { color: #3e905f; }
 #toast-confirm:hover {
   background: #145414;
 }
-
-/* ============================================================
-   ✨ END — STYLE COMPLETED (~1,012 lines)
-============================================================ */

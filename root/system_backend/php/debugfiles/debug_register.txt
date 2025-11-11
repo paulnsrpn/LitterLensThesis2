@@ -100,3 +100,31 @@ Array
 
 Registration successful. Auto-login done.
 
+==== Registration Attempt ====
+Time: 2025-11-11 20:38:49
+Full Name: Pauline Serapion | Email: serapion_pauline@plpasig.edu.ph
+==== Registration Attempt ====
+Time: 2025-11-11 20:39:17
+Full Name: Pauline Serapion | Email: serapion_pauline@plpasig.edu.ph
+==== Registration Attempt ====
+Time: 2025-11-11 20:39:41
+Full Name: Pauline Serapion | Email: serapion_pauline@plpasig.edu.ph
+Email check result: NOT EXISTS
+Supabase insert result:
+Array
+(
+    [0] => Array
+        (
+            [admin_id] => 5
+            [admin_name] => Pauline Serapion
+            [email] => serapion_pauline@plpasig.edu.ph
+            [password] => $2y$10$/v0XG5T.Xf5yHW7Hx31xi.qocKmHAIz3hoM8mE0m/MFpKhTLtLFpG
+            [role] => moderator
+            [profile_pic] => 
+            [contact_number] => 
+        )
+
+)
+
+Registration successful. Auto-login done.
+

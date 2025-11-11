@@ -11,7 +11,6 @@ html {
   overflow-x: hidden;
 }
 
-/* 🧭 Navigation & Title */
 .guideNav {
   padding-left: 3rem;
 }
@@ -62,17 +61,15 @@ html {
   transform: scale(1.1);
 }
 
-/* 🪜 Step-by-Step Container */
 .guide-box {
   display: flex;
-  justify-content: center; /* Center content horizontally */
+  justify-content: center; 
   align-items: flex-start;
   gap: 60px;
   padding: 2rem 4rem 5rem;
   flex-wrap: wrap;
 }
 
-/* 📘 Step Cards */
 .stepsCard {
   width: 750px;
   height: 500px;
@@ -92,7 +89,6 @@ html {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Inside Card */
 .step {
   transform: translateY(30px);
   transition: opacity 0.6s ease, transform 0.6s ease;
@@ -189,7 +185,6 @@ html {
   margin-top: 2rem;
 }
 
-/* Scrollbar styling */
 .stepsCard::-webkit-scrollbar {
   width: 6px;
 }
@@ -202,9 +197,6 @@ html {
 .stepsCard::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.5);
 }
-/* ===============================================
-   📱 RESPONSIVE BREAKPOINTS
-================================================ */
 
 /* 💻 Tablets and smaller (≤992px) */
 @media (max-width: 992px) {
@@ -213,7 +205,7 @@ html {
   }
 
   .guideTitle {
-    padding: 3rem 1rem 2rem 1rem; /* increased top space */
+    padding: 3rem 1rem 2rem 1rem;
     text-align: center;
     align-items: center;
     justify-content: center;
@@ -235,14 +227,14 @@ html {
     justify-content: center;
     text-align: center;
     gap: 2rem;
-    padding: 2rem 1rem; /* added vertical padding */
+    padding: 2rem 1rem; 
   }
 
   .stepsCard {
     width: 90%;
     height: 500px;
     overflow-y: auto;
-    margin: 3rem auto 2rem auto; /* ⬆️ increased top margin */
+    margin: 3rem auto 2rem auto;
     border-radius: 20px;
   }
 
@@ -274,7 +266,7 @@ html {
   }
 
   .bot-text {
-    margin: 3rem auto 2rem auto; /* ⬆️ extra breathing space */
+    margin: 3rem auto 2rem auto;
     text-align: center;
     position: relative;
     bottom: 0;
@@ -291,7 +283,7 @@ html {
   .stepsCard {
     width: 95%;
     height: 450px;
-    margin-top: 4rem; /* more top space */
+    margin-top: 4rem;
   }
 
   .circleNum {
@@ -315,7 +307,7 @@ html {
 
   .bot-text {
     font-size: 16px;
-    margin-top: 3rem; /* added more space below */
+    margin-top: 3rem;
   }
 }
 
@@ -330,7 +322,7 @@ html {
     width: 95%;
     height: 420px;
     padding: 1rem;
-    margin-top: 4rem; /* consistent spacing */
+    margin-top: 4rem;
   }
 
   .stepContent img {

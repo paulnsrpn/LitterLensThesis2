@@ -1,13 +1,7 @@
 /* ============================================
    🌍 RESPONSIVE BREAKPOINTS
-   ------------------------------------------------------------
-   Handles scaling and layout for all display sizes:
-   💎 4K / Desktop / Tablet / Mobile / Smallest Devices
 ============================================ */
 
-
-/* 💎 4K & ULTRA-WIDE DISPLAYS (≥1920px)
--------------------------------------------- */
 @media (min-width: 1920px) {
   /* 🧭 Navbar */
   .navbar {
@@ -26,7 +20,6 @@
     font-size: 18px;
   }
 
-  /* 🌊 Hero background */
   .background {
     height: 520px;
     border-radius: 40px;
@@ -43,7 +36,6 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   }
 
-  /* ⚡ Quick Highlights Section */
   .highlights-section {
     max-width: 1800px;
     margin: 100px auto 80px;
@@ -71,7 +63,6 @@
     bottom: 35px;
   }
 
-  /* 🧩 Upload Section */
   #upload-page {
     padding: 5rem 2rem;
   }
@@ -105,9 +96,6 @@
   }
 }
 
-
-/* 💻 LARGE LAPTOPS / DESKTOPS — Default (≥1200px)
--------------------------------------------- */
 @media (min-width: 1200px) and (max-width: 1919px) {
   .background {
     height: 400px;
@@ -131,7 +119,6 @@
     height: 210px;
   }
 
-  /* 🧩 Upload Section */
   #upload-page {
     padding: 4rem 1.5rem;
   }
@@ -156,11 +143,8 @@
   }
 }
 
-
-/* 📱 TABLET — up to 992px
--------------------------------------------- */
 @media (max-width: 992px) {
-  /* 🧭 Navbar */
+ 
   .navbar {
     top: 0;
     width: 90%;
@@ -183,7 +167,6 @@
     width: 60px;
   }
 
-  /* 🌊 Hero Section */
   .background {
     border-radius: 10px;
     margin: 0;
@@ -203,7 +186,6 @@
     padding: 10px 28px;
   }
 
-  /* ⚡ Highlights */
   .h-title {
     text-align: center;
     padding-left: 0;
@@ -219,7 +201,6 @@
     font-size: 20px;
   }
 
-  /* 🧩 Upload Section */
   #upload-page {
     padding: 3rem 1rem;
     min-height: 100vh;
@@ -259,11 +240,8 @@
   }
 }
 
-
-/* 📱 MOBILE — up to 600px
--------------------------------------------- */
 @media (max-width: 600px) {
-  /* 🧭 Navbar */
+
   .navbar {
     width: 100%;
     height: 48px;
@@ -281,7 +259,6 @@
     width: 80%;
   }
 
-  /* 🌊 Hero Section */
   .background,
   .background-wrapper {
     border-radius: 0;
@@ -305,7 +282,6 @@
     border-radius: 16px;
   }
 
-  /* ⚡ Highlights */
   .h-title {
     text-align: center;
     font-size: 26px;
@@ -327,7 +303,6 @@
     font-size: 19px;
   }
 
-  /* 🧩 Upload Section */
   #upload-page {
     padding: 2rem 1rem;
   }
@@ -370,8 +345,6 @@
 }
 
 
-/* 📱 SMALLEST SCREENS — up to 400px
--------------------------------------------- */
 @media (max-width: 400px) {
   /* 🧭 Navbar */
   .navbar {
@@ -385,7 +358,6 @@
     width: 50px;
   }
 
-  /* 🌊 Hero Section */
   .background,
   .background-wrapper {
     border-radius: 0;
@@ -406,7 +378,6 @@
     padding: 6px 16px;
   }
 
-  /* ⚡ Highlights */
   .h-card {
     width: 90%;
     height: 170px;
@@ -416,7 +387,6 @@
     font-size: 17px;
   }
 
-  /* 🧩 Upload Section */
   #upload-page {
     padding: 1.5rem 0.8rem;
   }
@@ -451,7 +421,6 @@
   }
 }
 
-/* 🔲 Overlay transition (smooth fade for menu background) */
 .mobile-overlay {
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }

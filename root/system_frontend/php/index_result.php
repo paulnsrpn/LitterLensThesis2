@@ -164,7 +164,7 @@
                     <button id="toast-cancel">Cancel</button>
                     <button id="toast-confirm">Confirm</button>
                   </div>
-                </div>
+                </div> 
               </div>
 
       <!-- ================================================

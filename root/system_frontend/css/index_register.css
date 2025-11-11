@@ -12,7 +12,6 @@ body {
   overflow: hidden;
 }
 
-/* LEFT SECTION */
 .register-section {
   flex: 1;
   background-color: #ffffff;
@@ -164,7 +163,7 @@ body {
 
 .back-btn:hover {
   color: #00b84a;
-  transform: translateX(-3px);     /* ✅ slight motion on hover */
+  transform: translateX(-3px);   
 }
 
 .back-btn i {

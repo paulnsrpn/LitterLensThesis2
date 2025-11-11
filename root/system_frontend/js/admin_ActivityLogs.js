@@ -1,5 +1,5 @@
 // ============================================================
-// 📘 ADMIN_ACTIVITYLOGS.JS — Local Logs Filter + Pagination + Export (FINAL CLEAN VERSION)
+// 📘 ADMIN_ACTIVITYLOGS.JS
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -61,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Close dropdown when clicking outside
   document.addEventListener("click", (e) => {
     if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
       dropdownMenu.style.display = "none";
@@ -82,15 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalPages = Math.ceil(filteredRows.length / itemsPerPage) || 1;
     if (currentPage > totalPages) currentPage = totalPages;
 
-    // Hide all rows
     allRows.forEach((r) => (r.style.display = "none"));
 
-    // Show only rows for current page
     const start = (currentPage - 1) * itemsPerPage;
     const visibleRows = filteredRows.slice(start, start + itemsPerPage);
     visibleRows.forEach((r) => (r.style.display = ""));
 
-    // Update pagination info
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
     prevBtn.style.opacity = currentPage > 1 ? "1" : "0.5";
     nextBtn.style.opacity = currentPage < totalPages ? "1" : "0.5";
@@ -116,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ===============================
-  // 🧩 APPLY FILTERS — FINAL
+  // 🧩 APPLY FILTERS
   // ===============================
   function applyFilters() {
     const term = searchInput.value.toLowerCase().trim();
@@ -126,14 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
         td.textContent.toLowerCase().trim()
       );
 
-      const actionCell = cells[2] || ""; // “Added”, “Updated”, etc.
+      const actionCell = cells[2] || ""; 
       const dateText = row.children[0]?.textContent.trim();
       const dateObj = new Date(dateText);
 
-      // 🔍 Search text match
       const textMatch = cells.some((text) => text.includes(term));
 
-      // 🔽 Action match
       let actionMatch = true;
       if (selectedAction !== "all") {
         const selected = selectedAction.toLowerCase().trim();
@@ -147,7 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
           normalizedAction.includes(selected.replace(/ed$/, ""));
       }
 
-      // 🗓️ Date range match
       let dateMatch = true;
       if (dateRange && !isNaN(dateObj)) {
         dateMatch = dateObj >= dateRange.start && dateObj <= dateRange.end;
@@ -159,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentPage = 1;
     renderTable();
 
-    // ⚠️ Handle empty state
     const existingNoData = tbody.querySelector(".no-logs-row");
     if (filteredRows.length === 0) {
       if (!existingNoData) {
@@ -191,7 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
       exportBtn.innerHTML = `<span class="btn-spinner"></span> Exporting...`;
 
       try {
-        // Collect filtered logs
         const logs = filteredRows.map((row) => {
           const cells = Array.from(row.querySelectorAll("td")).map((td) =>
             td.textContent.trim()
@@ -206,7 +197,6 @@ document.addEventListener("DOMContentLoaded", () => {
           };
         });
 
-        // Send logs to backend
         const response = await fetch(
           "/LitterLensThesis2/root/system_backend/php/system_admin_data.php?ajax=export_logs_csv",
           {
@@ -218,7 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-        // Download the CSV
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -229,7 +218,6 @@ document.addEventListener("DOMContentLoaded", () => {
         a.click();
         a.remove();
 
-        // ✅ Success feedback
         exportBtn.innerHTML = "✅ Exported!";
         setTimeout(() => {
           exportBtn.innerHTML = originalHTML;
@@ -245,10 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-
-  // ===============================
-  // 🚀 INITIAL RENDER
-  // ===============================
   renderTable();
 });
  
