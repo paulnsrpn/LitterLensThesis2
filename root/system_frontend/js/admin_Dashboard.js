@@ -175,6 +175,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const activityLoader = document.getElementById("activityLoader");
   const activityTable = document.getElementById("activityTable").querySelector("tbody");
 
+  // Toast elements
+  const toast = document.getElementById("activityToast");
+  const toastImage = document.getElementById("toastImage");
+  const toastTitle = document.getElementById("toastTitle");
+  const toastDate = document.getElementById("toastDate");
+  const toastInfo = document.getElementById("toastInfo");
+  const toastClose = document.getElementById("toastClose");
+
   // Loader helper
   function showLoader(show = true, msg = "Loading recent activity...") {
     const loaderText = document.querySelector("#activityLoader .loader-text");
@@ -183,7 +191,30 @@ document.addEventListener("DOMContentLoaded", () => {
     activityTable.style.opacity = show ? "0.3" : "1";
   }
 
-  // Fetch activity data
+  // 🧾 Toast logic (with fade animation)
+  function showToast(imageUrl, date, time) {
+    toastImage.src = imageUrl;
+    toastTitle.textContent = "Detection Summary";
+    toastDate.textContent = `🕒 ${date} ${time}`;
+    toastInfo.textContent =
+      `Captured image showing litter detection. Review cleanup records for this detection.`;
+
+    toast.classList.add("show"); // smooth fade in
+    toast.style.display = "flex";
+
+    // Auto-hide after 6 seconds
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => (toast.style.display = "none"), 300); // fade out delay
+    }, 6000);
+  }
+
+  toastClose.addEventListener("click", () => {
+    toast.classList.remove("show");
+    setTimeout(() => (toast.style.display = "none"), 300);
+  });
+
+  // Fetch activity data dynamically
   async function fetchRecentActivity(filter = "today") {
     showLoader(true, `Loading ${filter === "today" ? "today's" : "last 7 days'"} data...`);
     try {
@@ -193,28 +224,44 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) throw new Error("Network error");
 
       const data = await response.json();
-      activityTable.innerHTML = "";
+      activityTable.innerHTML = ""; // clear previous rows
 
       if (Array.isArray(data) && data.length > 0) {
         data.forEach((row) => {
-          const date = new Date(`${row.date}T${row.time}`);
-          const formattedDate = date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-          const formattedTime = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+          const dateObj = new Date(`${row.date}T${row.time}`);
+          const formattedDate = dateObj.toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+          const formattedTime = dateObj.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+          });
 
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td>${formattedDate}<br><small>${formattedTime}</small></td>
             <td><img src="${row.image_url}" alt="Thumbnail" width="60" style="border-radius: 8px;"></td>
             <td>New Detection</td>
+            <td><button class="view-btn" data-image="${row.image_url}" data-date="${row.date}" data-time="${row.time}">View</button></td>
           `;
+
+          // ✅ Attach the toast trigger
+          tr.querySelector(".view-btn").addEventListener("click", (e) => {
+            const btn = e.currentTarget;
+            showToast(btn.dataset.image, btn.dataset.date, btn.dataset.time);
+          });
+
           activityTable.appendChild(tr);
         });
       } else {
-        activityTable.innerHTML = `<tr><td colspan="3" style="text-align:center;">No recent activity</td></tr>`;
+        activityTable.innerHTML = `<tr><td colspan="4" style="text-align:center;">No recent activity</td></tr>`;
       }
 
       showLoader(false);
-    } catch {
+    } catch (err) {
+      console.error("Error loading activity data:", err);
       showLoader(true, "Error loading activity data.");
     }
   }

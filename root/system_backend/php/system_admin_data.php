@@ -961,9 +961,11 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'recent_activity') {
     $recent_activity = getRecentDetections($debug_logs, $filter);
 
     $data = array_map(fn($r) => [
-        'date'      => $r['date'],
-        'time'      => $r['time'],
-        'image_url' => getImageUrl($r['filename']),
+        'date'       => $r['date'],
+        'time'       => $r['time'],
+        'image_url'  => getImageUrl($r['filename']),
+        'litter_type'=> $r['litter_type'] ?? 'Unknown',  // optional field
+        'quantity'   => $r['quantity'] ?? 0,             // optional field
     ], $recent_activity);
 
     header('Content-Type: application/json');
@@ -1536,5 +1538,93 @@ if (isset($_GET['export']) && $_GET['export'] === 'analytics') {
     }
 
     fclose($output);
+    exit;
+}
+
+// =======================================================
+// 🧭 AJAX: GET ALL CREEKS
+// =======================================================
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_creeks') {
+    header('Content-Type: application/json');
+    $response = supabaseRequest('GET', 'creeks', null, 'select=creek_id,creek_name');
+    echo json_encode($response ?: []);
+    exit;
+}
+
+// =======================================================
+// 📊 AJAX: TREND & RISK PER CREEK (Filtered Per Litter Type)
+// =======================================================
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'trend_creek') {
+    header('Content-Type: application/json');
+    $creek_id = $_GET['creek_id'] ?? null;
+    $filter   = $_GET['filter'] ?? 'month';
+
+    if (!$creek_id) {
+        echo json_encode(['labels' => [], 'datasets' => [], 'risk' => []]);
+        exit;
+    }
+
+    // ✅ Ensure creek filter is applied (joined via images table)
+    // Assuming `detections.image_id` links to `images.image_id`
+    // and `images.creek_id` links to the `creeks.creek_id`
+    $query = 'select=quantity,date,litter_types:littertype_id(littertype_name),images:image_id(image_id,creek_id)&images.creek_id=eq.' . $creek_id;
+
+    $detections = supabaseRequest('GET', 'detections', null, $query);
+
+    if (!is_array($detections) || empty($detections)) {
+        echo json_encode(['labels' => [], 'datasets' => [], 'risk' => []]);
+        exit;
+    }
+
+    // 🔹 Group detections per litter type and time
+    $trend = [];
+    foreach ($detections as $d) {
+        $type = $d['litter_types']['littertype_name'] ?? 'Unknown';
+        $qty = (int)($d['quantity'] ?? 0);
+        $date = strtotime($d['date']);
+
+        switch ($filter) {
+            case 'day': $key = date('M d, Y', $date); break;
+            case 'year': $key = date('Y', $date); break;
+            default: $key = date('M Y', $date); break;
+        }
+
+        // ✅ Add only detections that belong to the correct creek
+        if (isset($d['images']['creek_id']) && $d['images']['creek_id'] == $creek_id) {
+            $trend[$type][$key] = ($trend[$type][$key] ?? 0) + $qty;
+        }
+    }
+
+    // 🔹 Build date labels
+    $all_dates = [];
+    foreach ($trend as $data) $all_dates = array_merge($all_dates, array_keys($data));
+    $all_dates = array_values(array_unique($all_dates));
+    sort($all_dates);
+
+    // 🔹 Build datasets and risk data
+    $datasets = [];
+    $risk_data = [];
+    foreach ($trend as $type => $data) {
+        $values = [];
+        foreach ($all_dates as $lbl) $values[] = $data[$lbl] ?? 0;
+
+        $datasets[] = [
+            'label' => $type,
+            'data'  => $values
+        ];
+
+        $total = array_sum($values);
+        $risk_data[] = [
+            'litter_type' => $type,
+            'total' => $total,
+            'risk_level' => $total > 1000 ? 'High' : ($total > 500 ? 'Moderate' : 'Low')
+        ];
+    }
+
+    echo json_encode([
+        'labels'   => $all_dates,
+        'datasets' => $datasets,
+        'risk'     => $risk_data
+    ]);
     exit;
 }

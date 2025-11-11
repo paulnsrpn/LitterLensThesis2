@@ -1,137 +1,122 @@
 <?php
-    // ================================================
-    // ⚙️ FLASK SERVER STARTER (Local Integration)
-    // ================================================
+// ================================================
+// ⚙️ FLASK SERVER STARTER (Local Integration)
+// ================================================
 
-    // 🧩 Configuration
-    $flaskPort = 5000;
-    $flaskHost = "http://127.0.0.1:$flaskPort";
-    $pythonExePath = "C:\\Program Files\\Python313\\python.exe"; // Path to your Python executable
-    $pythonAppPath = "C:\\xampp\\htdocs\\LitterLensThesis2\\root\\system_backend\\python\\app.py"; // Path to Flask app
+// 🧩 Configuration
+$flaskPort = 5000;
+$flaskHost = "http://127.0.0.1:$flaskPort";
+$pythonExePath = "C:\\Program Files\\Python313\\python.exe"; // Path to your Python executable
+$pythonAppPath = "C:\\xampp\\htdocs\\LitterLensThesis2\\root\\system_backend\\python\\app.py"; // Path to Flask app
 
-    // ================================================
-    // 🔍 STEP 1: Check if Flask is already running
-    // ================================================
+// ================================================
+// 🔍 STEP 1: Check if Flask is already running
+// ================================================
+$ch = curl_init($flaskHost);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+$running = $response !== false;
+curl_close($ch);
+
+// ================================================
+// 🚀 STEP 2: If Flask is NOT running, start it
+// ================================================
+if (!$running) {
+    // 🧠 'start /b' runs the command in the background (no CMD popup)
+    // Removed log file redirection (>>) to avoid dependency on flask_error_log.txt
+    $command = "start /b \"\" \"$pythonExePath\" \"$pythonAppPath\" > NUL 2>&1";
+    pclose(popen($command, "r"));
+
+    // 🕒 Give Flask time to initialize before rechecking
+    sleep(3);
+
+    // ✅ Re-check if Flask started successfully
     $ch = curl_init($flaskHost);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
     $running = $response !== false;
     curl_close($ch);
+}
 
-    // ================================================
-    // 🚀 STEP 2: If Flask is NOT running, start it
-    // ================================================
-    if (!$running) {
-        $logPath = __DIR__ . "\\debugfiles\\flask_error_log.txt";
+// ================================================
+// 🧾 STEP 3: Flask status (no log files)
+// ================================================
+$debugMessage = $running
+    ? "🟢 Flask is already running on port $flaskPort"
+    : "❌ Flask failed to start";
+$debugStatus = $running ? "running" : "error";
 
-        // 🧠 Explanation:
-        // 'start /b' runs a command in the background (no CMD popup)
-        // '>>' appends output and errors to flask_error_log.txt
-        $command = "start /b \"\" \"$pythonExePath\" \"$pythonAppPath\" >> \"$logPath\" 2>&1";
-        pclose(popen($command, "r"));
-
-        // 🕒 Give Flask time to initialize before rechecking
-        sleep(3);
-
-        // ✅ Re-check if Flask started successfully
-        $ch = curl_init($flaskHost);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        $running = $response !== false;
-        curl_close($ch);
-    }
-
-    // ================================================
-    // 🧾 STEP 3: Log the Flask status
-    // ================================================
-    $debugMessage = $running
-        ? "🟢 Flask is already running on port $flaskPort"
-        : "❌ Flask failed to start — check flask_error_log.txt";
-    $debugStatus = $running ? "running" : "error";
-
-    // Append status updates to a log file for debugging
-    file_put_contents(
-        __DIR__ . "/debugfiles/flask_debug_log.txt",
-        date('Y-m-d H:i:s') . " - " . $debugMessage . "\n",
-        FILE_APPEND
-    );
-
-    if (session_status() === PHP_SESSION_NONE) {
+// ================================================
+// 👤 SESSION HANDLING
+// ================================================
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
-    }
+}
 
-    $isLoggedIn = isset($_SESSION['admin_id']) && !empty($_SESSION['admin_id']);
-    $adminId = $isLoggedIn ? $_SESSION['admin_id'] : null;
-    $adminName = $isLoggedIn ? $_SESSION['admin_name'] : null;
-    ?>
-
-
+$isLoggedIn = isset($_SESSION['admin_id']) && !empty($_SESSION['admin_id']);
+$adminId = $isLoggedIn ? $_SESSION['admin_id'] : null;
+$adminName = $isLoggedIn ? $_SESSION['admin_name'] : null;
+?>
 
 <script>
+const isLoggedIn = <?php echo $isLoggedIn ? 'true' : 'false'; ?>;
+const adminId = "<?php echo $isLoggedIn ? $adminId : ''; ?>";
+const adminName = "<?php echo $isLoggedIn ? addslashes($adminName) : ''; ?>";
 
-    const isLoggedIn = <?php echo $isLoggedIn ? 'true' : 'false'; ?>;
-    const adminId = "<?php echo $isLoggedIn ? $adminId : ''; ?>";
-    const adminName = "<?php echo $isLoggedIn ? addslashes($adminName) : ''; ?>";
+if (isLoggedIn) {
+  console.log(`👑 Admin logged in: ${adminName} (ID: ${adminId})`);
+  localStorage.setItem("admin_id", adminId);
+  localStorage.setItem("admin_name", adminName);
+  localStorage.setItem("detectionSource", "admin");
+} else {
+  console.log("🧍 Guest mode — not logged in");
+  localStorage.removeItem("admin_id");
+  localStorage.removeItem("admin_name");
+  localStorage.removeItem("detectionSource");
+}
 
-    if (isLoggedIn) {
-      console.log(`👑 Admin logged in: ${adminName} (ID: ${adminId})`);
-      localStorage.setItem("admin_id", adminId);
-      localStorage.setItem("admin_name", adminName);
-      localStorage.setItem("detectionSource", "admin");
-    } else {
-      console.log("🧍 Guest mode — not logged in");
-      localStorage.removeItem("admin_id");
-      localStorage.removeItem("admin_name");
-      localStorage.removeItem("detectionSource");
-    }
+// ================================================
+// 📍 GEOLOCATION CAPTURE
+// ================================================
+document.addEventListener("DOMContentLoaded", () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        console.log(`📍 Latitude: ${latitude}, Longitude: ${longitude}`);
 
-
-    // ================================================
-    // 📍 GEOLOCATION CAPTURE
-    // ================================================
-    document.addEventListener("DOMContentLoaded", () => {
-      if (navigator.geolocation) {
-        // Attempt to get user's current position
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            console.log(`📍 Latitude: ${latitude}, Longitude: ${longitude}`);
-
-            // 💾 Store location in localStorage for access on other pages
-            localStorage.setItem("user_latitude", latitude);
-            localStorage.setItem("user_longitude", longitude);
-          },
-          (error) => {
-            console.error("❌ Geolocation error:", error.message);
-          }
-        );
-      } else {
-        console.warn("⚠️ Geolocation not supported by this browser.");
+        // 💾 Store in localStorage for access on other pages
+        localStorage.setItem("user_latitude", latitude);
+        localStorage.setItem("user_longitude", longitude);
+      },
+      (error) => {
+        console.error("❌ Geolocation error:", error.message);
       }
-    });
+    );
+  } else {
+    console.warn("⚠️ Geolocation not supported by this browser.");
+  }
+});
 
-    // ================================================
-    // 🧠 FLASK STATUS LOG IN BROWSER CONSOLE
-    // ================================================
+// ================================================
+// 🧠 FLASK STATUS LOG IN BROWSER CONSOLE
+// ================================================
+(() => {
+  const status = "<?php echo $debugStatus; ?>";
+  const msg = "<?php echo addslashes($debugMessage); ?>";
 
-    (() => {
-      const status = "<?php echo $debugStatus; ?>";
-      const msg = "<?php echo addslashes($debugMessage); ?>";
+  // Define colors based on Flask status
+  const color = status === "running" ? "#2e6cff" : "#b91c1c";
+  const bg = status === "running" ? "#e6ecff" : "#ffe6e6";
 
-      // Define colors based on Flask status
-      const color = status === "running" ? "#2e6cff" : "#b91c1c";
-      const bg = status === "running" ? "#e6ecff" : "#ffe6e6";
-
-      // Print colored status message in the browser console
-      console.log(
-        `%c[Flask] ${msg}`,
-        `color:${color}; font-weight:bold; background:${bg}; padding:4px; border-radius:4px;`
-      );
-    })();
-    
+  console.log(
+    `%c[Flask] ${msg}`,
+    `color:${color}; font-weight:bold; background:${bg}; padding:4px; border-radius:4px;`
+  );
+})();
 </script>
 
 
@@ -140,56 +125,24 @@
 <html lang="en">
 
             <head>
-                <!-- ================================================
-                    🌿 LitterLens Web Application
-                    🧠 HEAD SECTION — Meta, Fonts, and Styles
-                    ================================================ -->
-
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>LitterLens</title>
-
-                <!-- ================================================
-                    🎨 THIRD-PARTY STYLESHEETS
-                    ================================================ -->
-
-                <!-- 📤 Dropzone (drag & drop file upload styling) -->
                 <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" />
-
-                <!-- 🔤 Font Awesome (icon library for buttons, UI, etc.) -->
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
-
-                <!-- 🧩 Line Awesome (alternative lightweight icon set) -->
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
-
-                <!-- 🏠 Main landing page & navigation styles -->
                 <link rel="stylesheet" href="../css/index.css">
-
-                <!-- 📸 Upload page (Dropzone + file upload UI) -->
                 <link rel="stylesheet" href="../css/index_upload.css">
-
-                <!-- 🌱 Environmental initiatives / community section -->
                 <link rel="stylesheet" href="../css/index_initiativesPage.css">
-
-                <!-- ℹ️ About page (mission, team, purpose) -->
                 <link rel="stylesheet" href="../css/index_aboutPage.css">
-
-                <!-- 📘 Guide or tutorial section (how-to-use instructions) -->
                 <link rel="stylesheet" href="../css/index_guidePage.css">
-
-                <!-- ⚓ Footer section styling -->
                 <link rel="stylesheet" href="../css/index_footer.css">
-
-                <!-- ☎️ Contact or feedback page styling -->
                 <link rel="stylesheet" href="../css/index_contactPage.css">
-
-                <!-- Responsive Styles (Tablets, Mobile, 4K, etc.) -->
                 <link rel="preload" href="../css/responsive.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
                 <noscript><link rel="stylesheet" href="../css/responsive.css"></noscript>
             </head>
 
 <body>
-              <!--                                        MAIN PAGE                                   -->
               <input type="hidden" id="latField" name="latitude">
               <input type="hidden" id="lonField" name="longitude">
 
@@ -198,12 +151,11 @@
                   ================================================ -->
               <div class="nav">
                   <div class="navbar">
-                    <!-- 🏠 Logo -->
+                   
                     <a href="../php/index.php" class="logo-link">
                       <img src="../imgs/logo.png" alt="LitterLens logo" />
                     </a>
 
-                    <!-- 📌 Navigation Links -->
                     <div class="r-nav" id="nav-links">
                       <a href="#home">Home</a>
                       <a href="#about-page">About</a>
@@ -218,7 +170,6 @@
                       </a>
                     </div>
 
-                    <!-- 🍔 Hamburger Icon -->
                     <div class="hamburger" id="hamburger">
                       <span></span>
                       <span></span>
@@ -226,7 +177,6 @@
                     </div>
                   </div>
 
-                  <!-- 📱 Mobile Slide Menu -->
                   <div class="mobile-menu" id="mobile-menu">
                     <div class="menu-header">
                       <div class="menu-info">
@@ -244,11 +194,9 @@
                   <a href="../php/index_login.php">Login</a>
                 </div>
 
-                <!-- 🌑 Overlay (dark background when menu is open) -->
                 <div class="mobile-overlay" id="mobile-overlay"></div>
               </div>
 
-              <!-- 🌊 Background Section -->
               <section id="home" class="background-wrapper">
                 <div class="background">
                   <img src="../imgs/pasigRiver.png" alt="Pasig River">
@@ -265,7 +213,6 @@
                 </a>
               </section>
 
-              <!-- ⚡ Quick Highlights Section -->
               <section class="highlights-section">
                 <p class="h-title">Quick Highlights</p>
 
@@ -297,16 +244,12 @@
                   ================================================ -->
               <section id="upload-page">
                 <div class="prim-content" id="upload-sec">
-
                   <div class="title-text">
                     <h1>Detect and Measure Litter</h1>
                   </div>
-
                   <div class="p-text">
                     <p>Take or upload a clear image of any river, canal, estero, or creek in Pasig.</p>
                   </div>
-
-                  <!-- 📸 Dropzone Upload Form -->
                   <form
                     action="../php/index_result.php"
                     class="dropzone"
@@ -319,8 +262,6 @@
                       <button type="button" class="select-btn">Choose File</button>
                     </div>
                   </form>
-
-                  <!-- 🧠 Analyze Button -->
                   <button type="button" id="analyze-btn" class="upload-photo-btn">
                     Analyze Photo
                   </button>
@@ -333,7 +274,6 @@
                   ================================================ -->
               <section id="initiatives-page">
                 <h2 class="section-title">Pasig River Initiatives</h2>
-
                 <div class="initiatives">
                   <div class="i-card">
                     <img src="" alt="Initiative 1">
@@ -355,7 +295,6 @@
                   ================================================ -->
               <section id="about-page" data-aos="fade-up">
                 <div class="about-bg-box" data-aos="fade-in">
-
                   <div class="first-line">
                     <div class="about-header">
                       <h2 data-aos="fade-down">About</h2>
@@ -363,14 +302,12 @@
                       <hr class="white-line" data-aos="fade-right" data-aos-delay="200">
                       <div class="what-we-do" data-aos="fade-up" data-aos-delay="300">What We Do</div>
                     </div>
-
                     <div class="description" data-aos="fade-up" data-aos-delay="400">
                       LitterLens is an AI-powered system that detects and counts visible litter in waterways, starting with Pasig City.
                       Using computer vision, it provides real-time data to support smarter waste management, cleaner rivers,
                       and evidence-based environmental action.
                     </div>
                   </div>
-
                   <div class="card-container">
                     <div class="card">
                       <div class="scrolling-content">
@@ -381,7 +318,6 @@
                         </p>
                       </div>
                     </div>
-
                     <div class="card">
                       <div class="scrolling-content">
                         <h3>Automates Detection</h3>
@@ -391,7 +327,6 @@
                         </p>
                       </div>
                     </div>
-
                     <div class="card">
                       <div class="scrolling-content">
                         <h3>Quantifies Pollution</h3>
@@ -402,7 +337,6 @@
                       </div>
                     </div>
                   </div>
-
                 </div>
               </section>
 
@@ -412,7 +346,6 @@
               <section id="guidePage" data-aos="fade-up">
                 <div class="guide-box">
 
-                  <!-- 🧭 Navigation & Title -->
                   <div class="guideNav">
                     <div class="guideTitle">
                       <h1>How to use LitterLens</h1>
@@ -420,46 +353,30 @@
                     </div>
 
                     <div class="navParts">
-                      <p><a href="#step1">Log In or Register</a></p>
-                      <p><a href="#step2">Uploading a Photo</a></p>
-                      <p><a href="#step3">Analysis</a></p>
-                      <p><a href="#step4">Results</a></p>
-                      <p><a href="#step5">Downloading Reports</a></p>
+                      <p><a href="#step1">Uploading a Photo</a></p>
+                      <p><a href="#step2">Analysis</a></p>
+                      <p><a href="#step3">Results</a></p>
+                      <p><a href="#step4">Downloading Reports</a></p>
                     </div>
                   </div>
 
-                  <!-- 🪜 Step-by-Step Guide -->
                   <div class="stepsCard">
 
                     <div class="step" id="step1">
                       <div class="stepTitle">
                         <div class="circleNum">1</div>
-                        <h2>Step 1: Log In or Register (Optional)</h2>
+                        <h2>Step 1: Uploading a Photo</h2>
                       </div>
                       <div class="stepContent">
-                        <img src="../imgs/step1.png" alt="Step 1">
-                        <div class="textContent">
-                          <p>Create an account or sign in to access advanced features like report downloads and image history.</p>
-                          <p>Use email or Google account.</p>
-                        </div>
+                        <p>Click “Upload” and select a clear image of a waterway. Supported formats: JPG or PNG.</p>
+                        <img src="../imgs/step2.png" alt="Step 1">
                       </div>
                     </div>
 
                     <div class="step" id="step2">
                       <div class="stepTitle">
                         <div class="circleNum">2</div>
-                        <h2>Step 2: Uploading a Photo</h2>
-                      </div>
-                      <div class="stepContent">
-                        <p>Click “Upload” and select a clear image of a waterway. Supported formats: JPG or PNG.</p>
-                        <img src="../imgs/step2.png" alt="Step 2">
-                      </div>
-                    </div>
-
-                    <div class="step" id="step3">
-                      <div class="stepTitle">
-                        <div class="circleNum">3</div>
-                        <h2>Step 3: Analysis</h2>
+                        <h2>Step 2: Analysis</h2>
                       </div>
                       <div class="stepContent">
                         <div class="textContent">
@@ -468,25 +385,25 @@
                             Sit tight—processing takes just a few seconds.
                           </p>
                         </div>
-                        <img src="../imgs/step3.png" alt="Step 3">
+                        <img src="../imgs/step3.png" alt="Step 2">
+                      </div>
+                    </div>
+
+                    <div class="step" id="step3">
+                      <div class="stepTitle">
+                        <div class="circleNum">3</div>
+                        <h2>Step 3: Results</h2>
+                      </div>
+                      <div class="stepContent">
+                        <p>View the image with detection boxes and a summary of litter types and quantities found.</p>
+                        <img src="../imgs/step4.png" alt="Step 3">
                       </div>
                     </div>
 
                     <div class="step" id="step4">
                       <div class="stepTitle">
                         <div class="circleNum">4</div>
-                        <h2>Step 4: Results</h2>
-                      </div>
-                      <div class="stepContent">
-                        <p>View the image with detection boxes and a summary of litter types and quantities found.</p>
-                        <img src="../imgs/step4.png" alt="Step 4">
-                      </div>
-                    </div>
-
-                    <div class="step" id="step5">
-                      <div class="stepTitle">
-                        <div class="circleNum">5</div>
-                        <h2>Step 5: Downloading Reports</h2>
+                        <h2>Step 4: Downloading Reports</h2>
                       </div>
                       <p class="addText">
                         Download a detailed report (PDF or CSV) containing the detection summary and image data.
@@ -496,12 +413,12 @@
                           <p>If signed in, download the detailed report as a PDF for documentation.</p>
                           <p>Use reports for LGU collaboration or tracking progress.</p>
                         </div>
-                        <img src="../imgs/step5.png" alt="Step 5">
+                        <img src="../imgs/step5.png" alt="Step 4">
                       </div>
                     </div>
 
-                  </div> <!-- End .stepsCard -->
-                </div> <!-- End .guide-box -->
+                  </div>  
+                </div>  
 
                 <div class="bot-text">
                   <p>LitterLens 2025</p>
@@ -542,7 +459,6 @@
                   </div>
                 </div>
 
-                <!-- 📨 Contact Form -->
                 <form
                   id="contactForm"
                   class="contact-form"
@@ -593,12 +509,12 @@
                   </div>
                 </form>
               </section>
+              
 
               <!-- ================================================
                   🌊 FOOTER SECTION
                   ================================================ -->
               <footer class="footer">
-                <!-- 🌀 Decorative Wave Background -->
                 <div class="wave-container">
                   <svg
                     class="wave"
@@ -619,56 +535,38 @@
                     />
                   </svg>
                 </div>
-
-                <!-- 🧩 Footer Content -->
                 <div class="footer-content">
-
-                  <!-- 🔹 Left Side: Logo and Copyright -->
                   <div class="footer-left">
                     <div class="logo2">
                       <img src="../imgs/logo2.png" alt="LitterLens Logo">
                     </div>
                     <p class="copyright">&copy; LitterLens 2025. All rights reserved.</p>
                   </div>
-
-                  <!-- 🔹 Right Side: Socials and Links -->
-                  <div class="footer-right">
-                    <div class="footer-icons">
-                      <a href="#" class="icon-circle" aria-label="Facebook">
-                        <i class="lab la-facebook-f"></i>
-                      </a>
-                      <a href="#" class="icon-circle" aria-label="Instagram">
-                        <i class="lab la-instagram"></i>
-                      </a>
-                      <a href="#" class="icon-circle" aria-label="Twitter">
-                        <i class="lab la-twitter"></i>
-                      </a>
-                      <a href="#" class="icon-circle" aria-label="YouTube">
-                        <i class="lab la-youtube"></i>
-                      </a>
-                      <a href="#" class="icon-circle" aria-label="LinkedIn">
-                        <i class="lab la-linkedin-in"></i>
-                      </a>
-                    </div>
-
-                    <div class="footer-links">
-                      <a href="#">Terms of Service</a>
-                      <a href="#">Privacy Policy</a>
-                      <a href="#">Cookie Settings</a>
-                    </div>
-                  </div>
-
                 </div>
               </footer>
+
+
+
+    <!-- 📜 Terms & Privacy Toast -->
+    <div id="policy-toast" class="policy-toast">
+      <div class="policy-toast-content">
+        <h2 id="policy-title">Terms of Service</h2>
+        <div id="policy-message">
+          <p>This is a placeholder for the Terms of Service.</p>
+        </div>
+        <button id="policy-ok-btn">OK</button>
+      </div>
+    </div>
+
 
 
     <!-- ================================================
         ⚙️ SCRIPT IMPORTS
         ================================================ -->
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script> <!-- AOS Animation Library -->
-    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script> <!-- Dropzone for File Upload -->
-    <script src="../js/main.js"></script> <!-- Main Site Scripts -->
-    <script src="../js/upload.js"></script> <!-- Upload Page Logic -->
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script> 
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script> 
+    <script src="../js/main.js"></script>
+    <script src="../js/upload.js"></script>
 
     <script>
     document.getElementById("contactForm").addEventListener("submit", async (e) => {
@@ -703,5 +601,6 @@
       }
     });
     </script>
+    
   </body>
 </html>

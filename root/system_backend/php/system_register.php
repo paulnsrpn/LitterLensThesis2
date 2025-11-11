@@ -19,7 +19,7 @@ $fullname = trim($_POST['fullname'] ?? '');
 $email    = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirm  = $_POST['confirm_password'] ?? '';
-$role     = 'user'; // Default role for new accounts
+$role     = 'moderator'; // Default role for new accounts
 
 $errors = [];
 

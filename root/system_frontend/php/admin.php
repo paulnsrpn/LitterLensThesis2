@@ -2,8 +2,6 @@
     require_once '../../system_backend/php/system_config.php';
     require_once '../../system_backend/php/system_admin_data.php';
 
-
-    // ✅ LOGIN CHECK
     if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
         redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
     }
@@ -17,15 +15,11 @@
     $flaskDir = realpath(__DIR__ . '/../../system_backend/python');
     $flaskScript = escapeshellarg($flaskDir . DIRECTORY_SEPARATOR . 'app.py');
 
-    // Check if Flask already running on port 5000
     $check = @fsockopen('127.0.0.1', 5000);
     if (!$check) {
-        // Start Flask silently in background
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            // Windows
             pclose(popen("start /B python $flaskScript >nul 2>&1", "r"));
         } else {
-            // Linux / Mac
             exec("nohup python3 $flaskScript > /dev/null 2>&1 &");
         }
     } else {
@@ -35,7 +29,7 @@
     // =======================================================
     // 🩺 WAIT UNTIL FLASK RESPONDS (health check loop)
     // =======================================================
-    $maxAttempts = 10; // try for up to ~10 seconds
+    $maxAttempts = 10;
     $flaskReady = false;
     for ($i = 0; $i < $maxAttempts; $i++) {
         $check = @fsockopen('127.0.0.1', 5000);
@@ -44,18 +38,16 @@
             $flaskReady = true;
             break;
         }
-        sleep(1); // wait 1 second per attempt
+        sleep(1);
     }
     if (!$flaskReady) {
         error_log("[Admin] Flask failed to start after 10s");
     }
-
 ?>
 
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
             <!-- ==============================================
                           🧭 BASIC META
@@ -89,7 +81,7 @@
             <script src="https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.js"></script>
 </head>
 
-<body>
+<body> 
             <!-- ==============================================
                           🧭 ADMIN NAVIGATION PANEL
                           ============================================== -->
@@ -133,7 +125,6 @@
             <div id="dashboard" class="tab-content active">
               <div class="dashboard-container">
 
-                <!-- 🔢 TOP STATISTICS -->
                 <div class="dashboard-stats">
                   <div class="stat-card">
                     <h3>Images analyzed</h3>
@@ -151,18 +142,12 @@
                   </div>
                 </div>
 
-                <!-- ==========================
-                📊 LITTER OVERVIEW SECTION
-                =========================== -->
                 <div class="chart-section">
                   <div class="chart-header">
                     <h3>Litter Overview</h3>
                   </div>
 
-                  <!-- Charts row -->
                   <div class="dashboard-charts">
-
-                    <!-- 📈 Total Litter Detections (Bar Chart) -->
                     <div class="chart-card">
                       <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3 style="margin: 0;">Total Litter Detections</h3>
@@ -172,14 +157,11 @@
                           <option value="year">By Year</option>
                         </select>
                       </div>
-
                       <div class="chart-container" style="position: relative; height: 400px;">
                         <div id="trendChartLoader" class="chart-loader">Loading trend data...</div>
                         <canvas id="trendChartDash" style="display:none;"></canvas>
                       </div>
                     </div>
-
-                    <!-- 🌍 Litter Hotspots (Map) -->
                     <div class="chart-card heatmap-card">
                       <h3>Litter Hotspots</h3>
                       <div id="hotspotMap"></div>
@@ -189,13 +171,9 @@
                         <span>High</span>
                       </div>
                     </div>
-                  </div> <!-- end .dashboard-charts -->
-                </div> <!-- end .chart-section -->
+                  </div> 
+                </div>
 
-
-                <!-- ==============================================
-                🕒 RECENT ACTIVITY (Full-width below)
-                ============================================== -->
                 <div class="dashboard-activity">
                   <div class="filter-bar">
                     <h3>Recent Activity</h3>
@@ -207,45 +185,53 @@
                     </div>
                   </div>
 
-                  <!-- Loading overlay -->
                   <div id="activityLoader" class="table-loader" style="display:none;">
                     <div class="loader-spinner"></div>
                     <span class="loader-text">Loading data...</span>
                   </div>
 
                   <table id="activityTable">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Image</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <?php if (!empty($recent_activity)): ?>
-                        <?php foreach ($recent_activity as $row): ?>
-                          <tr>
-                            <td>
-                              <?= date("F j, Y", strtotime($row['date'])) ?><br>
-                              <small><?= date("g:i A", strtotime($row['time'])) ?></small>
-                            </td>
-                            <td>
-                              <img src="<?= getImageUrl($row['filename']) ?>" alt="Thumbnail" width="60" style="border-radius: 8px;">
-                            </td>
-                            <td>New Detection</td>
-                          </tr>
-                        <?php endforeach; ?>
-                      <?php else: ?>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Image</th>
+                      <th>Action</th>
+                      <th>View</th> <!-- ✅ added -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php if (!empty($recent_activity)): ?>
+                      <?php foreach ($recent_activity as $row): ?>
                         <tr>
-                          <td colspan="3" style="text-align:center;">No recent activity</td>
+                          <td>
+                            <?= date("F j, Y", strtotime($row['date'])) ?><br>
+                            <small><?= date("g:i A", strtotime($row['time'])) ?></small>
+                          </td>
+                          <td>
+                            <img src="<?= getImageUrl($row['filename']) ?>" alt="Thumbnail" width="60" style="border-radius: 8px;">
+                          </td>
+                          <td>New Detection</td>
+                          <td>
+                            <button class="view-btn" 
+                              data-date="<?= $row['date'] ?>" 
+                              data-time="<?= $row['time'] ?>" 
+                              data-image="<?= getImageUrl($row['filename']) ?>"
+                            >View</button>
+                          </td>
                         </tr>
-                      <?php endif; ?>
-                    </tbody>
-                  </table>
-                </div> <!-- end .dashboard-activity -->
+                      <?php endforeach; ?>
+                    <?php else: ?>
+                      <tr>
+                        <td colspan="4" style="text-align:center;">No recent activity</td>
+                      </tr>
+                    <?php endif; ?>
+                  </tbody>
+                </table>
 
-              </div> <!-- end .dashboard-container -->
-            </div> <!-- end #dashboard -->
+                </div> 
+
+              </div> 
+            </div> 
 
             <!-- ==============================================                 
             ✅ IMAGE AND DETECTION SECTION 
@@ -509,6 +495,44 @@
                             <canvas id="lineChart" style="display:none;"></canvas>
                         </div>
                     </div>
+
+                    <!-- 📊 TREND ANALYTICS PER CREEK -->
+                    <div class="a-box" style="grid-column: span 2;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>Trend Analytics per Creek</h3>
+                        <div class="a-toolbar-right" style="display: flex; align-items: center; gap: 10px;">
+                          <button id="exportXlsxBtn" class="export-btn"><i class="fas fa-file-excel"></i> Export Analytics (CSV)</button>
+                          <select id="creekSelect" class="a-dropdown">
+                            <option value="" disabled selected>Loading creeks...</option>
+                          </select>
+                          <select id="creekTrendFilter" class="a-dropdown">
+                            <option value="day">Daily</option>
+                            <option value="month" selected>Monthly</option>
+                            <option value="year">Yearly</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Line Chart -->
+                      <div class="chart-container" style="position: relative; height: 400px; margin-top: 15px;">
+                        <div id="creekChartLoader" class="chart-loader">Loading data...</div>
+                        <canvas id="creekLineChart" style="display:none;"></canvas>
+                      </div>
+
+                      <!-- Bar Chart -->
+                      <div class="chart-container" style="position: relative; height: 300px; margin-top: 20px;">
+                        <canvas id="creekRiskChart" style="display:none;"></canvas>
+                      </div>
+
+                      <!-- Risk Legend -->
+                      <div id="riskLegend" class="risk-legend" style="display:none; text-align:right; font-size:13px; margin-top:8px;">
+                        🔴 High Risk &nbsp;&nbsp; 🟡 Moderate Risk &nbsp;&nbsp; 🟢 Low Risk
+                      </div>
+
+                      <!-- Summary -->
+                      <div id="creekSummary" class="summary-box"></div>
+                    </div>
+
 
                 </div>
             </section>
@@ -1022,6 +1046,18 @@
               </div>
             </div>
 
+            <div id="activityToast" class="toast-container">
+              <div class="toast-content">
+                <img id="toastImage" src="" alt="Detection Preview">
+                <div class="toast-details">
+                  <h4 id="toastTitle">Detection Summary</h4>
+                  <p id="toastDate"></p>
+                  <p id="toastInfo"></p>
+                </div>
+                <button id="toastClose" class="toast-close">×</button>
+              </div>
+            </div>
+
 
             <script>
             document.addEventListener("DOMContentLoaded", () => {
@@ -1189,7 +1225,7 @@
 
             </script>
 
-
+            <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
             <script src="../js/admin_realtime.js"></script>

@@ -60,15 +60,12 @@ unset($_SESSION['show_register']);
   <a href="index.php" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
 
   <div class="login-wrapper">
-    <!-- LEFT SIDE -->
     <div class="login-left">
       <img src="../imgs/logo2.png" alt="LitterLens Logo" class="login-logo">
       <p class="tagline">Track. Detect. Protect.</p>
       <h1>Welcome Back,<br>Administrator</h1>
       <p class="subtext">Manage reports and keep our waterways clean</p>
     </div>
-
-    <!-- RIGHT SIDE -->
     <div class="login-right">
       <h2>Admin Login</h2>
       <p class="desc">Access your administrator dashboard</p>
@@ -98,7 +95,6 @@ unset($_SESSION['show_register']);
   </div>
 
   <script>
-    // Auto-fade-out error messages
     window.addEventListener("load", () => {
       const errors = document.querySelectorAll(".error-message");
       if (errors.length) {

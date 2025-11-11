@@ -674,10 +674,16 @@ async function storeDetectionToSupabase(detectionResult) {
       return;
     }
 
-    const lat = localStorage.getItem("user_latitude");
-    const lng = localStorage.getItem("user_longitude");
+    let lat = localStorage.getItem("user_latitude");
+    let lng = localStorage.getItem("user_longitude");
     const creekName = localStorage.getItem("selected_creek") || null;
 
+    // 🌊 Force fixed coordinates for Buli Creek
+    if (creekName && creekName.toLowerCase().includes("buli")) {
+      lat = 14.6000556;
+      lng = 121.0994722;
+      console.log("📍 Buli Creek selected — using fixed coordinates:", lat, lng);
+  }
     // ✅ Ensure creek is registered in Supabase
     let creekId = null;
     if (creekName) creekId = await getCreekId(creekName);

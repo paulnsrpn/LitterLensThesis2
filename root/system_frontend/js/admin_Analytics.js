@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   filterSelect?.addEventListener("change", e => fetchChartData(e.target.value));
 });
 
-
+ 
 document.addEventListener("DOMContentLoaded", () => {
   const exportBtn = document.getElementById("exportAnalyticsBtn");
   const dropdown = document.getElementById("trendFilterAnalytics");
@@ -236,3 +236,256 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 2500);
   });
 });
+// ======================================================
+// 📈 TREND + RISK PER CREEK (Per Litter Type)
+// ======================================================
+(async function () {
+  const creekSelect = document.getElementById("creekSelect");
+  const creekFilter = document.getElementById("creekTrendFilter");
+  const loader = document.getElementById("creekChartLoader");
+  const lineCanvas = document.getElementById("creekLineChart");
+  const riskCanvas = document.getElementById("creekRiskChart");
+  const summaryBox = document.getElementById("creekSummary");
+  const riskLegend = document.getElementById("riskLegend");
+  const exportBtn = document.getElementById("exportXlsxBtn");
+  let lineChart = null;
+  let riskChart = null;
+
+  const showLoader = (show = true, msg = "Loading data...") => {
+    loader.style.display = show ? "flex" : "none";
+    loader.textContent = msg;
+    lineCanvas.style.display = show ? "none" : "block";
+    riskCanvas.style.display = show ? "none" : "block";
+    if (show) summaryBox.style.display = "none";
+  };
+
+  // ======================================================
+  // 🏞️ Load Creek List
+  // ======================================================
+  async function loadCreeks() {
+    try {
+      const res = await fetch("http://localhost/LitterLensThesis2/root/system_backend/php/system_admin_data.php?ajax=get_creeks");
+      const data = await res.json();
+      creekSelect.innerHTML = `<option value="" disabled selected>Select Creek</option>`;
+      data.forEach(c => creekSelect.innerHTML += `<option value="${c.creek_id}">${c.creek_name}</option>`);
+    } catch (err) {
+      console.error("❌ Failed to load creeks:", err);
+      creekSelect.innerHTML = `<option disabled>Error loading creeks</option>`;
+    }
+  }
+
+  // ======================================================
+  // 📊 Load and Render Charts
+  // ======================================================
+  async function loadCreekData(creekId, filter = "month") {
+    if (!creekId) return;
+    showLoader(true, `Loading ${filter} data...`);
+
+    try {
+      const res = await fetch(`http://localhost/LitterLensThesis2/root/system_backend/php/system_admin_data.php?ajax=trend_creek&creek_id=${creekId}&filter=${filter}`);
+      const data = await res.json();
+
+      if (!data?.labels?.length) {
+        showLoader(true, "No data available");
+        return;
+      }
+
+      showLoader(false);
+      const ctx = lineCanvas.getContext("2d");
+      if (lineChart) lineChart.destroy();
+
+      // 🎨 Line Chart
+      const colors = ["#2E7D32", "#43A047", "#66BB6A", "#81C784", "#A5D6A7", "#C8E6C9"];
+      data.datasets.forEach((d, i) => {
+        d.borderColor = colors[i % colors.length];
+        d.backgroundColor = colors[i % colors.length] + "55";
+        d.tension = 0.4;
+        d.fill = false;
+      });
+
+      lineChart = new Chart(ctx, {
+        type: "line",
+        data: data,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom", labels: { boxWidth: 12 } },
+            title: { display: true, text: "Litter Detection Trends per Litter Type" }
+          },
+          scales: {
+            x: { title: { display: true, text: "Date" } },
+            y: { title: { display: true, text: "Detections" }, beginAtZero: true }
+          }
+        }
+      });
+
+      // ======================================================
+      // 📊 Risk Bar Chart
+      // ======================================================
+      if (!Array.isArray(data.risk) || !data.risk.length) {
+        console.warn("⚠️ No risk data for selected creek");
+        riskCanvas.style.display = "none";
+        riskLegend.style.display = "none";
+        return;
+      }
+
+      riskCanvas.style.display = "block";
+      riskLegend.style.display = "block";
+
+      const rctx = riskCanvas.getContext("2d");
+      if (riskChart) riskChart.destroy();
+
+      const labels = data.risk.map(r => r.litter_type || "Unknown");
+      const values = data.risk.map(r => r.total || 0);
+      const colorsRisk = data.risk.map(r =>
+        r.risk_level === "High" ? "#C62828" :
+        r.risk_level === "Moderate" ? "#FFB300" : "#2E7D32"
+      );
+
+      riskChart = new Chart(rctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Total Detections (Risk Level)",
+            data: values,
+            backgroundColor: colorsRisk
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: "Litter Risk Analysis per Litter Type" },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.label}: ${ctx.formattedValue} detections`
+              }
+            }
+          },
+          scales: {
+            x: { title: { display: true, text: "Litter Type" } },
+            y: { title: { display: true, text: "Total Detections" }, beginAtZero: true }
+          }
+        }
+      });
+
+      // ======================================================
+      // 🧠 Smart Summary Insight
+      // ======================================================
+      summaryBox.style.display = "block";
+
+      const totalAll = values.reduce((a, b) => a + b, 0);
+      const highest = data.risk.reduce((a, b) => (a.total > b.total ? a : b));
+      const firstDate = data.labels[0];
+      const lastDate = data.labels[data.labels.length - 1];
+
+      const trendMessage = (() => {
+        if (highest.risk_level === "High")
+          return `⚠️ <b>${highest.litter_type}</b> has the highest accumulation this period. Next month should prioritize cleanup in <b>${highest.litter_type}</b> areas.`;
+        if (highest.risk_level === "Moderate")
+          return `🟡 <b>${highest.litter_type}</b> shows moderate litter activity. Schedule extra monitoring or awareness drives.`;
+        return `🟢 Great progress! <b>${highest.litter_type}</b> remains under control. Continue cleanup consistency.`;
+      })();
+
+      const overall = (() => {
+        if (totalAll > 200)
+          return `<b>Overall litter detection is high</b> (${totalAll} items). Plan additional cleanups next month (${new Date().toLocaleString('default',{ month:'long'})}).`;
+        if (totalAll > 100)
+          return `<b>Litter accumulation is moderate</b> (${totalAll} items). Maintain cleanup schedule.`;
+        return `<b>Low litter detection</b> (${totalAll} items). Maintain awareness campaigns and periodic cleaning.`;
+      })();
+
+      let borderColor = "#2E7D32";
+      if (totalAll > 200) borderColor = "#C62828";
+      else if (totalAll > 100) borderColor = "#FFB300";
+
+      summaryBox.style.borderLeft = `5px solid ${borderColor}`;
+      summaryBox.innerHTML = `
+        <strong>📅 Summary Insight for ${creekSelect.options[creekSelect.selectedIndex].text}</strong><br>
+        <small>Period: ${firstDate} → ${lastDate}</small><br><br>
+        ${trendMessage}<br><br>
+        <em>${overall}</em>
+      `;
+
+    } catch (err) {
+      console.error("❌ Trend Creek fetch error:", err);
+      showLoader(true, "Error loading data.");
+    }
+  }
+
+  // ======================================================
+  // 💾 XLSX Export Function with Loading
+  // ======================================================
+  exportBtn.addEventListener("click", async () => {
+    const creekId = creekSelect.value;
+    const filter = creekFilter.value;
+    const creekName = creekSelect.options[creekSelect.selectedIndex]?.text || "Unknown Creek";
+
+    if (!creekId) {
+      alert("Please select a creek first!");
+      return;
+    }
+
+    const originalText = exportBtn.innerHTML;
+    exportBtn.disabled = true;
+    exportBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Exporting...`;
+
+    try {
+      const res = await fetch(`http://localhost/LitterLensThesis2/root/system_backend/php/system_admin_data.php?ajax=trend_creek&creek_id=${creekId}&filter=${filter}`);
+      const data = await res.json();
+
+      if (!data?.labels?.length) {
+        alert("No data available to export.");
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
+        return;
+      }
+
+      const sheet1 = [];
+      sheet1.push(["Trend Analytics per Creek"]);
+      sheet1.push(["Creek:", creekName]);
+      sheet1.push(["Filter:", filter]);
+      sheet1.push([]);
+      sheet1.push(["Date", ...data.datasets.map(d => d.label)]);
+
+      data.labels.forEach((lbl, idx) => {
+        const row = [lbl];
+        data.datasets.forEach(d => row.push(d.data[idx] || 0));
+        sheet1.push(row);
+      });
+
+      sheet1.push([]);
+      sheet1.push(["Risk Level Summary"]);
+      sheet1.push(["Litter Type", "Total Detections", "Risk Level"]);
+
+      data.risk.forEach(r => {
+        sheet1.push([r.litter_type, r.total, r.risk_level]);
+      });
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(sheet1);
+      XLSX.utils.book_append_sheet(wb, ws, "Creek Trend");
+      XLSX.writeFile(wb, `TrendAnalytics_${creekName.replace(/\s+/g, "_")}.xlsx`);
+
+    } catch (err) {
+      console.error("❌ XLSX Export Error:", err);
+      alert("Failed to export XLSX file. See console for details.");
+    } finally {
+      exportBtn.innerHTML = `<i class="fas fa-file-excel"></i> Export Analytics (CSV)`;
+      exportBtn.disabled = false;
+    }
+  });
+
+  // ======================================================
+  // ⚙️ Initialize
+  // ======================================================
+  await loadCreeks();
+  creekSelect.addEventListener("change", () => loadCreekData(creekSelect.value, creekFilter.value));
+  creekFilter.addEventListener("change", () => {
+    if (creekSelect.value) loadCreekData(creekSelect.value, creekFilter.value);
+  });
+
+})(); // 👈 keep this at the end

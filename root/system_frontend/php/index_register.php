@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
-    <!-- LEFT SECTION -->
     <div class="register-section">
         <?php
         if (!empty($_SESSION['register_errors'])) {
@@ -25,9 +24,7 @@
             unset($_SESSION['register_errors']);
         }
         ?>
-
-         <a href="admin.php" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
-
+        <a href="admin.php" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
         <h1>Register</h1>
         <p>Be part of our mission to keep our waterways clean</p>
 
@@ -39,7 +36,6 @@
                 autocomplete="name" 
                 required
             >
-
             <input 
                 type="email" 
                 name="email" 
@@ -47,7 +43,6 @@
                 autocomplete="email" 
                 required
             >
-
             <input 
                 type="password" 
                 name="password" 
@@ -55,7 +50,6 @@
                 minlength="8" 
                 required
             >
-
             <input 
                 type="password" 
                 name="confirm_password" 
@@ -63,7 +57,6 @@
                 minlength="8" 
                 required
             >
-
             <button type="submit">Register</button>
         </form>
 
