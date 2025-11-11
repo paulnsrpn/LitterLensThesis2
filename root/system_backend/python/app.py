@@ -44,8 +44,13 @@ TARGET_FPS = 30.0
 
 # ============ FLASK APP ============
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://localhost", "http://127.0.0.1:5000", "*"]}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
+
+@app.route('/')
+def home():
+    return jsonify({"message": "Flask API is running!"})
+    
 # ============ GLOBAL STATE ============
 # models_list: list of loaded ultralytics.YOLO objects
 models_list = []
@@ -1008,5 +1013,5 @@ def serve_runs(filename):
 
 # ============ MAIN ============
 if __name__ == '__main__':
-    port = int(os.get('PORT', 5000))
+    port = int(os.environ.get("PORT", 5000))  # Render sets PORT automatically
     app.run(host='0.0.0.0', port=port)
