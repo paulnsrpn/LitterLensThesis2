@@ -1,15 +1,26 @@
 <?php
-// ================================================
-// ⚙️ FLASK SERVER CHECKER (Ubuntu Deployment Version)
-// ================================================
+// ============================================================
+// ⚙️ FLASK SERVER CHECKER — Deployment Ready (Hostinger/VPS)
+// ============================================================
+// Purpose: Check if Flask backend (app.py) is running locally,
+// manage session state, sync with frontend, and log errors if unreachable.
 
-// 🧩 Configuration
+// ============================================================
+// 🧩 CONFIGURATION
+// ============================================================
+
+// ⚠️ You only need to change this line if you move Flask to another port or domain.
 $flaskPort = 5000;
 $flaskHost = "http://127.0.0.1:$flaskPort"; // Flask runs locally on this VPS
 
-// ================================================
-// 🔍 STEP 1: Check if Flask is reachable
-// ================================================
+// Absolute path for project debugging logs
+$debugDir = __DIR__ . "/debugfiles";
+if (!is_dir($debugDir)) mkdir($debugDir, 0775, true);
+$logFile = $debugDir . "/flask_checker_log.txt";
+
+// ============================================================
+// 🔍 STEP 1: Check Flask connection
+// ============================================================
 $ch = curl_init($flaskHost);
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -19,17 +30,24 @@ curl_close($ch);
 
 $running = $response !== false;
 
-// ================================================
-// 🧾 STEP 2: Set debug message
-// ================================================
+// ============================================================
+// 🧾 STEP 2: Debug / Logging
+// ============================================================
+if (!$running) {
+    $msg = "[" . date('Y-m-d H:i:s') . "] ❌ Flask not reachable on $flaskHost";
+    if ($error_msg) $msg .= " | Error: $error_msg";
+    $msg .= PHP_EOL;
+    file_put_contents($logFile, $msg, FILE_APPEND);
+}
+
 $debugMessage = $running
     ? "🟢 Flask is reachable on port $flaskPort"
     : "🔴 Flask is NOT reachable (check service or port 5000)";
 $debugStatus = $running ? "running" : "error";
 
-// ================================================
+// ============================================================
 // 👤 SESSION HANDLING
-// ================================================
+// ============================================================
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -39,15 +57,20 @@ $adminId = $isLoggedIn ? $_SESSION['admin_id'] : null;
 $adminName = $isLoggedIn ? $_SESSION['admin_name'] : null;
 ?>
 
-<!-- ================================================
-🧠 JAVASCRIPT LOGIC (Shared Between Admin & Guest)
-================================================ -->
+<!-- ============================================================
+🧠 JAVASCRIPT LOGIC (Shared for Admin / Guest Frontend)
+============================================================ -->
 <script>
+/* -----------------------------------------------
+   🧩 SESSION VARIABLES FROM PHP → JAVASCRIPT
+----------------------------------------------- */
 const isLoggedIn = <?php echo $isLoggedIn ? 'true' : 'false'; ?>;
 const adminId = "<?php echo $isLoggedIn ? $adminId : ''; ?>";
 const adminName = "<?php echo $isLoggedIn ? addslashes($adminName) : ''; ?>";
 
-// 👑 Save session data to localStorage
+/* -----------------------------------------------
+   👑 LOCAL STORAGE SYNC
+----------------------------------------------- */
 if (isLoggedIn) {
   console.log(`👑 Admin logged in: ${adminName} (ID: ${adminId})`);
   localStorage.setItem("admin_id", adminId);
@@ -60,9 +83,9 @@ if (isLoggedIn) {
   localStorage.removeItem("detectionSource");
 }
 
-// ================================================
-// 📍 GEOLOCATION CAPTURE (optional)
-// ================================================
+/* -----------------------------------------------
+   📍 GEOLOCATION CAPTURE (Optional)
+----------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -71,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const longitude = position.coords.longitude;
         console.log(`📍 Latitude: ${latitude}, Longitude: ${longitude}`);
 
-        // 💾 Store in localStorage for access on other pages
+        // 💾 Store coordinates in localStorage
         localStorage.setItem("user_latitude", latitude);
         localStorage.setItem("user_longitude", longitude);
       },
@@ -84,22 +107,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ================================================
-// 🧠 FLASK STATUS LOG IN BROWSER CONSOLE
-// ================================================
+/* -----------------------------------------------
+   🧠 FLASK STATUS LOG
+----------------------------------------------- */
 (() => {
   const status = "<?php echo $debugStatus; ?>";
   const msg = "<?php echo addslashes($debugMessage); ?>";
-
   const color = status === "running" ? "#15803d" : "#b91c1c";
   const bg = status === "running" ? "#dcfce7" : "#fee2e2";
-
   console.log(
     `%c[Flask] ${msg}`,
     `color:${color}; font-weight:bold; background:${bg}; padding:4px; border-radius:4px;`
   );
 })();
 </script>
+
 
 
 <!DOCTYPE html>

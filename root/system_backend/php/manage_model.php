@@ -88,7 +88,7 @@ if ($action === 'upload') {
     $insert = insertRecord('models', $modelData);
 
     // ✅ Tell Flask to reload after successful activation
-    $ch = curl_init("http://127.0.0.1:5000/reload_model");
+    $ch = curl_init("http://72.61.117.189/api/reload_model");
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST => true,
@@ -126,7 +126,7 @@ if ($action === 'activate') {
     $result = updateRecord('models', "model_id=eq.$id", ['status' => 'Active']);
 
     // ✅ Tell Flask to reload the new model
-    $ch = curl_init("http://127.0.0.1:5000/reload_model");
+    $ch = curl_init("http://72.61.117.189/api/reload_model");
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST => true,

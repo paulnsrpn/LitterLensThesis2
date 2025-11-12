@@ -1,50 +1,91 @@
 <?php
-    require_once '../../system_backend/php/system_config.php';
-    require_once '../../system_backend/php/system_admin_data.php';
+// ============================================================
+// 🚀 AUTO-START FLASK BACKEND (for Hostinger / Ubuntu VPS)
+// ============================================================
+// Purpose: Check if Flask (app.py) is running on port 5000,
+// start it if not running, and wait until it’s ready.
 
-    if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
-        redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
-    }
+// ============================================================
+// 🧩 REQUIREMENTS
+// ============================================================
+require_once __DIR__ . '/../../system_backend/php/system_config.php';
+require_once __DIR__ . '/../../system_backend/php/system_admin_data.php';
 
-    $admin_name = $_SESSION['admin_name'] ?? 'Admin';
+// ✅ Secure: Only allow logged-in admins
+if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
+    redirect('/LITTERLENSTHESIS2/root/system_frontend/php/index_login.php');
+}
 
-    
-    // =======================================================
-    // 🧠 AUTO-START FLASK BACKEND (Python app.py)
-    // =======================================================
-    $flaskDir = realpath(__DIR__ . '/../../system_backend/python');
-    $flaskScript = escapeshellarg($flaskDir . DIRECTORY_SEPARATOR . 'app.py');
+// ============================================================
+// ⚙️ CONFIGURATION
+// ============================================================
+$flaskDir = realpath(__DIR__ . '/../../system_backend/python');
+$flaskScript = escapeshellarg($flaskDir . DIRECTORY_SEPARATOR . 'app.py');
+$pythonBin = '/usr/bin/python3'; // 🔧 Adjust if using another Python path
+$port = 5000;
 
-    $check = @fsockopen('127.0.0.1', 5000);
-    if (!$check) {
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            pclose(popen("start /B python $flaskScript >nul 2>&1", "r"));
-        } else {
-            exec("nohup python3 $flaskScript > /dev/null 2>&1 &");
-        }
+// Debug log file
+$logDir = __DIR__ . '/../../system_frontend/php/debugfiles';
+if (!is_dir($logDir)) mkdir($logDir, 0775, true);
+$logFile = $logDir . '/flask_autostart_log.txt';
+
+error_reporting(E_ALL);
+ini_set('log_errors', 1);
+ini_set('error_log', $logFile);
+
+// ============================================================
+// 🔍 STEP 1: Check if Flask is already running
+// ============================================================
+$running = false;
+$check = @fsockopen('127.0.0.1', $port);
+if ($check) {
+    fclose($check);
+    $running = true;
+    error_log("[Flask] Already running on port $port");
+}
+
+// ============================================================
+// 🚀 STEP 2: If not running, start Flask
+// ============================================================
+if (!$running) {
+    error_log("[Flask] Starting Flask backend from: $flaskDir");
+
+    // 🧠 Windows (local dev) vs Linux (deployment)
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        pclose(popen("start /B python $flaskScript >nul 2>&1", "r"));
     } else {
+        // ✅ Use nohup to keep running after PHP exits
+        $cmd = "nohup $pythonBin $flaskScript > $logFile 2>&1 &";
+        exec($cmd);
+        error_log("[Flask] Executed: $cmd");
+    }
+}
+
+// ============================================================
+// 🩺 STEP 3: Wait until Flask responds
+// ============================================================
+$maxAttempts = 15; // wait up to 15 seconds
+$flaskReady = false;
+for ($i = 0; $i < $maxAttempts; $i++) {
+    $check = @fsockopen('127.0.0.1', $port);
+    if ($check) {
         fclose($check);
+        $flaskReady = true;
+        error_log("[Flask] Responded after " . ($i+1) . " seconds.");
+        break;
     }
+    sleep(1);
+}
 
-    // =======================================================
-    // 🩺 WAIT UNTIL FLASK RESPONDS (health check loop)
-    // =======================================================
-    $maxAttempts = 10;
-    $flaskReady = false;
-    for ($i = 0; $i < $maxAttempts; $i++) {
-        $check = @fsockopen('127.0.0.1', 5000);
-        if ($check) {
-            fclose($check);
-            $flaskReady = true;
-            break;
-        }
-        sleep(1);
-    }
-    if (!$flaskReady) {
-        error_log("[Admin] Flask failed to start after 10s");
-    }
+// ============================================================
+// ⚠️ STEP 4: Fallback log if still not up
+// ============================================================
+if (!$flaskReady) {
+    error_log("[Flask] ❌ Failed to start after {$maxAttempts}s");
+} else {
+    error_log("[Flask] ✅ Flask backend ready on port $port");
+}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
