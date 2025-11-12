@@ -1,53 +1,56 @@
 <?php
-// ============================================================
-// ⚙️ FLASK SERVER CHECKER — Deployment Ready (Hostinger/VPS)
-// ============================================================
-// Purpose: Check if Flask backend (app.py) is running locally,
-// manage session state, sync with frontend, and log errors if unreachable.
+// ================================================
+// ⚙️ FLASK SERVER STARTER (Local Integration)
+// ================================================
 
-// ============================================================
-// 🧩 CONFIGURATION
-// ============================================================
-
-// ⚠️ You only need to change this line if you move Flask to another port or domain.
+// 🧩 Configuration
 $flaskPort = 5000;
-$flaskHost = "http://127.0.0.1:$flaskPort"; // Flask runs locally on this VPS
+$flaskHost = "http://127.0.0.1:$flaskPort";
+$pythonExePath = "C:\\Program Files\\Python313\\python.exe"; // Path to your Python executable
+$pythonAppPath = "C:\\xampp\\htdocs\\LitterLensThesis2\\root\\system_backend\\python\\app.py"; // Path to Flask app
 
-// Absolute path for project debugging logs
-$debugDir = __DIR__ . "/debugfiles";
-if (!is_dir($debugDir)) mkdir($debugDir, 0775, true);
-$logFile = $debugDir . "/flask_checker_log.txt";
-
-// ============================================================
-// 🔍 STEP 1: Check Flask connection
-// ============================================================
+// ================================================
+// 🔍 STEP 1: Check if Flask is already running
+// ================================================
 $ch = curl_init($flaskHost);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
-$error_msg = curl_error($ch);
+$running = $response !== false;
 curl_close($ch);
 
-$running = $response !== false;
-
-// ============================================================
-// 🧾 STEP 2: Debug / Logging
-// ============================================================
+// ================================================
+// 🚀 STEP 2: If Flask is NOT running, start it
+// ================================================
 if (!$running) {
-    $msg = "[" . date('Y-m-d H:i:s') . "] ❌ Flask not reachable on $flaskHost";
-    if ($error_msg) $msg .= " | Error: $error_msg";
-    $msg .= PHP_EOL;
-    file_put_contents($logFile, $msg, FILE_APPEND);
+    // 🧠 'start /b' runs the command in the background (no CMD popup)
+    // Removed log file redirection (>>) to avoid dependency on flask_error_log.txt
+    $command = "start /b \"\" \"$pythonExePath\" \"$pythonAppPath\" > NUL 2>&1";
+    pclose(popen($command, "r"));
+
+    // 🕒 Give Flask time to initialize before rechecking
+    sleep(3);
+
+    // ✅ Re-check if Flask started successfully
+    $ch = curl_init($flaskHost);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    $running = $response !== false;
+    curl_close($ch);
 }
 
+// ================================================
+// 🧾 STEP 3: Flask status (no log files)
+// ================================================
 $debugMessage = $running
-    ? "🟢 Flask is reachable on port $flaskPort"
-    : "🔴 Flask is NOT reachable (check service or port 5000)";
+    ? "🟢 Flask is already running on port $flaskPort"
+    : "❌ Flask failed to start";
 $debugStatus = $running ? "running" : "error";
 
-// ============================================================
+// ================================================
 // 👤 SESSION HANDLING
-// ============================================================
+// ================================================
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -57,20 +60,11 @@ $adminId = $isLoggedIn ? $_SESSION['admin_id'] : null;
 $adminName = $isLoggedIn ? $_SESSION['admin_name'] : null;
 ?>
 
-<!-- ============================================================
-🧠 JAVASCRIPT LOGIC (Shared for Admin / Guest Frontend)
-============================================================ -->
 <script>
-/* -----------------------------------------------
-   🧩 SESSION VARIABLES FROM PHP → JAVASCRIPT
------------------------------------------------ */
 const isLoggedIn = <?php echo $isLoggedIn ? 'true' : 'false'; ?>;
 const adminId = "<?php echo $isLoggedIn ? $adminId : ''; ?>";
 const adminName = "<?php echo $isLoggedIn ? addslashes($adminName) : ''; ?>";
 
-/* -----------------------------------------------
-   👑 LOCAL STORAGE SYNC
------------------------------------------------ */
 if (isLoggedIn) {
   console.log(`👑 Admin logged in: ${adminName} (ID: ${adminId})`);
   localStorage.setItem("admin_id", adminId);
@@ -83,9 +77,9 @@ if (isLoggedIn) {
   localStorage.removeItem("detectionSource");
 }
 
-/* -----------------------------------------------
-   📍 GEOLOCATION CAPTURE (Optional)
------------------------------------------------ */
+// ================================================
+// 📍 GEOLOCATION CAPTURE
+// ================================================
 document.addEventListener("DOMContentLoaded", () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -94,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const longitude = position.coords.longitude;
         console.log(`📍 Latitude: ${latitude}, Longitude: ${longitude}`);
 
-        // 💾 Store coordinates in localStorage
+        // 💾 Store in localStorage for access on other pages
         localStorage.setItem("user_latitude", latitude);
         localStorage.setItem("user_longitude", longitude);
       },
@@ -107,21 +101,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-/* -----------------------------------------------
-   🧠 FLASK STATUS LOG
------------------------------------------------ */
+// ================================================
+// 🧠 FLASK STATUS LOG IN BROWSER CONSOLE
+// ================================================
 (() => {
   const status = "<?php echo $debugStatus; ?>";
   const msg = "<?php echo addslashes($debugMessage); ?>";
-  const color = status === "running" ? "#15803d" : "#b91c1c";
-  const bg = status === "running" ? "#dcfce7" : "#fee2e2";
+
+  // Define colors based on Flask status
+  const color = status === "running" ? "#2e6cff" : "#b91c1c";
+  const bg = status === "running" ? "#e6ecff" : "#ffe6e6";
+
   console.log(
     `%c[Flask] ${msg}`,
     `color:${color}; font-weight:bold; background:${bg}; padding:4px; border-radius:4px;`
   );
 })();
 </script>
-
 
 
 <!DOCTYPE html>

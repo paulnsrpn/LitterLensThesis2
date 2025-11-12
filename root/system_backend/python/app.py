@@ -24,18 +24,6 @@ import numpy as np
 from collections import deque
 from datetime import datetime
 
-
-# =====================================================
-# 🌍 GLOBAL SERVER CONFIGURATION
-# =====================================================
-
-# 🧠 Change only this when moving servers or domains!
-SERVER_BASE_URL = "http://72.61.117.189"  # ← change to your domain later (e.g., https://litterlens.site)
-
-# Flask configuration
-APP_HOST = "0.0.0.0"
-APP_PORT = int(os.environ.get("PORT", 5000))
-
 # ============ CONFIG ============
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(APP_DIR, "models")
@@ -56,11 +44,8 @@ TARGET_FPS = 30.0
 
 # ============ FLASK APP ============
 app = Flask(__name__)
-CORS(app, resources={
-    r"/*": {"origins": [SERVER_BASE_URL, f"{SERVER_BASE_URL.replace('http', 'https')}"]},
-    r"/api/*": {"origins": [SERVER_BASE_URL, f"{SERVER_BASE_URL.replace('http', 'https')}"]}
-})
-    
+CORS(app, resources={r"/*": {"origins": ["http://localhost", "http://127.0.0.1:5000", "*"]}})
+
 # ============ GLOBAL STATE ============
 # models_list: list of loaded ultralytics.YOLO objects
 models_list = []
@@ -790,7 +775,7 @@ def admin_analyze():
         with open(os.path.join(run_folder, "result_data.json"), "w") as fh:
             json.dump(result_payload, fh, indent=2)
 
-        redirect_url = f"{SERVER_BASE_URL}/php/index_result.php?folder=admin_{timestamp}"
+        redirect_url = f"http://localhost/LitterLensThesis2/root/system_frontend/php/index_result.php?folder=admin_{timestamp}"
         return jsonify({"status": "success", "redirect": redirect_url, "data": result_payload}), 200
 
     except Exception as e:
@@ -1023,5 +1008,5 @@ def serve_runs(filename):
 
 # ============ MAIN ============
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # Render sets PORT automatically
+    port = int(os.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
